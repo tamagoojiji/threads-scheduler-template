@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>スレッズスケジューラー｜Threads予約投稿自動化</title>
+<meta name="description" content="Googleスプレッドシートに日時と本文を書くだけで、Threadsに自動投稿される仕組み。セットアップ代行サービス付き。">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif; line-height: 1.8; color: #222; }
+  .hero { background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: white; padding: 80px 20px; text-align: center; }
+  .hero h1 { font-size: 2.5em; margin-bottom: 16px; }
+  .hero p { font-size: 1.2em; opacity: 0.95; }
+  .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+  h2 { font-size: 1.8em; margin: 1.5em 0 0.8em; border-left: 6px solid #6a11cb; padding-left: 14px; }
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin: 2em 0; }
+  .feature { background: #f7f7fb; padding: 24px; border-radius: 8px; }
+  .feature-icon { font-size: 2em; margin-bottom: 12px; }
+  .price-box { background: #fff4c4; padding: 24px; border-radius: 8px; margin: 2em 0; border: 2px solid #f0c000; }
+  .notice { background: #ffecec; padding: 16px 20px; border-radius: 6px; margin: 1em 0; }
+  ul, ol { padding-left: 1.5em; margin: 0.8em 0; }
+  a { color: #2575fc; }
+  footer { margin-top: 3em; padding: 24px 20px; background: #222; color: white; text-align: center; font-size: 0.9em; }
+  footer a { color: #7ab4ff; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+<h1>スレッズスケジューラー</h1>
+<p>Threadsの予約投稿を、スプレッドシートから自動化</p>
+</div>
+
+<div class="container">
+
+<h2>こんな方に</h2>
+<ul>
+<li>Threadsで定期投稿したいが、毎回手動で投稿するのが手間</li>
+<li>プログラミング知識はないが、自動化の仕組みを持ちたい</li>
+<li>Buffer等の海外SaaSを使わず、自分の管理下で運用したい</li>
+<li>将来的にサービスが閉鎖されても、自分のデータが残る仕組みが欲しい</li>
+</ul>
+
+<h2>特徴</h2>
+<div class="features">
+
+<div class="feature">
+<div class="feature-icon">📄</div>
+<h3>スプシに書くだけ</h3>
+<p>日時と投稿本文をGoogleスプレッドシートに書くだけで、自動で投稿されます。</p>
+</div>
+
+<div class="feature">
+<div class="feature-icon">🏠</div>
+<h3>完全個人所有</h3>
+<p>投稿データ・認証情報・スプシ、すべて利用者ご自身のアカウント配下で運用。当方はデータを預かりません。</p>
+</div>
+
+<div class="feature">
+<div class="feature-icon">💴</div>
+<h3>ランニングコスト¥0</h3>
+<p>Meta無料、Google無料、GitHub Actions無料枠内で運用可能。月々の追加費用はありません。</p>
+</div>
+
+<div class="feature">
+<div class="feature-icon">🎧</div>
+<h3>Zoom同伴セットアップ</h3>
+<p>導入は画面共有しながら一緒に進めます。パスワード・カード情報は一切お預かりしません。</p>
+</div>
+
+<div class="feature">
+<div class="feature-icon">🔔</div>
+<h3>エラーはDiscord通知</h3>
+<p>投稿失敗時は利用者ご自身のDiscordチャンネルに通知。すぐ気付けます。</p>
+</div>
+
+<div class="feature">
+<div class="feature-icon">🖼️</div>
+<h3>画像投稿対応（オプション）</h3>
+<p>テキストだけでなく、画像付き投稿にも対応可能（初期設定時に選択）。</p>
+</div>
+
+</div>
+
+<h2>料金</h2>
+<div class="price-box">
+<h3>導入代行プラン</h3>
+<p><strong>¥20,000（税込、1回払い）</strong></p>
+<ul>
+<li>Zoom同伴セットアップ（1〜1.5時間）</li>
+<li>GitHub・Google・Metaの初期設定を一緒に実施</li>
+<li>操作手順書（PDF）つき</li>
+</ul>
+
+<h3 style="margin-top:1.5em;">月額サポートプラン（任意）</h3>
+<p><strong>¥2,000/月（税込）</strong></p>
+<ul>
+<li>エラー発生時の調査・助言</li>
+<li>Meta/Google仕様変更時の更新通知</li>
+<li>解約は月単位で可能</li>
+</ul>
+</div>
+
+<h2>重要な注意事項</h2>
+<div class="notice">
+<ul>
+<li><strong>配信保証</strong>: at-least-once + 事後整合（稀に重複投稿の可能性あり）</li>
+<li><strong>時刻精度</strong>: 指定時刻から±5〜15分のズレが発生することがあります（GitHub Actions仕様）</li>
+<li><strong>標準cron間隔</strong>: 10分（5分間隔は有料オプション、利用者負担）</li>
+<li><strong>Meta Developer登録</strong>: 利用者様ご自身のMetaアカウントで開発者アカウントを作成していただきます（Zoom同伴）</li>
+</ul>
+</div>
+
+<h2>お申込み</h2>
+<p>Googleフォームからお申込みください（準備中）:</p>
+<p>申込フォームURL: （ここに申込フォームのリンクを設置）</p>
+
+<h2>関連ドキュメント</h2>
+<ul>
+<li><a href="./privacy-policy.html">プライバシーポリシー</a></li>
+<li><a href="./terms.html">利用規約</a></li>
+<li><a href="./data-deletion.html">データ削除手順</a></li>
+</ul>
+
+</div>
+
+<footer>
+© 2026 @tamago_app. All rights reserved.<br>
+<a href="./privacy-policy.html">プライバシーポリシー</a> | <a href="./terms.html">利用規約</a> | <a href="./data-deletion.html">データ削除</a>
+</footer>
+
+</body>
+</html>

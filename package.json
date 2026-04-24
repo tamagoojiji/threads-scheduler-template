@@ -1,0 +1,27 @@
+{
+  "name": "threads-scheduler-template",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Threadsの予約投稿をGitHub Actionsで自動化するテンプレート",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "post": "tsx src/index.ts",
+    "refresh-token": "tsx src/threads/refresh.ts",
+    "manual-post": "tsx scripts/manual-post.ts",
+    "setup-helper": "tsx scripts/setup-helper.ts"
+  },
+  "dependencies": {
+    "google-auth-library": "^9.14.0",
+    "googleapis": "^144.0.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}
