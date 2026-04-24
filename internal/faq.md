@@ -129,7 +129,7 @@
 4. Google Cloud Console → OAuthクライアント削除（任意）
 5. Discordチャンネル → Webhook削除または非公開化
 
-詳細: [データ削除手順ページ](../public/data-deletion.html)
+詳細: [データ削除手順ページ](../docs/data-deletion.html)
 
 **tamago保有データの削除**:
 - 連絡用メールアドレス・アカウント名の削除を、商品ページ記載のメール宛にご請求ください

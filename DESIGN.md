@@ -434,9 +434,15 @@ threads-scheduler-template/
 ├── scripts/
 │   ├── manual-post.ts            — 手動投稿（開発・緊急時用）
 │   └── setup-helper.ts           — セットアップ時のトークン検証
-├── docs/
+├── internal/                     — 内部用ドキュメント（GitHub Pages公開対象外）
 │   ├── zoom-script.md            — tamago用Zoom進行台本
 │   └── faq.md                    — トラブル時FAQ
+├── docs/                         — GitHub Pages公開用（/docs フォルダ指定で公開）
+│   ├── index.html                — 商品LP
+│   ├── privacy-policy.html       — プライバシーポリシー
+│   ├── terms.html                — 利用規約
+│   ├── data-deletion.html        — データ削除手順（Meta要求）
+│   └── oauth-done.html           — OAuth redirect 着地ページ
 # ※ 利用者向けセットアップ手順書は Claude.ai（Artifacts）で別途作成・配布
 ├── .env.example
 ├── package.json

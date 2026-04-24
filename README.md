@@ -29,8 +29,8 @@ threads-scheduler-template/
 ├── .github/workflows/     # GitHub Actions（post / refresh-token）
 ├── src/                   # TypeScript実装
 ├── scripts/               # 手動実行スクリプト
-├── public/                # GitHub Pages用静的HTML（LP・プラポリ等）
-├── docs/                  # Zoom台本・FAQ
+├── docs/                  # GitHub Pages用静的HTML（LP・プラポリ等）
+├── internal/              # 内部用: Zoom台本・FAQ（公開対象外）
 └── templates/             # スプシテンプレ・Discord設定手順
 ```
 
