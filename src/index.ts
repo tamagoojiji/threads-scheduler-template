@@ -60,6 +60,7 @@ async function processRow(
           errorMessage: '',
           stateUpdatedAt: new Date(),
         });
+        await notifyDiscord(discordWebhook, `✅ 投稿成功: ${row.body.slice(0, 80)}`);
         return;
       }
       if (status.status === 'IN_PROGRESS') {
@@ -99,6 +100,7 @@ async function processRow(
       errorMessage: '',
       stateUpdatedAt: new Date(),
     });
+    await notifyDiscord(discordWebhook, `✅ 投稿成功: ${row.body.slice(0, 80)}`);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     if (row.attemptCount >= MAX_ATTEMPTS) {
