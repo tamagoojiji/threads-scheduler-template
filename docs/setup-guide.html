@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>セットアップ手順書｜スレッズスケジューラー</title>
+<meta name="description" content="スレッズスケジューラーのセットアップ手順。Meta Developer / GitHub / Google OAuth / スプシまで">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif; line-height: 1.85; color: #222; }
+  .hero { background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: white; padding: 56px 20px; text-align: center; }
+  .hero h1 { font-size: 2em; margin-bottom: 8px; }
+  .hero p { font-size: 1.05em; opacity: 0.95; }
+  .container { max-width: 880px; margin: 0 auto; padding: 36px 20px; }
+  h2 { font-size: 1.5em; margin: 1.6em 0 0.6em; border-left: 6px solid #6a11cb; padding-left: 14px; }
+  h3 { font-size: 1.15em; margin: 1.2em 0 0.4em; color: #444; }
+  ul, ol { padding-left: 1.5em; margin: 0.6em 0 1em; }
+  li { margin: 0.25em 0; }
+  code { background: #f3f3f7; padding: 2px 6px; border-radius: 4px; font-size: 0.92em; }
+  pre { background: #2b2b3a; color: #f5f5fb; padding: 14px 18px; border-radius: 8px; overflow-x: auto; margin: 0.8em 0; font-size: 0.9em; }
+  .step { background: #f7f7fb; padding: 18px 22px; border-radius: 8px; margin: 1.2em 0; border-left: 4px solid #2575fc; }
+  .step-num { display: inline-block; background: #2575fc; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.85em; margin-right: 8px; }
+  .notice { background: #fff7e0; padding: 14px 18px; border-radius: 6px; margin: 1em 0; border-left: 4px solid #f0c000; }
+  .danger { background: #ffecec; padding: 14px 18px; border-radius: 6px; margin: 1em 0; border-left: 4px solid #e74c3c; }
+  .check { background: #eef9f0; padding: 12px 18px; border-radius: 6px; margin: 0.6em 0; border-left: 3px solid #4caf50; }
+  table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: 0.94em; }
+  th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+  th { background: #f0f0f6; }
+  a { color: #2575fc; }
+  .toc { background: #f7f7fb; padding: 18px 22px; border-radius: 8px; margin: 1em 0; }
+  .toc ol { margin: 0.4em 0 0; }
+  footer { margin-top: 3em; padding: 24px 20px; background: #222; color: white; text-align: center; font-size: 0.9em; }
+  footer a { color: #7ab4ff; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+<h1>セットアップ手順書</h1>
+<p>スレッズスケジューラーを動かすまでの全ステップ</p>
+</div>
+
+<div class="container">
+
+<div class="notice">
+<strong>所要時間: 約90分</strong>。Zoom同伴で一緒に進めます。詰まったらすぐお声がけください。
+</div>
+
+<div class="toc">
+<h3>進行ステップ</h3>
+<ol>
+  <li>事前にご準備いただくもの</li>
+  <li>GitHubアカウント（未登録の方）</li>
+  <li>Meta Developerアカウント・アプリ作成</li>
+  <li>Threads長期アクセストークン取得</li>
+  <li>Google Cloud OAuth設定</li>
+  <li>Refresh Token取得</li>
+  <li>GitHubリポジトリ複製</li>
+  <li>Googleスプシのコピー</li>
+  <li>Discord Webhook作成</li>
+  <li>GitHub Secretsへ登録</li>
+  <li>テスト投稿で動作確認</li>
+</ol>
+</div>
+
+<h2>1. 事前にご準備いただくもの</h2>
+<ul>
+  <li>Googleアカウント（個人でも業務でも可）</li>
+  <li>Threadsアカウント（投稿先）</li>
+  <li>Discordアカウント（エラー通知受信用）</li>
+  <li>電話番号（Meta Developer登録のSMS認証で必須・IP電話/050は不可な場合あり）</li>
+  <li>Zoomで画面共有できるPC環境</li>
+</ul>
+<div class="danger">
+<strong>パスワード・カード情報は一切お伺いしません</strong>。すべてご自身の画面で操作いただきます。
+</div>
+
+<h2>2. GitHubアカウント（未登録の方のみ）</h2>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li><a href="https://github.com" target="_blank">github.com</a> を開く</li>
+  <li>右上の <code>Sign up</code> をクリック</li>
+  <li>メール・パスワード・ユーザー名を順に入力（ユーザー名は半角英数）</li>
+  <li>登録メール宛のリンクで認証を完了</li>
+</ol>
+</div>
+
+<h2>3. Meta Developerアカウント・アプリ作成</h2>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li><a href="https://developers.facebook.com" target="_blank">developers.facebook.com</a> へログイン（既存のFacebook/Instagramアカウントでログイン）</li>
+  <li>電話番号認証 → 開発者規約に同意</li>
+  <li><code>マイアプリ → アプリを作成</code></li>
+  <li>ユースケースで <strong>「Threads APIにアクセス」</strong> を選択</li>
+  <li>アプリ名は任意（例: <code>my-threads-scheduler</code>）</li>
+</ol>
+</div>
+
+<h3>アプリの設定 > ベーシック</h3>
+<div class="danger">
+新UIでは保存時に「フォームを保存できません」エラーが頻発します。<strong>以下すべてを揃えて初めて保存できます。</strong>
+</div>
+<ul>
+  <li><strong>カテゴリ</strong>: <code>ビジネス・ページ</code> を選択（他カテゴリだと保存不可）</li>
+  <li><strong>プライバシーポリシーURL</strong>: <code>https://www.facebook.com/privacy/policy/</code> でも可</li>
+  <li><strong>利用規約URL</strong>: 任意のURL（例: <code>https://www.google.com/</code>）</li>
+  <li><strong>アプリドメイン・アイコン</strong>: 空欄でも可</li>
+</ul>
+
+<h3>ユースケース > カスタマイズ > 設定</h3>
+<ul>
+  <li><strong>コールバックURLをリダイレクト</strong>: <code>https://www.google.com/</code></li>
+  <li><strong>アンインストールコールバックURL</strong>: <code>https://www.google.com/</code></li>
+  <li><strong>削除コールバックURL</strong>: <code>https://www.google.com/</code></li>
+</ul>
+<div class="danger">
+<strong>3箇所すべてに入力</strong>してください。1つでも空欄だと保存エラーになります。
+</div>
+
+<h3>権限</h3>
+<ul>
+  <li><code>threads_basic</code></li>
+  <li><code>threads_content_publish</code></li>
+</ul>
+<div class="notice">他の権限（threads_manage_replies等）は不要です。</div>
+
+<h2>4. Threads長期アクセストークン取得</h2>
+<p>Meta Developerの公式ボタン1クリックで60日有効のトークンが取れます。</p>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>左メニューから <code>ユースケース → カスタマイズ → 設定</code> を開く</li>
+  <li>画面下部「ユーザートークン生成ツール」セクションへスクロール</li>
+  <li>「<strong>Threadsテスター</strong>」として自分のThreadsアカウントを追加 → Threads側で承認</li>
+  <li>承認済みアカウントの右側「<strong>アクセストークンを生成</strong>」をクリック</li>
+  <li>表示された長期アクセストークンを安全な場所にコピー保存</li>
+</ol>
+</div>
+<div class="check">
+<strong>取得する値</strong>: <code>THREADS_ACCESS_TOKEN</code>（後でGitHub Secretsへ登録）
+</div>
+
+<h3>Threads User ID取得</h3>
+<p>後ほどtamagoが <code>/me</code> エンドポイントを叩いて取得します（curlコマンドはZoom中に実行）。</p>
+
+<h2>5. Google Cloud OAuth設定</h2>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li><a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a> へログイン</li>
+  <li>新規プロジェクト作成（名前: <code>Threads Scheduler</code> 等）</li>
+  <li><code>APIとサービス → ライブラリ</code> → <strong>Google Sheets API</strong> を有効化</li>
+  <li><code>OAuth同意画面</code>を設定:
+    <ul>
+      <li>User Type: <strong>External</strong></li>
+      <li>App name: <code>Threads Scheduler</code></li>
+      <li>サポートメール・デベロッパーメール: ご自身のGmail</li>
+      <li>スコープに <code>.../auth/spreadsheets</code> を追加</li>
+      <li>Test users にご自身のGmailを追加</li>
+    </ul>
+  </li>
+  <li><strong>「アプリを公開（PUBLISH APP）」→「本番環境にプッシュ」</strong>をクリック</li>
+</ol>
+</div>
+<div class="danger">
+<strong>必ず「本番環境にプッシュ」してください</strong>。Testing状態のまま運用するとRefresh Tokenが7日で失効します。
+</div>
+
+<h3>OAuth Client作成</h3>
+<ol>
+  <li><code>認証情報 → 認証情報を作成 → OAuthクライアントID</code></li>
+  <li>アプリケーションの種類: <strong>ウェブアプリケーション</strong></li>
+  <li>承認済みのリダイレクトURI: <code>https://developers.google.com/oauthplayground</code></li>
+  <li>Client ID と Client Secret をコピー保存</li>
+</ol>
+<div class="check">
+<strong>取得する値</strong>: <code>GOOGLE_OAUTH_CLIENT_ID</code> / <code>GOOGLE_OAUTH_CLIENT_SECRET</code>
+</div>
+
+<h2>6. Refresh Token取得</h2>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li><a href="https://developers.google.com/oauthplayground" target="_blank">Google OAuth Playground</a> を開く</li>
+  <li>右上の歯車アイコン → <strong>Use your own OAuth credentials</strong> にチェック</li>
+  <li>Client ID / Client Secret を入力</li>
+  <li>左側の入力欄に <code>https://www.googleapis.com/auth/spreadsheets</code> を貼り付け</li>
+  <li><code>Authorize APIs</code> をクリック → Googleログイン → 「許可」</li>
+  <li>「同意画面」で <strong>「強制的に承認させる（Force prompt）」</strong> オプションを有効化（Refresh Tokenを必ず返してもらうため）</li>
+  <li><code>Exchange authorization code for tokens</code> をクリック</li>
+  <li>表示された <code>Refresh token</code>（<code>1//</code> で始まる文字列）をコピー保存</li>
+</ol>
+</div>
+<div class="check">
+<strong>取得する値</strong>: <code>GOOGLE_OAUTH_REFRESH_TOKEN</code>
+</div>
+
+<h2>7. GitHubリポジトリ複製</h2>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li><a href="https://github.com/tamagoojiji/threads-scheduler-template" target="_blank">tamagoojiji/threads-scheduler-template</a> を開く</li>
+  <li>右上の <code>Use this template → Create a new repository</code> をクリック（Forkではなくテンプレ複製）</li>
+  <li>リポジトリ名は任意 / <strong>Private</strong> にチェック</li>
+  <li>「Create repository」</li>
+</ol>
+</div>
+
+<h2>8. Googleスプシのコピー</h2>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>tamagoが共有するマスタースプシURLを開く（Zoom中にチャットで送付）</li>
+  <li><code>ファイル → コピーを作成</code> でご自身のGoogleドライブに複製</li>
+  <li>コピー後のURLから <code>SHEET_ID</code> 部分（<code>/d/</code> と <code>/edit</code> の間の文字列）をコピー</li>
+</ol>
+</div>
+<div class="check">
+<strong>取得する値</strong>: <code>SHEET_ID</code>
+</div>
+
+<h2>9. Discord Webhook作成</h2>
+<p>エラー・成功通知を受け取るチャンネルを作ります。</p>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>Discordで通知を受ける専用チャンネルを作成（既存サーバー or 新規どちらでも）</li>
+  <li>チャンネル名右の歯車アイコン → <code>連携サービス → ウェブフック → 新しいウェブフック</code></li>
+  <li>名前を「Threads Scheduler」等に設定</li>
+  <li>「ウェブフックURLをコピー」をクリック</li>
+</ol>
+</div>
+<div class="check">
+<strong>取得する値</strong>: <code>DISCORD_WEBHOOK_URL</code>
+</div>
+
+<h2>10. GitHub Secretsへ登録</h2>
+<p>取得した9つの値をGitHubに登録します。</p>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>複製したリポジトリの <code>Settings → Secrets and variables → Actions</code> を開く</li>
+  <li><code>New repository secret</code> をクリックして以下を1つずつ登録</li>
+</ol>
+</div>
+
+<table>
+<thead><tr><th>名前</th><th>値の出どころ</th></tr></thead>
+<tbody>
+<tr><td><code>THREADS_APP_ID</code></td><td>Meta Developer アプリの基本設定</td></tr>
+<tr><td><code>THREADS_APP_SECRET</code></td><td>Meta Developer アプリの基本設定</td></tr>
+<tr><td><code>THREADS_ACCESS_TOKEN</code></td><td>Step 4 の長期アクセストークン</td></tr>
+<tr><td><code>THREADS_USER_ID</code></td><td>Zoom中にtamagoが取得</td></tr>
+<tr><td><code>GOOGLE_OAUTH_CLIENT_ID</code></td><td>Step 5</td></tr>
+<tr><td><code>GOOGLE_OAUTH_CLIENT_SECRET</code></td><td>Step 5</td></tr>
+<tr><td><code>GOOGLE_OAUTH_REFRESH_TOKEN</code></td><td>Step 6</td></tr>
+<tr><td><code>SHEET_ID</code></td><td>Step 8</td></tr>
+<tr><td><code>DISCORD_WEBHOOK_URL</code></td><td>Step 9</td></tr>
+</tbody>
+</table>
+
+<h2>11. テスト投稿で動作確認</h2>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>スプシ「投稿予約」シートのA列に「3分後の日時」、B列に「テスト投稿」を入力</li>
+  <li>D列ステータスは <code>未投稿</code> を選択</li>
+  <li>GitHubリポジトリ → <code>Actions</code> → <code>post</code> ワークフロー → <code>Run workflow</code></li>
+  <li>実行ログで「処理対象: 1行 → 完了」を確認</li>
+  <li>Threadsアカウントで投稿が反映されたか確認</li>
+  <li>スプシのD列ステータスが <code>投稿済</code> に変わったか確認</li>
+  <li>Discordに <code>✅ 投稿成功</code> 通知が届いたか確認</li>
+</ol>
+</div>
+
+<div class="check">
+全部✅になればセットアップ完了です。お疲れさまでした。
+</div>
+
+<h2>困ったら</h2>
+<ul>
+  <li><a href="./index.html">トップに戻る</a></li>
+  <li><a href="./privacy-policy.html">プライバシーポリシー</a></li>
+  <li><a href="./terms.html">利用規約</a></li>
+  <li><a href="./data-deletion.html">データ削除手順</a></li>
+</ul>
+
+</div>
+
+<footer>
+© 2026 @tamago_app. All rights reserved.<br>
+<a href="./privacy-policy.html">プライバシーポリシー</a> | <a href="./terms.html">利用規約</a> | <a href="./data-deletion.html">データ削除</a>
+</footer>
+
+</body>
+</html>
