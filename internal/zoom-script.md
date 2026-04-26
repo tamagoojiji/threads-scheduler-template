@@ -22,7 +22,7 @@
   - Threadsアカウント（投稿先）
   - Discordアカウント（通知受信用）
 - [ ] **PCのブラウザで `https://www.threads.net/` にログイン済みの状態にする**（Step 5-3の招待承認をPCで行うため）
-- [ ] 携帯電話の準備（Meta Developer登録のSMS認証で必須・IP電話/050は不可な場合あり）
+- [ ] 携帯電話の準備（Meta Developer登録のSMS認証で必須・**Facebookアカウントと連携している電話番号**を用意・IP電話/050は不可な場合あり）
 - [ ] Zoomで画面共有できる環境
 - [ ] 事前に <code>setup-guide.html</code> を一読していただけると進行がスムーズです
 
@@ -67,6 +67,7 @@
 
 ### 注意事項
 - Meta Developer登録は **電話番号認証が必須**
+- 認証する電話番号は **Facebookアカウントと連携済みのもの** を使う（連携していないとロック・認証失敗の原因）
 - Facebook/Instagramアカウントが必要（Threadsと同じアカウント）
 - 既存FBアカウントに紐付く
 
