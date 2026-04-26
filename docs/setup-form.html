@@ -348,6 +348,16 @@ btnSubmit.addEventListener('click', async () => {
     return;
   }
 
+  // 全サービスログイン済みならスプシ作成スキップ
+  // 必須4サービス（Google / Threads / Facebook / Discord）が全部チェック済 + メモが空なら不要
+  const allMainLoggedIn = data.google_loggedIn && data.threads_loggedIn
+    && data.facebook_loggedIn && data.discord_loggedIn;
+  const noExtraInput = !data.passwordNote && !data.note;
+  if (allMainLoggedIn && noExtraInput) {
+    showAllLoggedInResult();
+    return;
+  }
+
   btnSubmit.disabled = true;
   btnSubmit.textContent = 'Googleログインを承認してください...';
 
@@ -462,6 +472,15 @@ function showResult(url) {
     '<p>あなたのGoogleドライブにスプレッドシートを作成しました。</p>' +
     '<p style="margin-top:10px;"><a href="' + url + '" target="_blank" rel="noopener"><strong>📊 作成したスプシを開く</strong></a></p>' +
     '<p style="font-size:0.85em; color:#666; margin-top:10px;">当日Zoomで、このスプシを開いて各値をコピペしてください。</p>';
+  resultEl.classList.add('show');
+  resultEl.scrollIntoView({ behavior: 'smooth' });
+}
+
+function showAllLoggedInResult() {
+  resultEl.innerHTML =
+    '<h3>✅ すべて準備OKです</h3>' +
+    '<p>必要なサービスにすべてログイン済みのため、<strong>スプシ作成は不要</strong>です。</p>' +
+    '<p style="font-size:0.9em; color:#666; margin-top:10px;">当日Zoomで各サービスにブラウザの自動ログインから入って作業します。お疲れさまでした！</p>';
   resultEl.classList.add('show');
   resultEl.scrollIntoView({ behavior: 'smooth' });
 }
