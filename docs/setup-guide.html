@@ -185,6 +185,37 @@
 <strong>必ず「本番環境にプッシュ」してください</strong>。Testing状態のまま運用するとRefresh Tokenが7日で失効します。
 </div>
 
+<h3>アプリを本番環境に公開する手順（詳細）</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li><a href="https://console.cloud.google.com/apis/credentials/consent" target="_blank">OAuth同意画面ページ</a> を開く</li>
+  <li>該当プロジェクトを選択</li>
+  <li>「APIとサービス → OAuth同意画面」</li>
+  <li>「<strong>アプリの公開ステータス</strong>」セクション → 「<strong>アプリを公開</strong>」ボタンをクリック</li>
+  <li>確認ダイアログで「<strong>本番環境に公開</strong>」または「<strong>確認</strong>」をクリック</li>
+</ol>
+</div>
+<div class="check">
+これで誰でも認証できるようになります（テストユーザー登録不要）。
+</div>
+
+<h3>「アクセスをブロック」エラーが出た場合</h3>
+<div class="notice">
+<strong>「エラー 403: access_denied / アプリは Google の審査プロセスを完了していません」</strong> と出る場合、上記「本番環境に公開」がまだ完了していません。再度「アプリを公開」を実行してください。
+</div>
+
+<h3>「未確認のアプリ」警告が出た場合</h3>
+<div class="notice">
+本番環境公開後、最初のログイン時に「このアプリは Google で確認されていません」と表示されます:
+<ol style="margin-top:8px;">
+  <li>警告画面で「<strong>詳細</strong>」をクリック</li>
+  <li>「<strong>(プロジェクト名)（安全ではないページ）に移動</strong>」をクリック</li>
+  <li>通常通り「許可」して進む</li>
+</ol>
+個人利用 / 少人数利用では verification 不要です。
+</div>
+
 <h3>OAuth Client作成</h3>
 <ol>
   <li><code>認証情報 → 認証情報を作成 → OAuthクライアントID</code></li>

@@ -309,6 +309,8 @@ Zoom中に発生しやすいトラブル:
 | Meta「フォームを保存できません」 | カテゴリ未設定 / 必須URL空欄 | カテゴリ「ビジネス・ページ」+ 3箇所URL+プラポリ・利用規約全埋め |
 | Meta SMS認証失敗 | キャリア / IP電話 | 別の電話番号 or 5〜10分置いて再試行 |
 | Google `verification required` | Sensitive scope判定 | サービスアカウント方式へfallback（faq.md Q6参照） |
+| Google `403 access_denied / 審査プロセス未完了` | OAuth同意画面が「テスト中」のまま | OAuth同意画面で「アプリを公開→本番環境にプッシュ」 |
+| 「このアプリは確認されていません」警告 | verification未済（少人数なら問題なし） | 「詳細→安全ではないページに移動」をクリックして進む |
 | Refresh Token返ってこない | Force prompt未設定 | Force prompt有効化して再認可 |
 | Threads認可画面が出ない | テスター未承認 | Threadsアプリでテスター招待を承認 |
 
