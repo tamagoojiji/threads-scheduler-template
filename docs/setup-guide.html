@@ -144,19 +144,62 @@
 <div class="notice">他の権限（threads_manage_replies等）は不要です。</div>
 
 <h2>4. Threads長期アクセストークン取得</h2>
-<p>Meta Developerの公式ボタン1クリックで60日有効のトークンが取れます。</p>
+<p>Meta Developerの公式ボタン1クリックで60日有効のトークンが取れます。OAuth認可URLやcurlは不要です。</p>
+
+<h3>4-1. ユーザートークン生成ツールを開く</h3>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
-  <li>左メニューから <code>ユースケース → カスタマイズ → 設定</code> を開く</li>
-  <li>画面下部「ユーザートークン生成ツール」セクションへスクロール</li>
-  <li>「<strong>Threadsテスター</strong>」として自分のThreadsアカウントを追加 → Threads側で承認</li>
-  <li>承認済みアカウントの右側「<strong>アクセストークンを生成</strong>」をクリック</li>
-  <li>表示された長期アクセストークンを安全な場所にコピー保存</li>
+  <li>Meta Developerダッシュボードで対象アプリを開く</li>
+  <li>左メニューから <code>ユースケース</code> セクションを展開</li>
+  <li><code>Threads APIにアクセス → カスタマイズ</code> をクリック</li>
+  <li>表示されたサブメニューから <strong>「設定」</strong> をクリック</li>
+  <li>右側ペインを下方向にスクロール → <strong>「ユーザートークン生成ツール（User token generator）」</strong> セクションを見つける</li>
+</ol>
+</div>
+
+<h3>4-2. Threadsテスターとしてアカウントを追加</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>「ユーザートークン生成ツール」セクション内の <strong>「Threadsテスターを追加（Add Threads Tester）」</strong> ボタンをクリック</li>
+  <li>ポップアップで対象のThreadsアカウント名を検索（例: <code>@tamago_app</code>）</li>
+  <li>該当アカウントが表示されたら「<strong>追加</strong>」or「<strong>Submit</strong>」をクリック</li>
+  <li>状態は「<strong>保留中（Pending）</strong>」となり、Threads側からの承認待ち状態になる</li>
+</ol>
+</div>
+
+<h3>4-3. Threads側で招待を承認</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>同じアカウントでログイン中の <strong>Threadsアプリ または <a href="https://www.threads.net/" target="_blank">Threadsウェブ</a></strong> を開く</li>
+  <li>右下のプロフィールアイコン → <strong>設定（Settings）</strong></li>
+  <li><strong>アカウント → ウェブサイトの権限</strong>（または「Account → Website permissions」）</li>
+  <li><strong>「招待」</strong> セクションに保留中の招待が表示される</li>
+  <li>「<strong>招待</strong>」または「<strong>承認（Invite）</strong>」をタップ</li>
+</ol>
+</div>
+<div class="notice">
+通知が来ない場合: Threadsアプリで上から下にスワイプして再読み込み、または上記の設定画面を直接開いてください。<br>
+招待の表示まで <strong>数分〜10分</strong>かかることがあります。
+</div>
+
+<h3>4-4. 長期アクセストークンを生成</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>承認後、Meta Developer の「ユーザートークン生成ツール」セクションに戻る</li>
+  <li>必要であればページを再読み込み</li>
+  <li>承認済みアカウントの右側に <strong>「アクセストークンを生成（Generate access token）」</strong> ボタンが表示される</li>
+  <li>クリック → ポップアップで「<strong>許可（Allow / Continue）</strong>」</li>
+  <li>長期アクセストークン（60日有効）が表示される</li>
+  <li>「<strong>コピー</strong>」ボタンをクリックしてコピー → 安全な場所に保管</li>
 </ol>
 </div>
 <div class="check">
-<strong>取得する値</strong>: <code>THREADS_ACCESS_TOKEN</code>（後でGitHub Secretsへ登録）
+<strong>取得する値</strong>: <code>THREADS_ACCESS_TOKEN</code><br>
+形式: <code>THAA</code> で始まる長い英数字（200〜300文字程度）
 </div>
 
 <h3>Threads User ID取得</h3>
