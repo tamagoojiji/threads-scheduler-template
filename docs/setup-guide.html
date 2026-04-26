@@ -253,13 +253,49 @@
   <li><a href="https://github.com/tamagoojiji/threads-scheduler-template" target="_blank">tamagoojiji/threads-scheduler-template</a> を開く</li>
   <li>右上の <strong>緑色の「Use this template」ボタン</strong> をクリック</li>
   <li>ドロップダウンから <strong>「Create a new repository」</strong> を選択</li>
-  <li>「<strong>Repository name</strong>」に任意の名前を入力（例: <code>my-threads-scheduler</code>）</li>
-  <li>公開設定: <strong>Private</strong> を選択（重要）</li>
+  <li>下表のとおり設定を入力</li>
   <li>「<strong>Create repository</strong>」をクリック</li>
 </ol>
 </div>
+
+<h3>設定値</h3>
+<table>
+<thead><tr><th>項目</th><th>設定値</th><th>備考</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>Owner</strong></td>
+  <td>ご自身のGitHubユーザー名</td>
+  <td>デフォルトのままでOK</td>
+</tr>
+<tr>
+  <td><strong>Repository name</strong></td>
+  <td>任意（例: <code>my-threads-scheduler</code>）</td>
+  <td>半角英数とハイフン</td>
+</tr>
+<tr>
+  <td><strong>Description</strong></td>
+  <td>空欄でOK</td>
+  <td>あとで変更可能</td>
+</tr>
+<tr>
+  <td><strong>公開設定</strong></td>
+  <td><strong>Private</strong>（推奨）</td>
+  <td>運用カスタマイズを非公開に保てる</td>
+</tr>
+<tr>
+  <td><strong>Include all branches</strong></td>
+  <td>チェック不要</td>
+  <td>mainブランチのみで十分</td>
+</tr>
+</tbody>
+</table>
+
 <div class="check">
 リポジトリURL（<code>https://github.com/&lt;ユーザー名&gt;/&lt;リポジトリ名&gt;</code>）をブックマークしておくと便利です。
+</div>
+<div class="notice">
+<strong>Public でも動作はしますが Private 推奨</strong>: GitHub Actions の無料枠は Public/Private とも同じ。Private の方が運用設定（cron頻度・カスタマイズ）を非公開にできるので安心です。<br>
+※ Privateでも GitHub Secrets は暗号化保管されるので、どちらでも秘密情報自体は守られます。
 </div>
 <div class="notice">
 「Use this template」ボタンが見つからない場合、ブラウザを再読み込み（Cmd+Shift+R / Ctrl+F5）してみてください。それでも出ない場合はtamagoまでご連絡ください。
