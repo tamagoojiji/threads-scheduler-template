@@ -1,0 +1,10 @@
+{
+  "name": "事前準備フォーム｜スレッズスケジューラー",
+  "short_name": "事前準備",
+  "description": "スレッズスケジューラー導入の事前準備情報を入力",
+  "start_url": "./setup-form.html",
+  "display": "standalone",
+  "background_color": "#f4f5f9",
+  "theme_color": "#2575fc",
+  "icons": []
+}
