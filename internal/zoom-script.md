@@ -21,7 +21,7 @@
   - Googleアカウント（個人でも業務でもOK）
   - Threadsアカウント（投稿先）
   - Discordアカウント（通知受信用）
-- [ ] **PCのブラウザで `https://www.threads.net/` にログイン済みの状態にする**（Step 4-3の招待承認をPCで行うため）
+- [ ] **PCのブラウザで `https://www.threads.net/` にログイン済みの状態にする**（Step 5-3の招待承認をPCで行うため）
 - [ ] 携帯電話の準備（Meta Developer登録のSMS認証で必須・IP電話/050は不可な場合あり）
 - [ ] Zoomで画面共有できる環境
 - [ ] 事前に <code>setup-guide.html</code> を一読していただけると進行がスムーズです
