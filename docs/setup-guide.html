@@ -271,17 +271,47 @@
 
 <h2>9. Discord Webhook作成</h2>
 <p>エラー・成功通知を受け取るチャンネルを作ります。</p>
+
+<h3>9-1. 開発者モードを有効化（先にこれを実施）</h3>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
-  <li>Discordで通知を受ける専用チャンネルを作成（既存サーバー or 新規どちらでも）</li>
-  <li>チャンネル名右の歯車アイコン → <code>連携サービス → ウェブフック → 新しいウェブフック</code></li>
-  <li>名前を「Threads Scheduler」等に設定</li>
-  <li>「ウェブフックURLをコピー」をクリック</li>
+  <li>Discordアプリ（またはブラウザ版）を開く</li>
+  <li>画面左下の <strong>ユーザー名の右側にある歯車アイコン</strong>（ユーザー設定）をクリック</li>
+  <li>左メニューを下にスクロール → <code>APP設定</code> セクションの <strong>「詳細設定」</strong> をクリック</li>
+  <li><strong>「開発者モード」</strong> のトグルをONに</li>
+  <li>左上の「✕」または「Esc」で設定画面を閉じる</li>
 </ol>
 </div>
 <div class="check">
-<strong>取得する値</strong>: <code>DISCORD_WEBHOOK_URL</code>
+これで右クリックメニューから「IDをコピー」「ウェブフックを作成」などが使いやすくなります。
+</div>
+
+<h3>9-2. 通知用チャンネル作成</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>既存サーバーで右クリック → 「<strong>チャンネルを作成</strong>」（新規サーバーから作る場合は左サイドバー一番下の「+」）</li>
+  <li>チャンネル種別: <strong>テキストチャンネル</strong></li>
+  <li>名前: <code>threads-scheduler-test</code> など分かりやすい名前</li>
+  <li>「チャンネルを作成」をクリック</li>
+</ol>
+</div>
+
+<h3>9-3. Webhook URLを取得</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>作成したチャンネル名の右の <strong>歯車アイコン</strong>（チャンネルを編集）をクリック</li>
+  <li>左メニューから <code>連携サービス</code> を選択</li>
+  <li><strong>「ウェブフック」→「ウェブフックを作成」</strong></li>
+  <li>名前を <code>Threads Scheduler</code> 等に設定</li>
+  <li>「<strong>ウェブフックURLをコピー</strong>」をクリック</li>
+</ol>
+</div>
+<div class="check">
+<strong>取得する値</strong>: <code>DISCORD_WEBHOOK_URL</code><br>
+形式: <code>https://discord.com/api/webhooks/...</code>
 </div>
 
 <h2>10. GitHub Secretsへ登録</h2>
