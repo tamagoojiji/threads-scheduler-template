@@ -297,6 +297,44 @@ JSONが見づらい場合: ブラウザに「JSON Viewer」拡張を入れると
 <tr><td><code>THREADS_USER_ID</code></td><td>Step 5-5 で取得した User ID（17桁前後の数字）</td></tr>
 </tbody>
 </table>
+
+<h3>5-6. PATの作成・登録（トークン自動更新のため）</h3>
+<p>長期トークンは60日で失効するため、毎週日曜に自動更新します。自動更新には GitHub Personal Access Token (PAT) が必要です。</p>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank">GitHub Fine-grained PAT 作成ページ</a> を開く</li>
+  <li>下表のとおり設定を入力</li>
+  <li>「<strong>Generate token</strong>」をクリック</li>
+  <li>表示されたトークン（<code>github_pat_</code> で始まる）をコピー</li>
+</ol>
+</div>
+
+<h3>PAT設定値</h3>
+<table>
+<thead><tr><th>項目</th><th>設定値</th></tr></thead>
+<tbody>
+<tr><td><strong>Token name</strong></td><td><code>Threads Scheduler Token Refresh</code></td></tr>
+<tr><td><strong>Expiration</strong></td><td>1年（最大）— 期限切れの前に再作成が必要</td></tr>
+<tr><td><strong>Repository access</strong></td><td><strong>Only select repositories</strong> → Step 3で作成したご自身のリポジトリを選択</td></tr>
+<tr><td><strong>Repository permissions → Secrets</strong></td><td><strong>Read and write</strong></td></tr>
+<tr><td>その他のpermissions</td><td>すべて <strong>No access</strong> のまま</td></tr>
+</tbody>
+</table>
+
+<h3>PATをGitHub Secretsへ登録</h3>
+<table>
+<thead><tr><th>Name</th><th>Secret（値）</th></tr></thead>
+<tbody>
+<tr><td><code>PAT_FOR_SECRETS</code></td><td>取得したPAT（<code>github_pat_</code> で始まる文字列）</td></tr>
+</tbody>
+</table>
+<div class="check">
+これで毎週日曜9:00（JST）に自動でトークン更新 → Discord通知 → Secretsの自動上書きが動くようになります。
+</div>
+<div class="notice">
+PATは漏洩リスクがあるため、Repository permissions は <strong>Secrets read/write のみ</strong> に絞り、それ以外は no access のままにしてください。1年経つ前に再作成・更新してください。
+</div>
 <div class="check">
 登録手順: Secretsページ → 「New repository secret」 → Name と Secret を入力 → 「Add secret」
 </div>

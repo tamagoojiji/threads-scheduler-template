@@ -23,12 +23,11 @@ export async function main() {
   if (!current) throw new Error('THREADS_ACCESS_TOKEN が設定されていません');
 
   const refreshed = await refreshLongLivedToken(current);
-  console.log('トークン更新成功');
-  console.log(`有効期間: ${refreshed.expires_in}秒（約${Math.floor(refreshed.expires_in / 86400)}日）`);
-  console.log('');
-  console.log('⚠️ 新しいトークンを GitHub Secrets の THREADS_ACCESS_TOKEN に更新してください:');
-  console.log('');
-  console.log(refreshed.access_token);
+  // 標準エラー出力にステータスメッセージ（ログ用）
+  console.error('トークン更新成功');
+  console.error(`有効期間: ${refreshed.expires_in}秒（約${Math.floor(refreshed.expires_in / 86400)}日）`);
+  // 標準出力にトークンのみ（GitHub Actions で取り出すため）
+  process.stdout.write(refreshed.access_token);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
