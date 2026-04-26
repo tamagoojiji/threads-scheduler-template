@@ -332,14 +332,45 @@
 </div>
 
 <h3>OAuth Client作成</h3>
+<div class="step">
+<span class="step-num">手順</span>
 <ol>
-  <li><code>認証情報 → 認証情報を作成 → OAuthクライアントID</code></li>
+  <li>左メニューから <code>認証情報</code> を開く</li>
+  <li>上部の <strong>「+ 認証情報を作成」→「OAuthクライアントID」</strong> をクリック</li>
   <li>アプリケーションの種類: <strong>ウェブアプリケーション</strong></li>
-  <li>承認済みのリダイレクトURI: <code>https://developers.google.com/oauthplayground</code></li>
-  <li>Client ID と Client Secret をコピー保存</li>
+  <li>名前: <code>Threads Scheduler</code> 等（任意）</li>
+  <li>承認済みのリダイレクトURI: <code>https://developers.google.com/oauthplayground</code> を追加</li>
+  <li>「<strong>作成</strong>」をクリック</li>
 </ol>
+</div>
+
+<h3>Client ID と Client Secret の取得</h3>
+<div class="step">
+<span class="step-num">作成直後に表示される場合（推奨）</span>
+<ol>
+  <li>「作成」をクリックすると<strong>完了ダイアログ</strong>がポップアップ表示される</li>
+  <li>「<strong>クライアント ID</strong>」「<strong>クライアント シークレット</strong>」の2つが表示される</li>
+  <li>それぞれの右側にある <strong>コピーアイコン</strong> をクリックしてコピー → 安全な場所に保存</li>
+  <li>「JSONをダウンロード」でファイルとして取得することも可能</li>
+</ol>
+</div>
+
+<div class="step">
+<span class="step-num">後から再表示する場合</span>
+<ol>
+  <li><a href="https://console.cloud.google.com/apis/credentials" target="_blank">認証情報ページ</a> を開く</li>
+  <li>「OAuth 2.0 クライアント ID」の一覧から、作成したクライアント名（例: <code>Threads Scheduler</code>）をクリック</li>
+  <li>詳細画面の右側に <strong>「クライアント シークレット」</strong> セクションが表示される</li>
+  <li>値の右側のコピーアイコンをクリック</li>
+</ol>
+</div>
+
 <div class="check">
-<strong>取得する値</strong>: <code>GOOGLE_OAUTH_CLIENT_ID</code> / <code>GOOGLE_OAUTH_CLIENT_SECRET</code>
+<strong>取得する値</strong>:
+<ul>
+  <li><code>GOOGLE_OAUTH_CLIENT_ID</code> — <code>...apps.googleusercontent.com</code> で終わる文字列</li>
+  <li><code>GOOGLE_OAUTH_CLIENT_SECRET</code> — <code>GOCSPX-</code> で始まる英数字</li>
+</ul>
 </div>
 
 <h3>6-X. GitHub Secretsへ登録（このステップで取得した値）</h3>
