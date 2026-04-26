@@ -332,8 +332,28 @@ JSONが見づらい場合: ブラウザに「JSON Viewer」拡張を入れると
 <div class="check">
 これで毎週日曜9:00（JST）に自動でトークン更新 → Discord通知 → Secretsの自動上書きが動くようになります。
 </div>
+
+<div class="danger">
+<strong>⚠️ 1年後にPATの再登録が必要です</strong><br>
+Fine-grained PATの最大有効期限は1年。期限を過ぎると自動更新が動かなくなり、Threadsトークンが失効してすべての投稿が止まります。<br>
+<strong>カレンダーに「PAT再発行」のリマインダーを設定してください</strong>（PAT作成日 + 11ヶ月後あたり推奨）。
+</div>
+
+<h3>1年後にやること（PAT再登録手順）</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li><a href="https://github.com/settings/personal-access-tokens" target="_blank">Fine-grained tokens一覧</a> を開く</li>
+  <li>古い <code>Threads Scheduler Token Refresh</code> を選択 → 「<strong>Regenerate token</strong>」（または新規作成して古いものを削除）</li>
+  <li>同じ設定値（Secrets: Read/Write、Repository: ご自身のリポジトリ）で生成</li>
+  <li>新しいトークン値をコピー</li>
+  <li>GitHub Secrets の <code>PAT_FOR_SECRETS</code> を新しい値で更新（既存Secretの右側 ✏️ アイコン → 値を上書き）</li>
+  <li>refresh.yml を手動実行して動作確認</li>
+</ol>
+</div>
+
 <div class="notice">
-PATは漏洩リスクがあるため、Repository permissions は <strong>Secrets read/write のみ</strong> に絞り、それ以外は no access のままにしてください。1年経つ前に再作成・更新してください。
+PATは漏洩リスクがあるため、Repository permissions は <strong>Secrets read/write のみ</strong> に絞り、それ以外は no access のままにしてください。
 </div>
 <div class="check">
 登録手順: Secretsページ → 「New repository secret」 → Name と Secret を入力 → 「Add secret」
