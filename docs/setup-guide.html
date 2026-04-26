@@ -55,10 +55,9 @@
   <li>Threads長期アクセストークン取得</li>
   <li>Google Cloud OAuth設定</li>
   <li>Refresh Token取得</li>
-  <li>GitHubリポジトリ複製</li>
   <li>Googleスプシのコピー</li>
   <li>Discord Webhook作成</li>
-  <li>GitHub Secretsへ登録</li>
+  <li>GitHubリポジトリ作成 + Secrets登録</li>
   <li>テスト投稿で動作確認</li>
 </ol>
 </div>
@@ -245,18 +244,7 @@
 <strong>取得する値</strong>: <code>GOOGLE_OAUTH_REFRESH_TOKEN</code>
 </div>
 
-<h2>7. GitHubリポジトリ複製</h2>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li><a href="https://github.com/tamagoojiji/threads-scheduler-template" target="_blank">tamagoojiji/threads-scheduler-template</a> を開く</li>
-  <li>右上の <code>Use this template → Create a new repository</code> をクリック（Forkではなくテンプレ複製）</li>
-  <li>リポジトリ名は任意 / <strong>Private</strong> にチェック</li>
-  <li>「Create repository」</li>
-</ol>
-</div>
-
-<h2>8. Googleスプシのコピー</h2>
+<h2>7. Googleスプシのコピー</h2>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
@@ -269,10 +257,10 @@
 <strong>取得する値</strong>: <code>SHEET_ID</code>
 </div>
 
-<h2>9. Discord Webhook作成</h2>
+<h2>8. Discord Webhook作成</h2>
 <p>エラー・成功通知を受け取るチャンネルを作ります。</p>
 
-<h3>9-1. 開発者モードを有効化（先にこれを実施）</h3>
+<h3>8-1. 開発者モードを有効化（先にこれを実施）</h3>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
@@ -287,7 +275,7 @@
 これで右クリックメニューから「IDをコピー」「ウェブフックを作成」などが使いやすくなります。
 </div>
 
-<h3>9-2. 通知用チャンネル作成</h3>
+<h3>8-2. 通知用チャンネル作成</h3>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
@@ -298,7 +286,7 @@
 </ol>
 </div>
 
-<h3>9-3. Webhook URLを取得</h3>
+<h3>8-3. Webhook URLを取得</h3>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
@@ -314,16 +302,46 @@
 形式: <code>https://discord.com/api/webhooks/...</code>
 </div>
 
-<h2>10. GitHub Secretsへ登録</h2>
-<p>取得した9つの値をGitHubに登録します。</p>
+<h2>9. GitHubリポジトリ作成 + Secrets登録</h2>
+<p>テンプレートからご自身のリポジトリを作成し、取得した9つの値を登録します。</p>
+
+<h3>9-1. リポジトリ作成</h3>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
-  <li>複製したリポジトリの <code>Settings → Secrets and variables → Actions</code> を開く</li>
-  <li><code>New repository secret</code> をクリックして以下を1つずつ登録</li>
+  <li><a href="https://github.com" target="_blank">GitHub</a> にログイン</li>
+  <li><a href="https://github.com/tamagoojiji/threads-scheduler-template" target="_blank">tamagoojiji/threads-scheduler-template</a> を開く</li>
+  <li>右上の <strong>緑色の「Use this template」ボタン</strong> をクリック</li>
+  <li>ドロップダウンから <strong>「Create a new repository」</strong> を選択</li>
+  <li>「<strong>Repository name</strong>」に任意の名前を入力（例: <code>my-threads-scheduler</code>）</li>
+  <li>Description（説明）は任意で空欄でOK</li>
+  <li>公開設定: <strong>Private</strong> を選択（重要）</li>
+  <li>「<strong>Create repository</strong>」をクリック</li>
 </ol>
 </div>
+<div class="check">
+リポジトリURL（<code>https://github.com/&lt;ユーザー名&gt;/&lt;リポジトリ名&gt;</code>）をブックマークしておくと便利です。
+</div>
 
+<h3>9-2. Secretsの登録</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>作成したご自身のリポジトリを開く</li>
+  <li>上部メニューの <strong>「Settings」</strong>（歯車アイコン）をクリック</li>
+  <li>左メニューから <code>Secrets and variables</code> → <code>Actions</code> を選択</li>
+  <li>緑色の <strong>「New repository secret」</strong> ボタンをクリック</li>
+  <li>「<strong>Name</strong>」に下表の名前を入力</li>
+  <li>「<strong>Secret</strong>」に対応する値を貼り付け</li>
+  <li>「<strong>Add secret</strong>」をクリック</li>
+  <li>9個すべて登録するまで4〜7を繰り返す</li>
+</ol>
+</div>
+<div class="notice">
+Secretsの値は登録後に再表示されません（GitHubの仕様）。値の控えはお手元で管理してください。
+</div>
+
+<h3>9-3. 登録するキー一覧（9個）</h3>
 <table>
 <thead><tr><th>名前</th><th>値の出どころ</th></tr></thead>
 <tbody>
@@ -334,12 +352,12 @@
 <tr><td><code>GOOGLE_OAUTH_CLIENT_ID</code></td><td>Step 5</td></tr>
 <tr><td><code>GOOGLE_OAUTH_CLIENT_SECRET</code></td><td>Step 5</td></tr>
 <tr><td><code>GOOGLE_OAUTH_REFRESH_TOKEN</code></td><td>Step 6</td></tr>
-<tr><td><code>SHEET_ID</code></td><td>Step 8</td></tr>
-<tr><td><code>DISCORD_WEBHOOK_URL</code></td><td>Step 9</td></tr>
+<tr><td><code>SHEET_ID</code></td><td>Step 7</td></tr>
+<tr><td><code>DISCORD_WEBHOOK_URL</code></td><td>Step 8</td></tr>
 </tbody>
 </table>
 
-<h2>11. テスト投稿で動作確認</h2>
+<h2>10. テスト投稿で動作確認</h2>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
