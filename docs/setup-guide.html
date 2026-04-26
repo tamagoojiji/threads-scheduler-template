@@ -262,15 +262,36 @@
 形式: <code>THAA</code> で始まる長い英数字（200〜300文字程度）
 </div>
 
-<h3>Threads User ID取得</h3>
-<p>後ほどtamagoが <code>/me</code> エンドポイントを叩いて取得します（curlコマンドはZoom中に実行）。</p>
+<h3>5-5. Threads User ID取得（ブラウザのみ）</h3>
+<p>ターミナル不要。ブラウザのアドレスバーに直接入力するだけで取得できます。</p>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>ブラウザを開いて、アドレスバーに以下を貼り付け（<code>&lt;長期トークン&gt;</code> の部分を Step 5-4 で取得した実際のトークンに置き換え）</li>
+</ol>
+<pre>https://graph.threads.net/v1.0/me?fields=id&amp;access_token=&lt;長期トークン&gt;</pre>
+<ol start="2">
+  <li>Enter キーを押す</li>
+  <li>ブラウザに以下のようなJSONが表示される:</li>
+</ol>
+<pre>{"id":"35107700672178457"}</pre>
+<ol start="4">
+  <li><code>id</code> の値（数字）が <code>THREADS_USER_ID</code></li>
+</ol>
+</div>
+<div class="check">
+<strong>取得する値</strong>: <code>THREADS_USER_ID</code>（数字の羅列、17桁前後）
+</div>
+<div class="notice">
+JSONが見づらい場合: ブラウザに「JSON Viewer」拡張を入れると整形表示されます。なくても <code>"id":"..."</code> の数字部分をコピーすればOK。
+</div>
 
 <h3>5-X. GitHub Secretsへ登録（このステップで取得した値）</h3>
 <table>
 <thead><tr><th>Name</th><th>Secret（値）</th></tr></thead>
 <tbody>
 <tr><td><code>THREADS_ACCESS_TOKEN</code></td><td>Step 5-4 で取得した長期トークン（<code>THAA</code>で始まる）</td></tr>
-<tr><td><code>THREADS_USER_ID</code></td><td>Zoom中にtamagoが取得した User ID（数字）</td></tr>
+<tr><td><code>THREADS_USER_ID</code></td><td>Step 5-5 で取得した User ID（17桁前後の数字）</td></tr>
 </tbody>
 </table>
 <div class="check">

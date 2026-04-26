@@ -125,12 +125,14 @@
 5. 承認後、対応アカウントの右側「**アクセストークンを生成**」をクリック
 6. 表示された長期アクセストークン（60日有効）をコピー保管
 
-### Threads User ID取得
-tamagoが利用者の画面で以下のcurlを実行（トークンは利用者がチャットでペースト）:
+### Threads User ID取得（ブラウザのみ）
+利用者がブラウザのアドレスバーに以下を入力（`<長期トークン>` を実際の値に置き換え）:
 
-```bash
-curl -s "https://graph.threads.net/v1.0/me?fields=id&access_token=<長期トークン>" | jq .
 ```
+https://graph.threads.net/v1.0/me?fields=id&access_token=<長期トークン>
+```
+
+→ JSON `{"id":"数字"}` が表示される。`id` の値が `THREADS_USER_ID`。
 
 ### チェックリスト
 - [ ] Threadsテスター承認完了
