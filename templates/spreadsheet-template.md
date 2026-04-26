@@ -16,34 +16,40 @@
 
 ## シート「投稿予約」
 
-### カラム定義
+### カラム定義（B方式: A=日付、B=時刻、M=投稿日時の数式）
 
 | 列 | 項目 | 型 | 利用者入力 | システム更新 | 備考 |
 |---|---|---|---|---|---|
-| A | 投稿日時 | 日付型 | ✅ | — | データ検証で「今日以降」強制 |
-| B | 投稿本文 | 文字列 | ✅ | — | 500字以内（超過は実行時スキップ） |
-| C | 画像URL | 文字列 | ✅ | — | 画像機能ONの場合のみ表示 |
-| D | ステータス | 文字列 | — | ✅ | `未投稿` / `処理中` / `投稿済` / `エラー` / `スキップ` |
-| E | operation_id | 文字列 | — | ✅ | UUID（一度生成したら不変） |
-| F | attempt_count | 数値 | — | ✅ | 試行回数（最大3） |
-| G | state_updated_at | 日時（ISO8601） | — | ✅ | 状態遷移時刻 |
-| H | creation_id | 文字列 | — | ✅ | Threads container ID |
-| I | posted_at | 日時（ISO8601） | — | ✅ | 投稿確定時刻 |
-| J | threads_post_id | 文字列 | — | ✅ | Threads投稿ID |
-| K | error_message | 文字列 | — | ✅ | 失敗時のエラー概要 |
+| A | 日付 | 日付型 | ✅ | — | カレンダーピッカー |
+| B | 時刻 | 文字列 | ✅ | — | 30分刻みプルダウン（00:00〜23:30） |
+| C | 投稿本文 | 文字列 | ✅ | — | 500字以内（超過は実行時スキップ） |
+| D | 画像URL | 文字列 | ✅ | — | 画像機能ONの場合のみ表示 |
+| E | ステータス | 文字列 | — | ✅ | `未投稿` / `処理中` / `投稿済` / `エラー` / `スキップ` |
+| F | operation_id | 文字列 | — | ✅ | UUID（一度生成したら不変） |
+| G | attempt_count | 数値 | — | ✅ | 試行回数（最大3） |
+| H | state_updated_at | 日時（ISO8601） | — | ✅ | 状態遷移時刻 |
+| I | creation_id | 文字列 | — | ✅ | Threads container ID |
+| J | posted_at | 日時（ISO8601） | — | ✅ | 投稿確定時刻 |
+| K | threads_post_id | 文字列 | — | ✅ | Threads投稿ID |
+| L | error_message | 文字列 | — | ✅ | 失敗時のエラー概要 |
+| M | 投稿日時 | 数式 | — | — | `=IFERROR(IF(AND(NOT(ISBLANK(A2)),NOT(ISBLANK(B2))),A2+TIMEVALUE(B2),""),"")` |
 
 ### ヘッダー行（1行目）
 
 ```
-投稿日時 | 投稿本文 | 画像URL | ステータス | operation_id | attempt_count | state_updated_at | creation_id | posted_at | threads_post_id | error_message
+日付 | 時刻 | 投稿本文 | 画像URL | ステータス | operation_id | attempt_count | state_updated_at | creation_id | posted_at | threads_post_id | error_message | 投稿日時
 ```
 
-### データ検証（A列）
+### データ検証
 
-- 対象範囲: `A2:A1000`
-- 条件: **日付型 かつ 今日以降**
-- 拒否メッセージ: 「今日以降の日時を入力してください」
-- 入力時にセル形式を自動で「日付と時刻」に変換
+- **A列（日付）**: `requireDate()`、書式 `yyyy/MM/dd`
+- **B列（時刻）**: 30分刻みのプルダウン（`requireValueInList`）、書式 `@`（文字列）
+- **E列（ステータス）**: プルダウン（未投稿/処理中/投稿済/エラー/スキップ）
+- **M列（投稿日時）**: 数式・グレーアウト・触らない
+
+### コード側の参照範囲
+- **読み取り**: `投稿予約!A2:M`（reader.ts）
+- **更新**: `投稿予約!E{row}:L{row}`（writer.ts）
 
 ### ProtectedRange設定
 

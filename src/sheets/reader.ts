@@ -16,7 +16,7 @@ export interface PostRow {
 }
 
 const SHEET_NAME = '投稿予約';
-const DATA_RANGE = `${SHEET_NAME}!A2:K`;
+const DATA_RANGE = `${SHEET_NAME}!A2:M`;
 
 function parseDate(value: string | undefined): Date | null {
   if (!value) return null;
@@ -27,17 +27,19 @@ function parseDate(value: string | undefined): Date | null {
 
 function parseRow(values: string[], rowIndex: number): PostRow | null {
   const [
-    scheduledAt,
-    body,
-    imageUrl,
-    status,
-    operationId,
-    attemptCount,
-    stateUpdatedAt,
-    creationId,
-    postedAt,
-    threadsPostId,
-    errorMessage,
+    _date,        // A: 日付（入力用、未使用）
+    _time,        // B: 時刻（入力用、未使用）
+    body,         // C
+    imageUrl,     // D
+    status,       // E
+    operationId,  // F
+    attemptCount, // G
+    stateUpdatedAt, // H
+    creationId,   // I
+    postedAt,     // J
+    threadsPostId,// K
+    errorMessage, // L
+    scheduledAt,  // M: 投稿日時（A+B結合の数式結果）
   ] = values;
 
   const parsedScheduledAt = parseDate(scheduledAt);

@@ -24,7 +24,7 @@ export async function updateRow(
   row: PostRow,
   update: RowUpdate,
 ): Promise<void> {
-  const range = `${SHEET_NAME}!D${row.rowIndex}:K${row.rowIndex}`;
+  const range = `${SHEET_NAME}!E${row.rowIndex}:L${row.rowIndex}`;
   const values: (string | number)[] = [
     update.status ?? row.status,
     update.operationId ?? row.operationId,
