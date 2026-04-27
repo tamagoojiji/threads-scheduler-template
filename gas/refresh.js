@@ -9,12 +9,12 @@ function refreshTokenJob() {
     assertConfigured();
     const result = refreshAccessToken();
     const days = Math.floor((result.expires_in || 0) / 86400);
-    notifyDiscord('✅ Threadsトークンを自動更新しました（次回 +' + days + '日有効）');
+    notifyDiscord('✅ Threadsトークンを自動更新しました（次回 +' + days + '日有効）', { kind: 'refresh_success' });
     console.log('トークン更新成功: ' + days + '日');
   } catch (e) {
     const msg = e.message || String(e);
     try {
-      notifyDiscord('⚠️ Threadsトークン自動更新失敗: ' + msg);
+      notifyDiscord('⚠️ Threadsトークン自動更新失敗: ' + msg, { kind: 'refresh_failure' });
     } catch (_) {}
     console.error('トークン更新失敗:', msg);
     throw e;

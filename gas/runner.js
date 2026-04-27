@@ -47,7 +47,7 @@ function postRunner() {
   } catch (err) {
     console.error('致命的エラー:', err);
     try {
-      notifyDiscord('🚨 スケジューラー致命的エラー: ' + (err.message || err));
+      notifyDiscord('🚨 スケジューラー致命的エラー: ' + (err.message || err), { kind: 'fatal' });
     } catch (_) {}
     throw err;
   } finally {
@@ -103,7 +103,7 @@ function processRow(row) {
           errorMessage: '',
           stateUpdatedAt: new Date(),
         });
-        notifyDiscord('✅ 投稿成功: ' + row.body.slice(0, 80));
+        notifyDiscord('✅ 投稿成功: ' + row.body.slice(0, 80), { kind: 'post_success' });
         return;
       }
       if (status.status === 'IN_PROGRESS') {
@@ -162,7 +162,7 @@ function processRow(row) {
         errorMessage: message,
         stateUpdatedAt: new Date(),
       });
-      notifyDiscord('❌ 投稿失敗（' + MAX_ATTEMPTS + '回リトライ後）: ' + message + '\n本文: ' + row.body.slice(0, 80));
+      notifyDiscord('❌ 投稿失敗（' + MAX_ATTEMPTS + '回リトライ後）: ' + message + '\n本文: ' + row.body.slice(0, 80), { kind: 'post_failure' });
     } else {
       updateRow(row, {
         status: '未投稿',
