@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>セットアップ手順書｜スレッズスケジューラー</title>
-<meta name="description" content="スレッズスケジューラーのセットアップ手順。Google Apps Script版・GitHub不要">
+<meta name="description" content="スレッズスケジューラーのセットアップ手順。Google Apps Script版・GitHub不要・取得→即保存方式">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif; line-height: 1.85; color: #222; }
@@ -20,6 +20,8 @@
   pre { background: #2b2b3a; color: #f5f5fb; padding: 14px 18px; border-radius: 8px; overflow-x: auto; margin: 0.8em 0; font-size: 0.9em; }
   .step { background: #f7f7fb; padding: 18px 22px; border-radius: 8px; margin: 1.2em 0; border-left: 4px solid #2575fc; }
   .step-num { display: inline-block; background: #2575fc; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.85em; margin-right: 8px; }
+  .save-block { background: #eef9f0; padding: 16px 20px; border-radius: 8px; margin: 1em 0; border-left: 4px solid #4caf50; }
+  .save-block h4 { color: #2c7a2c; margin-bottom: 6px; }
   .notice { background: #fff7e0; padding: 14px 18px; border-radius: 6px; margin: 1em 0; border-left: 4px solid #f0c000; }
   .danger { background: #ffecec; padding: 14px 18px; border-radius: 6px; margin: 1em 0; border-left: 4px solid #e74c3c; }
   .check { background: #eef9f0; padding: 12px 18px; border-radius: 6px; margin: 0.6em 0; border-left: 3px solid #4caf50; }
@@ -37,209 +39,43 @@
 
 <div class="hero">
 <h1>セットアップ手順書</h1>
-<p>スレッズスケジューラーを動かすまでの全ステップ（Google Apps Script版・GitHub不要）</p>
+<p>取得した値を即「APIキー設定」シートに保存する方式（GitHub不要・90分で完了）</p>
 </div>
 
 <div class="container">
 
 <div class="notice">
-<strong>所要時間: 約60〜90分</strong>。Zoom同伴で一緒に進めます。詰まったらすぐお声がけください。
+<strong>進め方の特徴</strong>: マスタースプシを最初にコピーし、各APIキーを取得するたびに <strong>すぐ「APIキー設定」シートに入力→保存</strong> するので、メモ取り不要・紛失リスクなし。
 </div>
 
 <div class="toc">
 <h3>進行ステップ</h3>
 <ol>
   <li>事前にご準備いただくもの</li>
-  <li>Meta Developerアカウント・アプリ作成</li>
-  <li>Threads長期アクセストークン取得</li>
-  <li>Threads User ID取得</li>
-  <li>Discord Webhook作成</li>
-  <li>Googleスプシのコピー</li>
-  <li>初回セットアップ（Secrets登録）</li>
-  <li>トリガーをインストール</li>
-  <li>テスト投稿で動作確認</li>
+  <li>Googleスプシをコピー（最初にやる）</li>
+  <li>「APIキー設定」シートを準備</li>
+  <li>Meta Developer アプリ作成 → <code>APP_ID</code> / <code>APP_SECRET</code> を取得 → 即保存</li>
+  <li>Threads長期トークン取得 → <code>ACCESS_TOKEN</code> を取得 → 即保存</li>
+  <li>Threads User ID取得 → <code>USER_ID</code> を取得 → 即保存</li>
+  <li>Discord Webhook作成 → <code>WEBHOOK_URL</code> を取得 → 即保存</li>
+  <li>テスト投稿で動作確認 → トリガーをインストール</li>
 </ol>
 </div>
 
 <h2>1. 事前にご準備いただくもの</h2>
-<p style="font-size:0.9em; color:#666; margin-bottom:8px;">サービス名をタップするとログイン画面が開きます。ログイン状態を確認しておくと当日スムーズです。</p>
+<p style="font-size:0.9em; color:#666; margin-bottom:8px;">サービス名をタップするとログイン画面が開きます。</p>
 <ul>
   <li><a href="https://accounts.google.com/" target="_blank" rel="noopener">Googleアカウント</a>（個人でも業務でも可）</li>
   <li><a href="https://www.threads.net/" target="_blank" rel="noopener">Threadsアカウント</a>（投稿先）</li>
   <li><a href="discord://">Discordアカウント</a>（エラー通知受信用・<a href="https://discord.com/login" target="_blank" rel="noopener" style="font-size:0.85em;">ブラウザで開く</a>）</li>
-  <li>電話番号（Meta Developer登録のSMS認証で必須・<strong>Facebookアカウントと連携している電話番号</strong>をご用意ください・IP電話/050は不可な場合あり）</li>
+  <li>電話番号（Meta Developer登録のSMS認証で必須・<strong>Facebookアカウントと連携している電話番号</strong>を用意・IP電話/050は不可）</li>
   <li>Zoomで画面共有できるPC環境</li>
 </ul>
-<div class="danger">
-<strong>パスワード・カード情報は一切お伺いしません</strong>。すべてご自身の画面で操作いただきます。
-</div>
 <div class="check">
-<strong>GitHubアカウントは不要です</strong>。すべてGoogleアカウントのみで完結します。
+<strong>GitHubアカウントは不要</strong>。すべてGoogleアカウントのみで完結します。
 </div>
 
-<h2>2. Meta Developerアカウント・アプリ作成</h2>
-<div class="danger">
-電話番号認証では <strong>Facebookアカウントと連携している電話番号</strong> をご利用ください。連携していない番号だと認証が通らない or アカウントロックの原因になることがあります。
-</div>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li><a href="https://developers.facebook.com" target="_blank">developers.facebook.com</a> へログイン（既存のFacebook/Instagramアカウントでログイン）</li>
-  <li>電話番号認証 → 開発者規約に同意</li>
-  <li><code>マイアプリ → アプリを作成</code></li>
-  <li>ユースケースで <strong>「Threads APIにアクセス」</strong> を選択</li>
-  <li>アプリ名は任意（例: <code>my-threads-scheduler</code>）</li>
-</ol>
-</div>
-
-<h3>アプリの設定 &gt; ベーシック</h3>
-<div class="danger">
-新UIでは保存時に「フォームを保存できません」エラーが頻発します。<strong>以下すべてを揃えて初めて保存できます。</strong>
-</div>
-<ul>
-  <li><strong>カテゴリ</strong>: <code>ビジネス・ページ</code> を選択（他カテゴリだと保存不可）</li>
-  <li><strong>プライバシーポリシーURL</strong>: <code>https://www.facebook.com/privacy/policy/</code> でも可</li>
-  <li><strong>利用規約URL</strong>: 任意のURL（例: <code>https://www.google.com/</code>）</li>
-  <li><strong>アプリドメイン・アイコン</strong>: 空欄でも可</li>
-</ul>
-
-<h3>ユースケース &gt; カスタマイズ &gt; 設定</h3>
-<ul>
-  <li><strong>コールバックURLをリダイレクト</strong>: <code>https://www.google.com/</code></li>
-  <li><strong>アンインストールコールバックURL</strong>: <code>https://www.google.com/</code></li>
-  <li><strong>削除コールバックURL</strong>: <code>https://www.google.com/</code></li>
-</ul>
-<div class="danger">
-<strong>3箇所すべてに入力</strong>してください。1つでも空欄だと保存エラーになります。
-</div>
-
-<h3>権限</h3>
-<ul>
-  <li><code>threads_basic</code></li>
-  <li><code>threads_content_publish</code></li>
-</ul>
-<div class="notice">他の権限（threads_manage_replies等）は不要です。</div>
-
-<h3>取得する値</h3>
-<table>
-<thead><tr><th>名前</th><th>取得元</th></tr></thead>
-<tbody>
-<tr><td><code>THREADS_APP_ID</code></td><td>Meta Developer アプリの基本設定（数字の羅列）</td></tr>
-<tr><td><code>THREADS_APP_SECRET</code></td><td>Meta Developer アプリの基本設定（「表示」をクリック）</td></tr>
-</tbody>
-</table>
-<div class="notice">これらは Step 7 でスプシのメニューから入力します。手元のメモ帳などに控えておいてください。</div>
-
-<h2>3. Threads長期アクセストークン取得</h2>
-<p>Meta Developerの公式ボタン1クリックで60日有効のトークンが取れます。</p>
-
-<h3>3-1. ユーザートークン生成ツールを開く</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>Meta Developerダッシュボードで対象アプリを開く</li>
-  <li>左メニューから <code>ユースケース → Threads APIにアクセス → カスタマイズ → 設定</code></li>
-  <li>右側ペインを下方向にスクロール → <strong>「ユーザートークン生成ツール」</strong> セクション</li>
-</ol>
-</div>
-
-<h3>3-2. Threadsテスターとしてアカウントを追加</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>「<strong>Threadsテスターを追加</strong>」ボタンをクリック</li>
-  <li>対象のThreadsアカウント名を検索（例: <code>@tamago_app</code>）</li>
-  <li>「追加」をクリック → 状態は<strong>保留中（Pending）</strong>になる</li>
-</ol>
-</div>
-
-<h3>3-3. Threads側で招待を承認（即時で完了）</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>同じアカウントでログイン中の <strong>Threadsアプリ または <a href="https://www.threads.net/" target="_blank">Threads Web</a></strong> を開く</li>
-  <li>右下プロフィール → <strong>設定 → アカウント → ウェブサイトの権限</strong></li>
-  <li>「<strong>招待</strong>」セクションで「<strong>承認</strong>」をタップ</li>
-  <li>即時で「保留中 → 承認済み」に変わる</li>
-</ol>
-</div>
-<div class="notice">
-招待が表示されない場合: 5〜10分待ってから再確認、または Threadsアプリで上から下にスワイプして再読み込み。
-</div>
-
-<h3>3-4. 長期アクセストークンを生成</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>Meta Developer の「ユーザートークン生成ツール」に戻る → ページ再読み込み</li>
-  <li>承認済みアカウントの右側「<strong>アクセストークンを生成</strong>」をクリック</li>
-  <li>ポップアップで「<strong>許可</strong>」</li>
-  <li>表示された長期アクセストークン（60日有効）を <strong>コピー</strong>ボタンで取得 → 安全な場所に保管</li>
-</ol>
-</div>
-<div class="check">
-<strong>取得する値</strong>: <code>THREADS_ACCESS_TOKEN</code><br>
-形式: <code>THAA</code> で始まる長い英数字（200〜300文字程度）
-</div>
-
-<h2>4. Threads User ID取得（ブラウザのみ）</h2>
-<p>ターミナル不要。ブラウザのアドレスバーに貼り付けるだけ。</p>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>ブラウザのアドレスバーに以下を貼り付け（<code>&lt;長期トークン&gt;</code> を Step 3-4 で取得した値に置き換え）</li>
-</ol>
-<pre>https://graph.threads.net/v1.0/me?fields=id&amp;access_token=&lt;長期トークン&gt;</pre>
-<ol start="2">
-  <li>Enter キー → JSONが表示される:</li>
-</ol>
-<pre>{"id":"35107700672178457"}</pre>
-<ol start="3">
-  <li><code>id</code> の値（数字）が <code>THREADS_USER_ID</code></li>
-</ol>
-</div>
-<div class="check">
-<strong>取得する値</strong>: <code>THREADS_USER_ID</code>（17桁前後の数字）
-</div>
-
-<h2>5. Discord Webhook作成</h2>
-<p>エラー・成功通知を受け取るチャンネルを作ります。</p>
-
-<h3>5-1. 開発者モードを有効化</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>Discordアプリ（またはブラウザ版）を開く</li>
-  <li>左下のユーザー設定（歯車アイコン）</li>
-  <li>左メニュー <code>APP設定 → 詳細設定</code> → <strong>開発者モードON</strong></li>
-</ol>
-</div>
-
-<h3>5-2. 通知用チャンネル作成</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>既存サーバー or 新規サーバーで「チャンネルを作成」</li>
-  <li>テキストチャンネル / 名前: <code>threads-scheduler</code> 等</li>
-</ol>
-</div>
-
-<h3>5-3. Webhook URLを取得</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>作成したチャンネル名右の歯車 → <code>連携サービス → ウェブフック → ウェブフックを作成</code></li>
-  <li>名前を「Threads Scheduler」等に</li>
-  <li>「<strong>ウェブフックURLをコピー</strong>」</li>
-</ol>
-</div>
-<div class="check">
-<strong>取得する値</strong>: <code>DISCORD_WEBHOOK_URL</code><br>
-形式: <code>https://discord.com/api/webhooks/...</code>
-</div>
-
-<h2>6. Googleスプシのコピー</h2>
-<p>tamagoが用意したマスタースプシを、ご自身のGoogleドライブにコピーします。Apps Scriptコードもまとめてコピーされます。</p>
+<h2>2. Googleスプシをコピー（最初にやる）</h2>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
@@ -252,69 +88,255 @@
 「スレッズスケジューラー」メニューが表示されない場合: ページを再読み込み（Cmd+R / F5）してください。
 </div>
 
-<h2>7. 初回セットアップ（Secrets登録）</h2>
-<p>取得した5つの値をスプシに登録します。</p>
+<h2>3. 「APIキー設定」シートを準備</h2>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
-  <li>スプシメニュー <strong>「スレッズスケジューラー → 🔧 初回セットアップ（Secrets登録）」</strong></li>
+  <li>スプシメニュー <strong>「スレッズスケジューラー → ⚙️ 設定シートを準備」</strong> をクリック</li>
   <li>初回は権限承認ダイアログが出るので「許可」</li>
-  <li>5つのプロンプトが順番に表示されるので、それぞれ値を入力</li>
-</ol>
-</div>
-
-<h3>登録する5つの値</h3>
-<table>
-<thead><tr><th>Name</th><th>値の出どころ</th></tr></thead>
-<tbody>
-<tr><td><code>THREADS_APP_ID</code></td><td>Step 2 で取得</td></tr>
-<tr><td><code>THREADS_APP_SECRET</code></td><td>Step 2 で取得</td></tr>
-<tr><td><code>THREADS_ACCESS_TOKEN</code></td><td>Step 3-4 で取得</td></tr>
-<tr><td><code>THREADS_USER_ID</code></td><td>Step 4 で取得</td></tr>
-<tr><td><code>DISCORD_WEBHOOK_URL</code></td><td>Step 5-3 で取得</td></tr>
-</tbody>
-</table>
-<div class="check">
-登録後、<strong>「🔍 設定状況を確認」</strong>で全項目が ✅ になっていればOK。
-</div>
-
-<h2>8. トリガーをインストール</h2>
-<p>「10分ごとの投稿チェック」と「毎週日曜のトークン更新」を自動化します。</p>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>スプシメニュー <strong>「スレッズスケジューラー → ⏰ トリガーをインストール」</strong></li>
-  <li>初回は権限承認ダイアログが出るので「許可」</li>
-  <li>「トリガーをインストールしました」のダイアログが出れば完了</li>
+  <li>「APIキー設定」シートが新規作成され、5項目の入力欄が表示される</li>
 </ol>
 </div>
 <div class="check">
-これで完全自動運用開始。利用者の手動操作は今後不要です。
+このシートのB列に、以降の各ステップで取得した値を順番に貼り付けていきます。
 </div>
 
-<h2>9. テスト投稿で動作確認</h2>
+<h2>4. Meta Developer アプリ作成 → <code>APP_ID</code> / <code>APP_SECRET</code> 取得 → 即保存</h2>
+
+<div class="danger">
+電話番号認証では <strong>Facebookアカウントと連携している電話番号</strong> をご利用ください。連携していない番号だと認証が通らない or アカウントロックの原因になります。
+</div>
+
+<h3>4-1. Meta Developer登録</h3>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
-  <li>「投稿予約」シートに新しい行を追加:
+  <li><a href="https://developers.facebook.com" target="_blank">developers.facebook.com</a> へログイン</li>
+  <li>電話番号認証 → 開発者規約に同意</li>
+</ol>
+</div>
+
+<h3>4-2. アプリ作成</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li><code>マイアプリ → アプリを作成</code></li>
+  <li>ユースケースで <strong>「Threads APIにアクセス」</strong> を選択</li>
+  <li>アプリ名は任意（例: <code>my-threads-scheduler</code>）</li>
+</ol>
+</div>
+
+<h3>4-3. アプリの基本設定</h3>
+<div class="danger">
+新UIでは保存時に「フォームを保存できません」エラーが頻発します。<strong>以下すべてを揃えて初めて保存できます。</strong>
+</div>
+<p>左メニュー <code>アプリの設定 → ベーシック</code>:</p>
+<ul>
+  <li><strong>カテゴリ</strong>: <code>ビジネス・ページ</code> を選択（他カテゴリだと保存不可）</li>
+  <li><strong>プライバシーポリシーURL</strong>: <code>https://www.facebook.com/privacy/policy/</code> でも可</li>
+  <li><strong>利用規約URL</strong>: 任意のURL（例: <code>https://www.google.com/</code>）</li>
+</ul>
+<p>左メニュー <code>ユースケース → カスタマイズ → 設定</code>:</p>
+<ul>
+  <li><strong>コールバックURLをリダイレクト</strong>: <code>https://www.google.com/</code></li>
+  <li><strong>アンインストールコールバックURL</strong>: <code>https://www.google.com/</code></li>
+  <li><strong>削除コールバックURL</strong>: <code>https://www.google.com/</code></li>
+</ul>
+<p>権限:</p>
+<ul>
+  <li><code>threads_basic</code></li>
+  <li><code>threads_content_publish</code></li>
+</ul>
+
+<h3>4-4. APP_ID と APP_SECRET を取得</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>左メニュー <code>アプリの設定 → ベーシック</code> を開く</li>
+  <li>画面上部の <strong>アプリID</strong>（数字）をコピー</li>
+  <li>「アプリシークレット」の <strong>「表示」</strong> ボタンをクリック → 表示された値をコピー</li>
+</ol>
+</div>
+
+<div class="save-block">
+<h4>💾 ここで「APIキー設定」シートに保存</h4>
+<ol>
+  <li>スプシに戻り <strong>「APIキー設定」シート</strong> を開く</li>
+  <li><code>THREADS_APP_ID</code> 行のB列にアプリIDを貼り付け</li>
+  <li><code>THREADS_APP_SECRET</code> 行のB列にアプリシークレットを貼り付け</li>
+  <li>メニュー <strong>「💾 設定シートからPropertiesに保存」</strong> をクリック</li>
+  <li>B列が空欄になり、C列に「✅ 保存済」が表示されればOK</li>
+</ol>
+</div>
+
+<h2>5. Threads長期トークン取得 → <code>ACCESS_TOKEN</code> 取得 → 即保存</h2>
+
+<h3>5-1. ユーザートークン生成ツールを開く</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>Meta Developerダッシュボードで対象アプリを開く</li>
+  <li>左メニュー <code>ユースケース → Threads APIにアクセス → カスタマイズ → 設定</code></li>
+  <li>右側ペインを下方向にスクロール → <strong>「ユーザートークン生成ツール」</strong> セクション</li>
+</ol>
+</div>
+
+<h3>5-2. Threadsテスター追加 + 承認</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>「<strong>Threadsテスターを追加</strong>」ボタンをクリック</li>
+  <li>対象のThreadsアカウント名を検索（例: <code>@tamago_app</code>）→「追加」</li>
+  <li>同じアカウントで <strong>Threadsアプリ または <a href="https://www.threads.net/" target="_blank">Threads Web</a></strong> を開く</li>
+  <li>右下プロフィール → <strong>設定 → アカウント → ウェブサイトの権限</strong></li>
+  <li>「<strong>招待</strong>」セクションで「<strong>承認</strong>」をタップ</li>
+  <li>即時で「保留中 → 承認済み」に変わる</li>
+</ol>
+</div>
+<div class="notice">
+招待が表示されない場合: 5〜10分待ってから再確認、または Threadsアプリで上から下にスワイプして再読み込み。
+</div>
+
+<h3>5-3. 長期アクセストークンを生成</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>Meta Developer の「ユーザートークン生成ツール」に戻る → ページ再読み込み</li>
+  <li>承認済みアカウントの右側「<strong>アクセストークンを生成</strong>」をクリック</li>
+  <li>ポップアップで「<strong>許可</strong>」</li>
+  <li>表示された長期アクセストークン（60日有効）を <strong>コピー</strong>ボタンで取得</li>
+</ol>
+</div>
+<div class="check">
+形式: <code>THAA</code> で始まる長い英数字（200〜300文字）
+</div>
+
+<div class="save-block">
+<h4>💾 ここで「APIキー設定」シートに保存</h4>
+<ol>
+  <li><code>THREADS_ACCESS_TOKEN</code> 行のB列にコピーしたトークンを貼り付け</li>
+  <li>メニュー「💾 設定シートからPropertiesに保存」</li>
+  <li>B列空欄＋C列「✅ 保存済」確認</li>
+</ol>
+</div>
+
+<h2>6. Threads User ID取得 → <code>USER_ID</code> 取得 → 即保存</h2>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>ブラウザのアドレスバーに以下を貼り付け（<code>&lt;長期トークン&gt;</code> を Step 5-3 で取得した実際のトークンに置換）</li>
+</ol>
+<pre>https://graph.threads.net/v1.0/me?fields=id&amp;access_token=&lt;長期トークン&gt;</pre>
+<ol start="2">
+  <li>Enter → JSON表示: <code>{"id":"35107700672178457"}</code></li>
+  <li><code>id</code> の値（数字）をコピー</li>
+</ol>
+</div>
+<div class="check">
+形式: 17桁前後の数字
+</div>
+
+<div class="save-block">
+<h4>💾 ここで「APIキー設定」シートに保存</h4>
+<ol>
+  <li><code>THREADS_USER_ID</code> 行のB列にコピーした数字を貼り付け</li>
+  <li>メニュー「💾 設定シートからPropertiesに保存」</li>
+</ol>
+</div>
+
+<h2>7. Discord Webhook作成 → <code>WEBHOOK_URL</code> 取得 → 即保存</h2>
+
+<h3>7-1. 開発者モードを有効化</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>Discordアプリ または ブラウザ版を開く</li>
+  <li>左下のユーザー設定（歯車アイコン）</li>
+  <li>左メニュー <code>APP設定 → 詳細設定</code> → <strong>開発者モードON</strong></li>
+</ol>
+</div>
+
+<h3>7-2. 通知用チャンネル作成</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>既存サーバー or 新規サーバーで「チャンネルを作成」</li>
+  <li>テキストチャンネル / 名前: <code>threads-scheduler</code> 等</li>
+</ol>
+</div>
+
+<h3>7-3. Webhook URLを取得</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>作成したチャンネル名右の歯車 → <code>連携サービス → ウェブフック → ウェブフックを作成</code></li>
+  <li>名前を「Threads Scheduler」等に</li>
+  <li>「<strong>ウェブフックURLをコピー</strong>」</li>
+</ol>
+</div>
+<div class="check">
+形式: <code>https://discord.com/api/webhooks/...</code>
+</div>
+
+<div class="save-block">
+<h4>💾 ここで「APIキー設定」シートに保存</h4>
+<ol>
+  <li><code>DISCORD_WEBHOOK_URL</code> 行のB列にコピーしたURLを貼り付け</li>
+  <li>メニュー「💾 設定シートからPropertiesに保存」</li>
+  <li>これで5つすべてが保存完了</li>
+</ol>
+</div>
+
+<h2>8. テスト投稿で動作確認 → トリガーをインストール</h2>
+
+<h3>8-1. 設定状況の最終確認</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>メニュー <strong>「🔍 設定状況を確認」</strong> をクリック</li>
+  <li>5つすべてが <strong>✅ 設定済</strong> になっているか確認</li>
+</ol>
+</div>
+
+<h3>8-2. テスト投稿</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>「投稿予約」シートに新しい行:
     <ul>
-      <li>A列: 今日の日付（カレンダー）</li>
-      <li>B列: 1分前の時刻（プルダウン or 直接入力）</li>
+      <li>A列: 今日の日付</li>
+      <li>B列: 1〜2分前の時刻（例: 22:35）</li>
       <li>C列: <code>テスト投稿</code></li>
       <li>E列: <code>未投稿</code>（プルダウン）</li>
     </ul>
   </li>
   <li>M列に投稿日時が自動表示されることを確認</li>
-  <li>スプシメニュー <strong>「スレッズスケジューラー → ▶️ 今すぐ投稿チェック」</strong> をクリック</li>
-  <li>数秒で完了 → Threadsに投稿が反映されたか確認</li>
-  <li>スプシのE列ステータスが <code>投稿済</code> になったか確認</li>
+  <li>メニュー <strong>「▶️ 今すぐ投稿チェック」</strong> をクリック</li>
+  <li>数秒後、Threadsに投稿が反映されたか確認</li>
+  <li>スプシのE列ステータスが <code>投稿済</code> に変わったか確認</li>
   <li>Discordに <code>✅ 投稿成功</code> 通知が届いたか確認</li>
 </ol>
 </div>
-<div class="check">
-全部✅になればセットアップ完了です。お疲れさまでした。<br>
-以降、A列・B列・C列に予定を入力するだけで、10分以内に自動投稿されます。
+
+<h3>8-3. トリガーをインストール（自動運用開始）</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>メニュー <strong>「⏰ トリガーをインストール」</strong> をクリック</li>
+  <li>「インストールしました」のダイアログが出れば完了</li>
+</ol>
 </div>
+<div class="check">
+これで完全自動運用開始。以降は「投稿予約」シートに行を追加するだけで、10分以内に自動投稿されます。
+</div>
+
+<h2>セットアップ完了後の運用</h2>
+<ul>
+  <li><strong>新規予約投稿</strong>: 「投稿予約」シートに A=日付、B=時刻、C=本文、E=未投稿 を入れるだけ</li>
+  <li><strong>状態確認</strong>: E列ステータス・Discord通知</li>
+  <li><strong>トークン更新</strong>: 毎週日曜9時に自動実行（手動操作不要）</li>
+  <li><strong>詰まったら</strong>: メニュー「🔍 設定状況を確認」「📋 トリガー一覧」で動作確認</li>
+</ul>
 
 <h2>困ったら</h2>
 <ul>

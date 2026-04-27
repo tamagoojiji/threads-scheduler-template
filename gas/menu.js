@@ -6,8 +6,11 @@
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('スレッズスケジューラー')
-    .addItem('🔧 初回セットアップ（Secrets登録）', 'setupProperties')
+    .addItem('⚙️ 設定シートを準備', 'setupSettingsSheet')
+    .addItem('💾 設定シートからPropertiesに保存', 'saveSettingsFromSheet')
     .addItem('🔍 設定状況を確認', 'checkProperties')
+    .addSeparator()
+    .addItem('🔧 プロンプト方式で個別設定', 'setupProperties')
     .addSeparator()
     .addItem('▶️ 今すぐ投稿チェック', 'postRunner')
     .addItem('🔄 トークン手動更新', 'refreshTokenManual')
