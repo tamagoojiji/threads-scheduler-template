@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>セットアップ手順書｜スレッズスケジューラー</title>
-<meta name="description" content="スレッズスケジューラーのセットアップ手順。Meta Developer / GitHub / Google OAuth / スプシまで">
+<meta name="description" content="スレッズスケジューラーのセットアップ手順。Google Apps Script版・GitHub不要">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif; line-height: 1.85; color: #222; }
@@ -37,27 +37,26 @@
 
 <div class="hero">
 <h1>セットアップ手順書</h1>
-<p>スレッズスケジューラーを動かすまでの全ステップ</p>
+<p>スレッズスケジューラーを動かすまでの全ステップ（Google Apps Script版・GitHub不要）</p>
 </div>
 
 <div class="container">
 
 <div class="notice">
-<strong>所要時間: 約90分</strong>。Zoom同伴で一緒に進めます。詰まったらすぐお声がけください。
+<strong>所要時間: 約60〜90分</strong>。Zoom同伴で一緒に進めます。詰まったらすぐお声がけください。
 </div>
 
 <div class="toc">
-<h3>進行ステップ（取得した値はその都度GitHub Secretsに登録します）</h3>
+<h3>進行ステップ</h3>
 <ol>
   <li>事前にご準備いただくもの</li>
-  <li>GitHubアカウント（未登録の方）</li>
-  <li>GitHubリポジトリ複製（Secrets登録の置き場を先に用意）</li>
-  <li>Meta Developerアプリ作成 → <code>THREADS_APP_ID</code> / <code>THREADS_APP_SECRET</code> を登録</li>
-  <li>Threads長期アクセストークン取得 → <code>THREADS_ACCESS_TOKEN</code> / <code>THREADS_USER_ID</code> を登録</li>
-  <li>Google Cloud OAuth設定 → <code>GOOGLE_OAUTH_CLIENT_ID</code> / <code>GOOGLE_OAUTH_CLIENT_SECRET</code> を登録</li>
-  <li>Refresh Token取得 → <code>GOOGLE_OAUTH_REFRESH_TOKEN</code> を登録</li>
-  <li>Googleスプシのコピー → <code>SHEET_ID</code> を登録</li>
-  <li>Discord Webhook作成 → <code>DISCORD_WEBHOOK_URL</code> を登録</li>
+  <li>Meta Developerアカウント・アプリ作成</li>
+  <li>Threads長期アクセストークン取得</li>
+  <li>Threads User ID取得</li>
+  <li>Discord Webhook作成</li>
+  <li>Googleスプシのコピー</li>
+  <li>初回セットアップ（Secrets登録）</li>
+  <li>トリガーをインストール</li>
   <li>テスト投稿で動作確認</li>
 </ol>
 </div>
@@ -67,72 +66,18 @@
 <ul>
   <li><a href="https://accounts.google.com/" target="_blank" rel="noopener">Googleアカウント</a>（個人でも業務でも可）</li>
   <li><a href="https://www.threads.net/" target="_blank" rel="noopener">Threadsアカウント</a>（投稿先）</li>
-  <li><a href="https://github.com/login" target="_blank" rel="noopener">GitHubアカウント</a>（アカウントを持っていない人は、当日作成します）</li>
   <li><a href="discord://">Discordアカウント</a>（エラー通知受信用・<a href="https://discord.com/login" target="_blank" rel="noopener" style="font-size:0.85em;">ブラウザで開く</a>）</li>
   <li>電話番号（Meta Developer登録のSMS認証で必須・<strong>Facebookアカウントと連携している電話番号</strong>をご用意ください・IP電話/050は不可な場合あり）</li>
   <li>Zoomで画面共有できるPC環境</li>
 </ul>
-
 <div class="danger">
-<strong>パスワード・カード情報は一切お伺いしません</strong>。すべてご自身の画面で操作いただきます。<br>
-パスワードはお手元の手書きメモ、または各ブラウザ標準のパスワード保存機能（Keychain・Chrome）でご管理ください。フォームにもパスワード欄は意図的に作っていません。
-</div>
-
-<h2>2. GitHubアカウント（未登録の方のみ）</h2>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li><a href="https://github.com" target="_blank">github.com</a> を開く</li>
-  <li>右上の <code>Sign up</code> をクリック</li>
-  <li>メール・パスワード・ユーザー名を順に入力（ユーザー名は半角英数）</li>
-  <li>登録メール宛のリンクで認証を完了</li>
-</ol>
-</div>
-
-<h2>3. GitHubリポジトリ複製（Secrets置き場を先に作る）</h2>
-<p>取得した値はその都度 GitHub Secrets に登録していくので、先にリポジトリを作っておきます。</p>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li><a href="https://github.com" target="_blank">GitHub</a> にログイン</li>
-  <li><a href="https://github.com/tamagoojiji/threads-scheduler-template" target="_blank">tamagoojiji/threads-scheduler-template</a> を開く</li>
-  <li>右上の <strong>緑色の「Use this template」ボタン</strong> をクリック</li>
-  <li>ドロップダウンから <strong>「Create a new repository」</strong> を選択</li>
-  <li>下表のとおり設定を入力</li>
-  <li>「<strong>Create repository</strong>」をクリック</li>
-</ol>
-</div>
-
-<h3>設定値</h3>
-<table>
-<thead><tr><th>項目</th><th>設定値</th><th>備考</th></tr></thead>
-<tbody>
-<tr><td><strong>Owner</strong></td><td>ご自身のGitHubユーザー名</td><td>デフォルトのままでOK</td></tr>
-<tr><td><strong>Repository name</strong></td><td>任意（例: <code>my-threads-scheduler</code>）</td><td>半角英数とハイフン</td></tr>
-<tr><td><strong>Description</strong></td><td>空欄でOK</td><td>あとで変更可能</td></tr>
-<tr><td><strong>公開設定</strong></td><td><strong>Private</strong>（推奨）</td><td>運用カスタマイズを非公開に保てる</td></tr>
-<tr><td><strong>Include all branches</strong></td><td>チェック不要</td><td>mainブランチのみで十分</td></tr>
-</tbody>
-</table>
-
-<h3>Secrets登録ページをブックマーク</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>作成したご自身のリポジトリを開く</li>
-  <li>上部メニューの <strong>「Settings」</strong>（歯車アイコン）をクリック</li>
-  <li>左メニューから <code>Secrets and variables</code> → <code>Actions</code> を選択</li>
-  <li>このページをブックマーク → 以降の各ステップで取得した値をここに登録します</li>
-</ol>
+<strong>パスワード・カード情報は一切お伺いしません</strong>。すべてご自身の画面で操作いただきます。
 </div>
 <div class="check">
-リポジトリURL（<code>https://github.com/&lt;ユーザー名&gt;/&lt;リポジトリ名&gt;</code>）と Secrets 登録ページをブックマークしておくと便利です。
-</div>
-<div class="notice">
-「Use this template」ボタンが見つからない場合、ブラウザを再読み込み（Cmd+Shift+R / Ctrl+F5）してみてください。
+<strong>GitHubアカウントは不要です</strong>。すべてGoogleアカウントのみで完結します。
 </div>
 
-<h2>4. Meta Developerアカウント・アプリ作成</h2>
+<h2>2. Meta Developerアカウント・アプリ作成</h2>
 <div class="danger">
 電話番号認証では <strong>Facebookアカウントと連携している電話番号</strong> をご利用ください。連携していない番号だと認証が通らない or アカウントロックの原因になることがあります。
 </div>
@@ -147,7 +92,7 @@
 </ol>
 </div>
 
-<h3>アプリの設定 > ベーシック</h3>
+<h3>アプリの設定 &gt; ベーシック</h3>
 <div class="danger">
 新UIでは保存時に「フォームを保存できません」エラーが頻発します。<strong>以下すべてを揃えて初めて保存できます。</strong>
 </div>
@@ -158,7 +103,7 @@
   <li><strong>アプリドメイン・アイコン</strong>: 空欄でも可</li>
 </ul>
 
-<h3>ユースケース > カスタマイズ > 設定</h3>
+<h3>ユースケース &gt; カスタマイズ &gt; 設定</h3>
 <ul>
   <li><strong>コールバックURLをリダイレクト</strong>: <code>https://www.google.com/</code></li>
   <li><strong>アンインストールコールバックURL</strong>: <code>https://www.google.com/</code></li>
@@ -175,75 +120,61 @@
 </ul>
 <div class="notice">他の権限（threads_manage_replies等）は不要です。</div>
 
-<h3>4-X. GitHub Secretsへ登録（このステップで取得した値）</h3>
-<p><strong>Meta Developerのアプリ設定 → 基本設定</strong> から以下を取得し、Step 3でブックマークしたSecretsページに登録します。</p>
+<h3>取得する値</h3>
 <table>
-<thead><tr><th>Name</th><th>Secret（値）</th></tr></thead>
+<thead><tr><th>名前</th><th>取得元</th></tr></thead>
 <tbody>
-<tr><td><code>THREADS_APP_ID</code></td><td>アプリID（数字の羅列）</td></tr>
-<tr><td><code>THREADS_APP_SECRET</code></td><td>アプリシークレット（「表示」をクリックして取得）</td></tr>
+<tr><td><code>THREADS_APP_ID</code></td><td>Meta Developer アプリの基本設定（数字の羅列）</td></tr>
+<tr><td><code>THREADS_APP_SECRET</code></td><td>Meta Developer アプリの基本設定（「表示」をクリック）</td></tr>
 </tbody>
 </table>
-<div class="check">
-登録手順: Secretsページ → 「New repository secret」 → Name と Secret を入力 → 「Add secret」
-</div>
+<div class="notice">これらは Step 7 でスプシのメニューから入力します。手元のメモ帳などに控えておいてください。</div>
 
-<h2>5. Threads長期アクセストークン取得</h2>
-<p>Meta Developerの公式ボタン1クリックで60日有効のトークンが取れます。OAuth認可URLやcurlは不要です。</p>
+<h2>3. Threads長期アクセストークン取得</h2>
+<p>Meta Developerの公式ボタン1クリックで60日有効のトークンが取れます。</p>
 
-<h3>5-1. ユーザートークン生成ツールを開く</h3>
+<h3>3-1. ユーザートークン生成ツールを開く</h3>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
   <li>Meta Developerダッシュボードで対象アプリを開く</li>
-  <li>左メニューから <code>ユースケース</code> セクションを展開</li>
-  <li><code>Threads APIにアクセス → カスタマイズ</code> をクリック</li>
-  <li>表示されたサブメニューから <strong>「設定」</strong> をクリック</li>
-  <li>右側ペインを下方向にスクロール → <strong>「ユーザートークン生成ツール（User token generator）」</strong> セクションを見つける</li>
+  <li>左メニューから <code>ユースケース → Threads APIにアクセス → カスタマイズ → 設定</code></li>
+  <li>右側ペインを下方向にスクロール → <strong>「ユーザートークン生成ツール」</strong> セクション</li>
 </ol>
 </div>
 
-<h3>5-2. Threadsテスターとしてアカウントを追加</h3>
+<h3>3-2. Threadsテスターとしてアカウントを追加</h3>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
-  <li>「ユーザートークン生成ツール」セクション内の <strong>「Threadsテスターを追加（Add Threads Tester）」</strong> ボタンをクリック</li>
-  <li>ポップアップで対象のThreadsアカウント名を検索（例: <code>@tamago_app</code>）</li>
-  <li>該当アカウントが表示されたら「<strong>追加</strong>」or「<strong>Submit</strong>」をクリック</li>
-  <li>状態は「<strong>保留中（Pending）</strong>」となり、Threads側からの承認待ち状態になる</li>
+  <li>「<strong>Threadsテスターを追加</strong>」ボタンをクリック</li>
+  <li>対象のThreadsアカウント名を検索（例: <code>@tamago_app</code>）</li>
+  <li>「追加」をクリック → 状態は<strong>保留中（Pending）</strong>になる</li>
 </ol>
 </div>
 
-<h3>5-3. Threads側で招待を承認（即時で完了）</h3>
-<p>Step 5-2で送信した招待を、Threads側で承認します。基本1クリックで完了します。</p>
+<h3>3-3. Threads側で招待を承認（即時で完了）</h3>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
-  <li>Meta Developer で「Threadsテスターを追加」→ 招待送信（Step 5-2で完了済み）</li>
   <li>同じアカウントでログイン中の <strong>Threadsアプリ または <a href="https://www.threads.net/" target="_blank">Threads Web</a></strong> を開く</li>
   <li>右下プロフィール → <strong>設定 → アカウント → ウェブサイトの権限</strong></li>
   <li>「<strong>招待</strong>」セクションで「<strong>承認</strong>」をタップ</li>
-  <li>即時で「<strong>保留中 → 承認済み</strong>」に変わる</li>
+  <li>即時で「保留中 → 承認済み」に変わる</li>
 </ol>
 </div>
-<div class="check">
-基本1クリックで完了。承認反映まで数秒〜数分。
-</div>
 <div class="notice">
-招待が表示されない場合: Threadsアプリで上から下にスワイプして再読み込み、または上記の設定画面を直接開いてください。<br>
-招待の表示まで <strong>5〜10分</strong>かかることがあります。
+招待が表示されない場合: 5〜10分待ってから再確認、または Threadsアプリで上から下にスワイプして再読み込み。
 </div>
 
-<h3>5-4. 長期アクセストークンを生成</h3>
+<h3>3-4. 長期アクセストークンを生成</h3>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
-  <li>承認後、Meta Developer の「ユーザートークン生成ツール」セクションに戻る</li>
-  <li>必要であればページを再読み込み</li>
-  <li>承認済みアカウントの右側に <strong>「アクセストークンを生成（Generate access token）」</strong> ボタンが表示される</li>
-  <li>クリック → ポップアップで「<strong>許可（Allow / Continue）</strong>」</li>
-  <li>長期アクセストークン（60日有効）が表示される</li>
-  <li>「<strong>コピー</strong>」ボタンをクリックしてコピー → 安全な場所に保管</li>
+  <li>Meta Developer の「ユーザートークン生成ツール」に戻る → ページ再読み込み</li>
+  <li>承認済みアカウントの右側「<strong>アクセストークンを生成</strong>」をクリック</li>
+  <li>ポップアップで「<strong>許可</strong>」</li>
+  <li>表示された長期アクセストークン（60日有効）を <strong>コピー</strong>ボタンで取得 → 安全な場所に保管</li>
 </ol>
 </div>
 <div class="check">
@@ -251,299 +182,55 @@
 形式: <code>THAA</code> で始まる長い英数字（200〜300文字程度）
 </div>
 
-<h3>5-5. Threads User ID取得（ブラウザのみ）</h3>
-<p>ターミナル不要。ブラウザのアドレスバーに直接入力するだけで取得できます。</p>
+<h2>4. Threads User ID取得（ブラウザのみ）</h2>
+<p>ターミナル不要。ブラウザのアドレスバーに貼り付けるだけ。</p>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
-  <li>ブラウザを開いて、アドレスバーに以下を貼り付け（<code>&lt;長期トークン&gt;</code> の部分を Step 5-4 で取得した実際のトークンに置き換え）</li>
+  <li>ブラウザのアドレスバーに以下を貼り付け（<code>&lt;長期トークン&gt;</code> を Step 3-4 で取得した値に置き換え）</li>
 </ol>
 <pre>https://graph.threads.net/v1.0/me?fields=id&amp;access_token=&lt;長期トークン&gt;</pre>
 <ol start="2">
-  <li>Enter キーを押す</li>
-  <li>ブラウザに以下のようなJSONが表示される:</li>
+  <li>Enter キー → JSONが表示される:</li>
 </ol>
 <pre>{"id":"35107700672178457"}</pre>
-<ol start="4">
+<ol start="3">
   <li><code>id</code> の値（数字）が <code>THREADS_USER_ID</code></li>
 </ol>
 </div>
 <div class="check">
-<strong>取得する値</strong>: <code>THREADS_USER_ID</code>（数字の羅列、17桁前後）
-</div>
-<div class="notice">
-JSONが見づらい場合: ブラウザに「JSON Viewer」拡張を入れると整形表示されます。なくても <code>"id":"..."</code> の数字部分をコピーすればOK。
+<strong>取得する値</strong>: <code>THREADS_USER_ID</code>（17桁前後の数字）
 </div>
 
-<h3>5-X. GitHub Secretsへ登録（このステップで取得した値）</h3>
-<table>
-<thead><tr><th>Name</th><th>Secret（値）</th></tr></thead>
-<tbody>
-<tr><td><code>THREADS_ACCESS_TOKEN</code></td><td>Step 5-4 で取得した長期トークン（<code>THAA</code>で始まる）</td></tr>
-<tr><td><code>THREADS_USER_ID</code></td><td>Step 5-5 で取得した User ID（17桁前後の数字）</td></tr>
-</tbody>
-</table>
-
-<h3>5-6. PATの作成・登録（トークン自動更新のため）</h3>
-<p>長期トークンは60日で失効するため、毎週日曜に自動更新します。自動更新には GitHub Personal Access Token (PAT) が必要です。</p>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank">GitHub Fine-grained PAT 作成ページ</a> を開く</li>
-  <li>下表のとおり設定を入力</li>
-  <li>「<strong>Generate token</strong>」をクリック</li>
-  <li>表示されたトークン（<code>github_pat_</code> で始まる）をコピー</li>
-</ol>
-</div>
-
-<h3>PAT設定値</h3>
-<table>
-<thead><tr><th>項目</th><th>設定値</th></tr></thead>
-<tbody>
-<tr><td><strong>Token name</strong></td><td><code>Threads Scheduler Token Refresh</code></td></tr>
-<tr><td><strong>Expiration</strong></td><td>1年（最大）— 期限切れの前に再作成が必要</td></tr>
-<tr><td><strong>Repository access</strong></td><td><strong>Only select repositories</strong> → Step 3で作成したご自身のリポジトリを選択</td></tr>
-<tr><td><strong>Repository permissions → Secrets</strong></td><td><strong>Read and write</strong></td></tr>
-<tr><td>その他のpermissions</td><td>すべて <strong>No access</strong> のまま</td></tr>
-</tbody>
-</table>
-
-<h3>PATをGitHub Secretsへ登録</h3>
-<table>
-<thead><tr><th>Name</th><th>Secret（値）</th></tr></thead>
-<tbody>
-<tr><td><code>PAT_FOR_SECRETS</code></td><td>取得したPAT（<code>github_pat_</code> で始まる文字列）</td></tr>
-</tbody>
-</table>
-<div class="check">
-これで毎週日曜9:00（JST）に自動でトークン更新 → Discord通知 → Secretsの自動上書きが動くようになります。
-</div>
-
-<div class="danger">
-<strong>⚠️ 1年後にPATの再登録が必要です</strong><br>
-Fine-grained PATの最大有効期限は1年。期限を過ぎると自動更新が動かなくなり、Threadsトークンが失効してすべての投稿が止まります。<br>
-<strong>カレンダーに「PAT再発行」のリマインダーを設定してください</strong>（PAT作成日 + 11ヶ月後あたり推奨）。
-</div>
-
-<h3>1年後にやること（PAT再登録手順）</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li><a href="https://github.com/settings/personal-access-tokens" target="_blank">Fine-grained tokens一覧</a> を開く</li>
-  <li>古い <code>Threads Scheduler Token Refresh</code> を選択 → 「<strong>Regenerate token</strong>」（または新規作成して古いものを削除）</li>
-  <li>同じ設定値（Secrets: Read/Write、Repository: ご自身のリポジトリ）で生成</li>
-  <li>新しいトークン値をコピー</li>
-  <li>GitHub Secrets の <code>PAT_FOR_SECRETS</code> を新しい値で更新（既存Secretの右側 ✏️ アイコン → 値を上書き）</li>
-  <li>refresh.yml を手動実行して動作確認</li>
-</ol>
-</div>
-
-<div class="notice">
-PATは漏洩リスクがあるため、Repository permissions は <strong>Secrets read/write のみ</strong> に絞り、それ以外は no access のままにしてください。
-</div>
-<div class="check">
-登録手順: Secretsページ → 「New repository secret」 → Name と Secret を入力 → 「Add secret」
-</div>
-
-<h2>6. Google Cloud OAuth設定</h2>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li><a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a> へログイン</li>
-  <li>新規プロジェクト作成（名前: <code>Threads Scheduler</code> 等）</li>
-  <li><code>APIとサービス → ライブラリ</code> → <strong>Google Sheets API</strong> を有効化</li>
-  <li><code>OAuth同意画面</code>を設定:
-    <ul>
-      <li>User Type: <strong>External</strong></li>
-      <li>App name: <code>Threads Scheduler</code></li>
-      <li>サポートメール・デベロッパーメール: ご自身のGmail</li>
-      <li>スコープに <code>.../auth/spreadsheets</code> を追加</li>
-      <li>Test users にご自身のGmailを追加</li>
-    </ul>
-  </li>
-  <li><strong>「アプリを公開（PUBLISH APP）」→「本番環境にプッシュ」</strong>をクリック</li>
-</ol>
-</div>
-<div class="danger">
-<strong>必ず「本番環境にプッシュ」してください</strong>。Testing状態のまま運用するとRefresh Tokenが7日で失効します。
-</div>
-
-<h3>アプリを本番環境に公開する手順（詳細）</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li><a href="https://console.cloud.google.com/apis/credentials/consent" target="_blank">OAuth同意画面ページ</a> を開く</li>
-  <li>該当プロジェクトを選択</li>
-  <li>「APIとサービス → OAuth同意画面」</li>
-  <li>「<strong>アプリの公開ステータス</strong>」セクション → 「<strong>アプリを公開</strong>」ボタンをクリック</li>
-  <li>確認ダイアログで「<strong>本番環境に公開</strong>」または「<strong>確認</strong>」をクリック</li>
-</ol>
-</div>
-<div class="check">
-これで誰でも認証できるようになります（テストユーザー登録不要）。
-</div>
-
-<h3>「アクセスをブロック」エラーが出た場合</h3>
-<div class="notice">
-<strong>「エラー 403: access_denied / アプリは Google の審査プロセスを完了していません」</strong> と出る場合、上記「本番環境に公開」がまだ完了していません。再度「アプリを公開」を実行してください。
-</div>
-
-<h3>「未確認のアプリ」警告が出た場合</h3>
-<div class="notice">
-本番環境公開後、最初のログイン時に「このアプリは Google で確認されていません」と表示されます:
-<ol style="margin-top:8px;">
-  <li>警告画面で「<strong>詳細</strong>」をクリック</li>
-  <li>「<strong>(プロジェクト名)（安全ではないページ）に移動</strong>」をクリック</li>
-  <li>通常通り「許可」して進む</li>
-</ol>
-個人利用 / 少人数利用では verification 不要です。
-</div>
-
-<h3>OAuth Client作成</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>左メニューから <code>認証情報</code> を開く</li>
-  <li>上部の <strong>「+ 認証情報を作成」→「OAuthクライアントID」</strong> をクリック</li>
-  <li>アプリケーションの種類: <strong>ウェブアプリケーション</strong></li>
-  <li>名前: <code>Threads Scheduler</code> 等（任意）</li>
-  <li>承認済みのリダイレクトURI: <code>https://developers.google.com/oauthplayground</code> を追加</li>
-  <li>「<strong>作成</strong>」をクリック</li>
-</ol>
-</div>
-
-<h3>Client ID と Client Secret の取得</h3>
-<div class="step">
-<span class="step-num">作成直後に表示される場合（推奨）</span>
-<ol>
-  <li>「作成」をクリックすると<strong>完了ダイアログ</strong>がポップアップ表示される</li>
-  <li>「<strong>クライアント ID</strong>」「<strong>クライアント シークレット</strong>」の2つが表示される</li>
-  <li>それぞれの右側にある <strong>コピーアイコン</strong> をクリックしてコピー → 安全な場所に保存</li>
-  <li>「JSONをダウンロード」でファイルとして取得することも可能</li>
-</ol>
-</div>
-
-<div class="step">
-<span class="step-num">後から再表示する場合</span>
-<ol>
-  <li><a href="https://console.cloud.google.com/apis/credentials" target="_blank">認証情報ページ</a> を開く</li>
-  <li>「OAuth 2.0 クライアント ID」の一覧から、作成したクライアント名（例: <code>Threads Scheduler</code>）をクリック</li>
-  <li>詳細画面の右側に <strong>「クライアント シークレット」</strong> セクションが表示される</li>
-  <li>値の右側のコピーアイコンをクリック</li>
-</ol>
-</div>
-
-<div class="check">
-<strong>取得する値</strong>:
-<ul>
-  <li><code>GOOGLE_OAUTH_CLIENT_ID</code> — <code>...apps.googleusercontent.com</code> で終わる文字列</li>
-  <li><code>GOOGLE_OAUTH_CLIENT_SECRET</code> — <code>GOCSPX-</code> で始まる英数字</li>
-</ul>
-</div>
-
-<h3>6-X. GitHub Secretsへ登録（このステップで取得した値）</h3>
-<table>
-<thead><tr><th>Name</th><th>Secret（値）</th></tr></thead>
-<tbody>
-<tr><td><code>GOOGLE_OAUTH_CLIENT_ID</code></td><td><code>...apps.googleusercontent.com</code> で終わる文字列</td></tr>
-<tr><td><code>GOOGLE_OAUTH_CLIENT_SECRET</code></td><td><code>GOCSPX-</code> で始まる文字列</td></tr>
-</tbody>
-</table>
-<div class="check">
-登録手順: Secretsページ → 「New repository secret」 → Name と Secret を入力 → 「Add secret」
-</div>
-
-<h2>7. Refresh Token取得</h2>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li><a href="https://developers.google.com/oauthplayground" target="_blank">Google OAuth Playground</a> を開く</li>
-  <li>右上の歯車アイコン → <strong>Use your own OAuth credentials</strong> にチェック</li>
-  <li>Client ID / Client Secret を入力</li>
-  <li>左側の入力欄に <code>https://www.googleapis.com/auth/spreadsheets</code> を貼り付け</li>
-  <li><code>Authorize APIs</code> をクリック → Googleログイン → 「許可」</li>
-  <li>「同意画面」で <strong>「強制的に承認させる（Force prompt）」</strong> オプションを有効化（Refresh Tokenを必ず返してもらうため）</li>
-  <li><code>Exchange authorization code for tokens</code> をクリック</li>
-  <li>表示された <code>Refresh token</code>（<code>1//</code> で始まる文字列）をコピー保存</li>
-</ol>
-</div>
-<div class="check">
-<strong>取得する値</strong>: <code>GOOGLE_OAUTH_REFRESH_TOKEN</code>
-</div>
-
-<h3>7-X. GitHub Secretsへ登録（このステップで取得した値）</h3>
-<table>
-<thead><tr><th>Name</th><th>Secret（値）</th></tr></thead>
-<tbody>
-<tr><td><code>GOOGLE_OAUTH_REFRESH_TOKEN</code></td><td><code>1//</code> で始まる長い文字列</td></tr>
-</tbody>
-</table>
-<div class="check">
-登録手順: Secretsページ → 「New repository secret」 → Name と Secret を入力 → 「Add secret」
-</div>
-
-<h2>8. Googleスプシのコピー</h2>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>tamagoが共有するマスタースプシURLを開く（Zoom中にチャットで送付）</li>
-  <li><code>ファイル → コピーを作成</code> でご自身のGoogleドライブに複製</li>
-  <li>コピー後のURLから <code>SHEET_ID</code> 部分（<code>/d/</code> と <code>/edit</code> の間の文字列）をコピー</li>
-</ol>
-</div>
-<div class="check">
-<strong>取得する値</strong>: <code>SHEET_ID</code>
-</div>
-
-<h3>8-X. GitHub Secretsへ登録（このステップで取得した値）</h3>
-<table>
-<thead><tr><th>Name</th><th>Secret（値）</th></tr></thead>
-<tbody>
-<tr><td><code>SHEET_ID</code></td><td>スプシURL <code>/d/</code> と <code>/edit</code> の間の文字列</td></tr>
-</tbody>
-</table>
-<div class="check">
-登録手順: Secretsページ → 「New repository secret」 → Name と Secret を入力 → 「Add secret」
-</div>
-
-<h2>9. Discord Webhook作成</h2>
+<h2>5. Discord Webhook作成</h2>
 <p>エラー・成功通知を受け取るチャンネルを作ります。</p>
 
-<h3>9-1. 開発者モードを有効化（先にこれを実施）</h3>
+<h3>5-1. 開発者モードを有効化</h3>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
   <li>Discordアプリ（またはブラウザ版）を開く</li>
-  <li>画面左下の <strong>ユーザー名の右側にある歯車アイコン</strong>（ユーザー設定）をクリック</li>
-  <li>左メニューを下にスクロール → <code>APP設定</code> セクションの <strong>「詳細設定」</strong> をクリック</li>
-  <li><strong>「開発者モード」</strong> のトグルをONに</li>
-  <li>左上の「✕」または「Esc」で設定画面を閉じる</li>
-</ol>
-</div>
-<div class="check">
-これで右クリックメニューから「IDをコピー」「ウェブフックを作成」などが使いやすくなります。
-</div>
-
-<h3>9-2. 通知用チャンネル作成</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>既存サーバーで右クリック → 「<strong>チャンネルを作成</strong>」（新規サーバーから作る場合は左サイドバー一番下の「+」）</li>
-  <li>チャンネル種別: <strong>テキストチャンネル</strong></li>
-  <li>名前: <code>threads-scheduler-test</code> など分かりやすい名前</li>
-  <li>「チャンネルを作成」をクリック</li>
+  <li>左下のユーザー設定（歯車アイコン）</li>
+  <li>左メニュー <code>APP設定 → 詳細設定</code> → <strong>開発者モードON</strong></li>
 </ol>
 </div>
 
-<h3>9-3. Webhook URLを取得</h3>
+<h3>5-2. 通知用チャンネル作成</h3>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
-  <li>作成したチャンネル名の右の <strong>歯車アイコン</strong>（チャンネルを編集）をクリック</li>
-  <li>左メニューから <code>連携サービス</code> を選択</li>
-  <li><strong>「ウェブフック」→「ウェブフックを作成」</strong></li>
-  <li>名前を <code>Threads Scheduler</code> 等に設定</li>
-  <li>「<strong>ウェブフックURLをコピー</strong>」をクリック</li>
+  <li>既存サーバー or 新規サーバーで「チャンネルを作成」</li>
+  <li>テキストチャンネル / 名前: <code>threads-scheduler</code> 等</li>
+</ol>
+</div>
+
+<h3>5-3. Webhook URLを取得</h3>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>作成したチャンネル名右の歯車 → <code>連携サービス → ウェブフック → ウェブフックを作成</code></li>
+  <li>名前を「Threads Scheduler」等に</li>
+  <li>「<strong>ウェブフックURLをコピー</strong>」</li>
 </ol>
 </div>
 <div class="check">
@@ -551,50 +238,82 @@ PATは漏洩リスクがあるため、Repository permissions は <strong>Secret
 形式: <code>https://discord.com/api/webhooks/...</code>
 </div>
 
-<h3>9-X. GitHub Secretsへ登録（このステップで取得した値）</h3>
-<table>
-<thead><tr><th>Name</th><th>Secret（値）</th></tr></thead>
-<tbody>
-<tr><td><code>DISCORD_WEBHOOK_URL</code></td><td><code>https://discord.com/api/webhooks/...</code></td></tr>
-</tbody>
-</table>
-<div class="check">
-登録手順: Secretsページ → 「New repository secret」 → Name と Secret を入力 → 「Add secret」
-</div>
-
-<h3>登録済みSecretsの最終チェック（全9個）</h3>
-<p>Step 4〜9で順次登録した9個が揃っているか確認:</p>
-<table>
-<thead><tr><th>Name</th><th>登録元</th></tr></thead>
-<tbody>
-<tr><td><code>THREADS_APP_ID</code></td><td>Step 4</td></tr>
-<tr><td><code>THREADS_APP_SECRET</code></td><td>Step 4</td></tr>
-<tr><td><code>THREADS_ACCESS_TOKEN</code></td><td>Step 5</td></tr>
-<tr><td><code>THREADS_USER_ID</code></td><td>Step 5</td></tr>
-<tr><td><code>GOOGLE_OAUTH_CLIENT_ID</code></td><td>Step 6</td></tr>
-<tr><td><code>GOOGLE_OAUTH_CLIENT_SECRET</code></td><td>Step 6</td></tr>
-<tr><td><code>GOOGLE_OAUTH_REFRESH_TOKEN</code></td><td>Step 7</td></tr>
-<tr><td><code>SHEET_ID</code></td><td>Step 8</td></tr>
-<tr><td><code>DISCORD_WEBHOOK_URL</code></td><td>Step 9</td></tr>
-</tbody>
-</table>
-
-<h2>10. テスト投稿で動作確認</h2>
+<h2>6. Googleスプシのコピー</h2>
+<p>tamagoが用意したマスタースプシを、ご自身のGoogleドライブにコピーします。Apps Scriptコードもまとめてコピーされます。</p>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
-  <li>スプシ「投稿予約」シートのA列に「3分後の日時」、B列に「テスト投稿」を入力</li>
-  <li>D列ステータスは <code>未投稿</code> を選択</li>
-  <li>GitHubリポジトリ → <code>Actions</code> → <code>post</code> ワークフロー → <code>Run workflow</code></li>
-  <li>実行ログで「処理対象: 1行 → 完了」を確認</li>
-  <li>Threadsアカウントで投稿が反映されたか確認</li>
-  <li>スプシのD列ステータスが <code>投稿済</code> に変わったか確認</li>
-  <li>Discordに <code>✅ 投稿成功</code> 通知が届いたか確認</li>
+  <li>tamagoが共有するマスタースプシURLを開く（Zoom中にチャットで送付）</li>
+  <li><code>ファイル → コピーを作成</code> でご自身のGoogleドライブに複製</li>
+  <li>コピー後、画面上部メニューに <strong>「スレッズスケジューラー」</strong> が表示されることを確認</li>
+</ol>
+</div>
+<div class="notice">
+「スレッズスケジューラー」メニューが表示されない場合: ページを再読み込み（Cmd+R / F5）してください。
+</div>
+
+<h2>7. 初回セットアップ（Secrets登録）</h2>
+<p>取得した5つの値をスプシに登録します。</p>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>スプシメニュー <strong>「スレッズスケジューラー → 🔧 初回セットアップ（Secrets登録）」</strong></li>
+  <li>初回は権限承認ダイアログが出るので「許可」</li>
+  <li>5つのプロンプトが順番に表示されるので、それぞれ値を入力</li>
 </ol>
 </div>
 
+<h3>登録する5つの値</h3>
+<table>
+<thead><tr><th>Name</th><th>値の出どころ</th></tr></thead>
+<tbody>
+<tr><td><code>THREADS_APP_ID</code></td><td>Step 2 で取得</td></tr>
+<tr><td><code>THREADS_APP_SECRET</code></td><td>Step 2 で取得</td></tr>
+<tr><td><code>THREADS_ACCESS_TOKEN</code></td><td>Step 3-4 で取得</td></tr>
+<tr><td><code>THREADS_USER_ID</code></td><td>Step 4 で取得</td></tr>
+<tr><td><code>DISCORD_WEBHOOK_URL</code></td><td>Step 5-3 で取得</td></tr>
+</tbody>
+</table>
 <div class="check">
-全部✅になればセットアップ完了です。お疲れさまでした。
+登録後、<strong>「🔍 設定状況を確認」</strong>で全項目が ✅ になっていればOK。
+</div>
+
+<h2>8. トリガーをインストール</h2>
+<p>「10分ごとの投稿チェック」と「毎週日曜のトークン更新」を自動化します。</p>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>スプシメニュー <strong>「スレッズスケジューラー → ⏰ トリガーをインストール」</strong></li>
+  <li>初回は権限承認ダイアログが出るので「許可」</li>
+  <li>「トリガーをインストールしました」のダイアログが出れば完了</li>
+</ol>
+</div>
+<div class="check">
+これで完全自動運用開始。利用者の手動操作は今後不要です。
+</div>
+
+<h2>9. テスト投稿で動作確認</h2>
+<div class="step">
+<span class="step-num">手順</span>
+<ol>
+  <li>「投稿予約」シートに新しい行を追加:
+    <ul>
+      <li>A列: 今日の日付（カレンダー）</li>
+      <li>B列: 1分前の時刻（プルダウン or 直接入力）</li>
+      <li>C列: <code>テスト投稿</code></li>
+      <li>E列: <code>未投稿</code>（プルダウン）</li>
+    </ul>
+  </li>
+  <li>M列に投稿日時が自動表示されることを確認</li>
+  <li>スプシメニュー <strong>「スレッズスケジューラー → ▶️ 今すぐ投稿チェック」</strong> をクリック</li>
+  <li>数秒で完了 → Threadsに投稿が反映されたか確認</li>
+  <li>スプシのE列ステータスが <code>投稿済</code> になったか確認</li>
+  <li>Discordに <code>✅ 投稿成功</code> 通知が届いたか確認</li>
+</ol>
+</div>
+<div class="check">
+全部✅になればセットアップ完了です。お疲れさまでした。<br>
+以降、A列・B列・C列に予定を入力するだけで、10分以内に自動投稿されます。
 </div>
 
 <h2>困ったら</h2>

@@ -32,24 +32,22 @@
 <h2>1. 利用者自身が削除するデータ</h2>
 
 <div class="section">
-<h3>(A) GitHubリポジトリの削除</h3>
+<h3>(A) スプレッドシートの削除（Apps Scriptと認証情報も同時削除）</h3>
 <ol>
-<li>GitHub にログイン</li>
-<li>利用者所有の threads-scheduler リポジトリを開く</li>
-<li>Settings → Danger Zone → 「Delete this repository」をクリック</li>
-<li>リポジトリ名を入力して確定</li>
-</ol>
-<p>→ リポジトリ内のGitHub Secrets（Threadsトークン・Google認証情報等）も同時に削除されます。</p>
-</div>
-
-<div class="section">
-<h3>(B) Googleスプレッドシートの削除</h3>
-<ol>
-<li>Googleドライブ を開く</li>
-<li>「スレッズ予約」スプレッドシートを選択</li>
+<li>Googleドライブを開く</li>
+<li>「スレッズスケジューラー」のスプシを選択</li>
 <li>右クリック → 「ゴミ箱へ移動」</li>
 <li>ゴミ箱を空にする</li>
 </ol>
+<p>→ スプシに紐付いたApps Scriptプロジェクトも同時に削除されます。Apps Script Properties に保存されていた Threadsアクセストークン・Webhook URL等もこのタイミングで消去されます。</p>
+</div>
+
+<div class="section">
+<h3>(B) 時間トリガーの削除（スプシ削除前に推奨）</h3>
+<ol>
+<li>スプシメニュー「スレッズスケジューラー → 🗑 トリガーを削除」を実行</li>
+</ol>
+<p>→ スプシを削除する前にトリガーを停止しておくと、削除過渡期に余計な実行が走るのを防げます。</p>
 </div>
 
 <div class="section">
@@ -63,11 +61,11 @@
 </div>
 
 <div class="section">
-<h3>(D) Google Cloud Project の削除（オプション）</h3>
+<h3>(D) Discordチャンネル / Webhookの削除（オプション）</h3>
 <ol>
-<li><a href="https://console.cloud.google.com/" target="_blank" rel="noopener">Google Cloud Console</a> にログイン</li>
-<li>OAuth用に作成したプロジェクトを選択</li>
-<li>IAMと管理 → 設定 → 「プロジェクトをシャットダウン」</li>
+<li>Discordで通知用に作ったチャンネルを開く</li>
+<li>チャンネル設定 → 連携サービス → ウェブフック → 削除</li>
+<li>必要であればチャンネル自体も削除</li>
 </ol>
 </div>
 

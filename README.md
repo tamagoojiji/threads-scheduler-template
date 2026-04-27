@@ -1,43 +1,40 @@
-# スレッズスケジューラー（threads-scheduler-template）
+# スレッズスケジューラー
 
-Threadsの予約投稿をGitHub Actionsで自動化するテンプレートリポジトリです。
+Googleスプレッドシートに日時と本文を書くだけで、Threadsへ自動投稿される仕組み。**Google Apps Script版（GitHub不要・完全無料）**。
 
-## 概要
+- 公開サイト: https://tamagoojiji.github.io/threads-scheduler-template/
+- セットアップ手順: https://tamagoojiji.github.io/threads-scheduler-template/setup-guide.html
 
-Googleスプレッドシートに「投稿日時」と「投稿本文」を書くだけで、指定時刻に自動でThreadsに投稿されます。
-
-- **実行環境**: 利用者所有のGitHub Actions（Private repo、10分cron）
-- **データ所有権**: すべて利用者所有（投稿予約・トークン・スプシ）
-- **Meta App Review**: 不要（自分のアプリで自分のアカウントに投稿するDev Mode運用）
-
-## このテンプレを使うには
-
-本テンプレは **tamago 運営の導入代行サービス** と組み合わせて使うことを前提としています。
-個人でセットアップしたい場合は `docs/faq.md` を参照してください。
-
-## 重要な制約
-
-- **標準10分cron**（5分cronは有料オプション）
-- **配信保証**: at-least-once + reconciliation（稀に重複投稿の可能性あり）
-- **Threadsアカウント**: 1リポジトリ=1アカウント（複数アカウントはv2）
-- **Google OAuth**: consent screen を `In production` に変更必須（Testing状態だと7日失効）
-
-## ディレクトリ構成
+## 構成
 
 ```
-threads-scheduler-template/
-├── .github/workflows/     # GitHub Actions（post / refresh-token）
-├── src/                   # TypeScript実装
-├── scripts/               # 手動実行スクリプト
-├── docs/                  # GitHub Pages用静的HTML（LP・プラポリ等）
-├── internal/              # 内部用: Zoom台本・FAQ（公開対象外）
-└── templates/             # スプシテンプレ・Discord設定手順
+docs/      公開LP・手順書・プラポリ等（GitHub Pages公開）
+gas/       Apps Scriptコード（マスタースプシのApps Scriptに反映）
+internal/  内部用ドキュメント（Zoom台本・テスター応募フォーム生成GAS等）
+templates/ スプシテンプレ仕様書
 ```
+
+## 動作の仕組み
+
+1. 利用者がマスタースプシをコピー → 自分のGoogleドライブに作成（Apps Scriptもコピーされる）
+2. スプシのカスタムメニュー「スレッズスケジューラー」から:
+   - 初回セットアップ（Secrets登録）
+   - トリガーをインストール（10分ごとの投稿チェック + 週次のトークン更新）
+3. A列に日付、B列に時刻、C列に本文を入力
+4. 10分以内にThreadsへ自動投稿、Discordに通知
+
+## スプシの列構造（B方式）
+
+| 列 | 用途 | 入力方法 |
+|---|---|---|
+| A | 日付 | カレンダーピッカー |
+| B | 時刻 | 30分刻みプルダウン |
+| C | 投稿本文 | 自由入力 |
+| D | 画像URL | 任意 |
+| E | ステータス | プルダウン（自動更新） |
+| F〜L | システム管理 | 触らない |
+| M | 投稿日時 | 数式（A+B自動結合） |
 
 ## ライセンス
 
-UNLICENSED（商用配布物、無断複製・転載禁止）
-
-## 問い合わせ
-
-@tamago_app 運営まで
+Personal use only. 商用配布や転売はお問い合わせください。

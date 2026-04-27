@@ -40,7 +40,7 @@
 <li>氏名・住所・電話番号</li>
 <li>決済カード情報（Stripe社が保持、当方は参照権限なし）</li>
 <li>Threads投稿内容・投稿履歴（利用者所有のGoogleスプレッドシート内で完結）</li>
-<li>Threadsアクセストークン・OAuth認証情報（利用者所有のGitHub Secrets内で完結）</li>
+<li>Threadsアクセストークン・各種認証情報（利用者所有のApps Script Properties内で完結）</li>
 <li>Cookie・アクセス解析データ</li>
 </ul>
 
@@ -57,8 +57,7 @@
 <p>本サービスは以下の外部サービスと連携しますが、各サービスへの情報提供は<strong>利用者自身が自己のアカウントで行います</strong>。当方は仲介しません。</p>
 <ul>
 <li>Meta（Threads API）: 利用者のThreadsアカウントで投稿</li>
-<li>Google（Sheets API）: 利用者のGoogleアカウントでスプレッドシート操作</li>
-<li>GitHub（Actions）: 利用者のGitHubアカウントで自動実行</li>
+<li>Google（Sheets / Apps Script）: 利用者のGoogleアカウントでスプレッドシート操作・スケジュール実行</li>
 <li>Stripe: 決済代行（当方は決済カード情報に一切アクセスしません）</li>
 <li>Discord: 利用者自身のDiscordチャンネルへの通知</li>
 </ul>
@@ -73,7 +72,7 @@
 <p>利用者は、当方が保有する自己の情報について、いつでも削除を請求できます。削除手順は<a href="./data-deletion.html">データ削除手順ページ</a>をご参照ください。</p>
 
 <h2>9. 国外移転</h2>
-<p>本サービスが利用する外部サービス（Meta、Google、GitHub、Stripe）のサーバーは主に米国に所在します。これらに関する情報は各社のプライバシーポリシーに従って処理されます。</p>
+<p>本サービスが利用する外部サービス（Meta、Google、Stripe、Discord）のサーバーは主に米国に所在します。これらに関する情報は各社のプライバシーポリシーに従って処理されます。</p>
 
 <h2>10. 改訂</h2>
 <p>本ポリシーは予告なく改訂されることがあります。重要な変更がある場合、登録メールアドレス宛にご連絡します。</p>
