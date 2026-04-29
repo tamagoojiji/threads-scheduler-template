@@ -87,16 +87,30 @@
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
-  <li>スプシメニュー <strong>「スレッズスケジューラー → ⚙️ 設定シートを準備」</strong> をクリック</li>
+  <li>スプシ上部メニューから <strong>「スレッズスケジューラー → ⚙️ 設定シートを準備」</strong> をクリック</li>
   <li>初回は権限承認ダイアログが出るので「許可」</li>
-  <li>「APIキー設定」シートが新規作成され、5項目の入力欄が表示される</li>
+  <li>「APIキー設定」シートが新規作成され、以下の5項目の入力欄が表示される</li>
 </ol>
 </div>
+
+<h3>登録する5項目（タップで取得方法にジャンプ）</h3>
+<table>
+<thead><tr><th>キー名</th><th>取得場所</th><th>形式</th></tr></thead>
+<tbody>
+<tr><td><a href="#step4"><code>THREADS_APP_ID</code></a></td><td><a href="#step4">Step 4 - Meta Developerアプリ作成</a></td><td>数字（例: 1644...）</td></tr>
+<tr><td><a href="#step4"><code>THREADS_APP_SECRET</code></a></td><td><a href="#step4">Step 4 - Meta Developerアプリ作成</a></td><td>「表示」で取得</td></tr>
+<tr><td><a href="#step5"><code>THREADS_ACCESS_TOKEN</code></a></td><td><a href="#step5">Step 5 - Threads長期トークン取得</a></td><td><code>THAA</code>で始まる長文字列</td></tr>
+<tr><td><a href="#step6"><code>THREADS_USER_ID</code></a></td><td><a href="#step6">Step 6 - Threads User ID取得</a></td><td>17桁前後の数字</td></tr>
+<tr><td><a href="#step7"><code>DISCORD_WEBHOOK_URL</code></a></td><td><a href="#step7">Step 7 - Discord Webhook作成</a></td><td><code>https://discord.com/api/webhooks/...</code></td></tr>
+</tbody>
+</table>
+
 <div class="check">
-このシートのB列に、以降の各ステップで取得した値を順番に貼り付けていきます。
+このシートのB列に、以降の各ステップで取得した値を順番に貼り付けていきます。<br>
+キー名をタップすると、各値の取得方法に直接ジャンプできます。
 </div>
 
-<h2>4. Meta Developer アプリ作成 → <code>APP_ID</code> / <code>APP_SECRET</code> 取得 → 即保存</h2>
+<h2 id="step4">4. Meta Developer アプリ作成 → <code>APP_ID</code> / <code>APP_SECRET</code> 取得 → 即保存</h2>
 
 <div class="danger">
 電話番号認証では <strong>Facebookアカウントと連携している電話番号</strong> をご利用ください。連携していない番号だと認証が通らない or アカウントロックの原因になります。
@@ -164,7 +178,7 @@
 </ol>
 </div>
 
-<h2>5. Threads長期トークン取得 → <code>ACCESS_TOKEN</code> 取得 → 即保存</h2>
+<h2 id="step5">5. Threads長期トークン取得 → <code>ACCESS_TOKEN</code> 取得 → 即保存</h2>
 
 <h3>5-1. ユーザートークン生成ツールを開く</h3>
 <div class="step">
@@ -215,7 +229,7 @@
 </ol>
 </div>
 
-<h2>6. Threads User ID取得 → <code>USER_ID</code> 取得 → 即保存</h2>
+<h2 id="step6">6. Threads User ID取得 → <code>USER_ID</code> 取得 → 即保存</h2>
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
@@ -239,7 +253,7 @@
 </ol>
 </div>
 
-<h2>7. Discord Webhook作成 → <code>WEBHOOK_URL</code> 取得 → 即保存</h2>
+<h2 id="step7">7. Discord Webhook作成 → <code>WEBHOOK_URL</code> 取得 → 即保存</h2>
 
 <h3>7-1. 開発者モードを有効化</h3>
 <div class="step">
