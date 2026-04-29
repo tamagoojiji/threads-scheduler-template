@@ -1,410 +1,2229 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>セットアップ手順書｜スレッズスケジューラー</title>
-<meta name="description" content="スレッズスケジューラーのセットアップ手順。Google Apps Script版・GitHub不要・取得→即保存方式">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>スレッズスケジューラー — セットアップ手順書</title>
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Inter (英数) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['"Hiragino Sans"', '"Hiragino Kaku Gothic ProN"', 'Inter', 'system-ui', 'sans-serif'],
+          en:   ['Inter', '"Hiragino Sans"', 'system-ui', 'sans-serif'],
+        },
+      }
+    }
+  };
+</script>
+
+<!-- Tweakable defaults (host can rewrite) -->
+<script>
+  const TWEAKS = /*EDITMODE-BEGIN*/{
+    "gradStart": "#ff7a3d",
+    "gradEnd": "#e94e3a",
+    "fontScale": 1,
+    "dark": false
+  }/*EDITMODE-END*/;
+</script>
+
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif; line-height: 1.85; color: #222; }
-  .hero { background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: white; padding: 56px 20px; text-align: center; }
-  .hero h1 { font-size: 2em; margin-bottom: 8px; }
-  .hero p { font-size: 1.05em; opacity: 0.95; }
-  .container { max-width: 880px; margin: 0 auto; padding: 36px 20px; }
-  h2 { font-size: 1.5em; margin: 1.6em 0 0.6em; border-left: 6px solid #6a11cb; padding-left: 14px; }
-  h3 { font-size: 1.15em; margin: 1.2em 0 0.4em; color: #444; }
-  ul, ol { padding-left: 1.5em; margin: 0.6em 0 1em; }
-  li { margin: 0.25em 0; }
-  code { background: #f3f3f7; padding: 2px 6px; border-radius: 4px; font-size: 0.92em; }
-  pre { background: #2b2b3a; color: #f5f5fb; padding: 14px 18px; border-radius: 8px; overflow-x: auto; margin: 0.8em 0; font-size: 0.9em; }
-  .step { background: #f7f7fb; padding: 18px 22px; border-radius: 8px; margin: 1.2em 0; border-left: 4px solid #2575fc; }
-  .step-num { display: inline-block; background: #2575fc; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.85em; margin-right: 8px; }
-  .save-block { background: #eef9f0; padding: 16px 20px; border-radius: 8px; margin: 1em 0; border-left: 4px solid #4caf50; }
-  .save-block h4 { color: #2c7a2c; margin-bottom: 6px; }
-  .notice { background: #fff7e0; padding: 14px 18px; border-radius: 6px; margin: 1em 0; border-left: 4px solid #f0c000; }
-  .danger { background: #ffecec; padding: 14px 18px; border-radius: 6px; margin: 1em 0; border-left: 4px solid #e74c3c; }
-  .check { background: #eef9f0; padding: 12px 18px; border-radius: 6px; margin: 0.6em 0; border-left: 3px solid #4caf50; }
-  table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: 0.94em; }
-  th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
-  th { background: #f0f0f6; }
-  a { color: #2575fc; }
-  .toc { background: #f7f7fb; padding: 18px 22px; border-radius: 8px; margin: 1em 0; }
-  .toc ol { margin: 0.4em 0 0; }
-  footer { margin-top: 3em; padding: 24px 20px; background: #222; color: white; text-align: center; font-size: 0.9em; }
-  footer a { color: #7ab4ff; }
+  :root{
+    --grad-start:#ff7a3d;
+    --grad-end:#e94e3a;
+    --brand-accent:#1f3a6e;
+    --brand-yellow:#fbb12e;
+    --grad: linear-gradient(135deg, var(--grad-start) 0%, var(--grad-end) 100%);
+    --ok:#4caf50;
+    --warn:#f0c000;
+    --danger:#e74c3c;
+
+    --bg:#fafbff;
+    --surface:#ffffff;
+    --ink:#0f1733;
+    --ink-2:#3b4566;
+    --ink-3:#6b7493;
+    --line:#e6e9f4;
+    --line-2:#eef0f8;
+    --code-bg:#0f1733;
+    --code-ink:#e6e9f4;
+    --shadow-sm: 0 1px 2px rgba(15,23,51,.04), 0 2px 8px rgba(15,23,51,.04);
+    --shadow-md: 0 4px 12px rgba(15,23,51,.06), 0 12px 32px rgba(15,23,51,.06);
+    --shadow-lg: 0 12px 36px rgba(15,23,51,.08), 0 24px 60px rgba(15,23,51,.08);
+  }
+
+  html.dark{
+    --bg:#0a0f24;
+    --surface:#121a36;
+    --ink:#f1f3fb;
+    --ink-2:#c2c8e0;
+    --ink-3:#8b93b3;
+    --line:#222b4d;
+    --line-2:#1a2240;
+    --code-bg:#070b1c;
+    --code-ink:#dfe5ff;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.35), 0 12px 32px rgba(0,0,0,.4);
+    --shadow-lg: 0 12px 36px rgba(0,0,0,.45), 0 24px 60px rgba(0,0,0,.5);
+  }
+
+  html{ font-size: calc(16px * var(--font-scale, 1)); scroll-behavior: smooth; scroll-padding-top: 88px; }
+  body{
+    font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Inter',system-ui,sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-wrap: pretty;
+  }
+
+  /* ===== Top nav ===== */
+  .nav-blur{
+    background: color-mix(in oklab, var(--bg) 85%, transparent);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-link{
+    color: var(--ink-2);
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: .4rem .7rem;
+    border-radius: 8px;
+    transition: color .15s, background .15s;
+    white-space: nowrap;
+  }
+  .nav-link:hover{ color: var(--ink); background: var(--line-2); }
+  .nav-link.active{ color: white; background: var(--grad); }
+
+  .logo-mark{
+    width: 36px; height: 36px; border-radius: 10px;
+    background: #fff;
+    overflow: hidden;
+    display: grid; place-items: center;
+    box-shadow: 0 4px 12px rgba(233,78,58,.18), 0 0 0 1px rgba(0,0,0,.04);
+  }
+  .logo-mark img{ width: 100%; height: 100%; object-fit: cover; }
+
+  .btn-primary{
+    background: var(--grad); color: white; font-weight: 700;
+    padding: .7rem 1.2rem; border-radius: 12px;
+    box-shadow: 0 8px 22px color-mix(in oklab, var(--grad-start) 35%, transparent);
+    transition: transform .15s, box-shadow .15s;
+    white-space: nowrap;
+  }
+  .btn-primary:hover{ transform: translateY(-1px); box-shadow: 0 12px 28px color-mix(in oklab, var(--grad-start) 45%, transparent); }
+  .btn-ghost{
+    color: var(--ink); font-weight: 600;
+    padding: .55rem 1rem; border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    transition: background .15s, border-color .15s;
+  }
+  .btn-ghost:hover{ background: var(--line-2); border-color: var(--ink-3); }
+
+  /* ===== Hero ===== */
+  .hero{
+    background:
+      radial-gradient(900px 520px at 88% 12%, rgba(255,138,46,.42) 0%, rgba(255,138,46,0) 62%),
+      radial-gradient(820px 540px at 95% 55%, rgba(255,107,46,.38) 0%, rgba(255,107,46,0) 65%),
+      radial-gradient(700px 520px at 8% 92%, rgba(233,78,58,.28) 0%, rgba(233,78,58,0) 65%),
+      radial-gradient(520px 400px at 18% 18%, rgba(31,58,110,.18) 0%, rgba(31,58,110,0) 70%),
+      radial-gradient(1200px 700px at 50% 30%, #1a0d05 0%, #0d0703 55%, #050201 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0 0 32px 32px;
+  }
+  .hero::before, .hero::after{
+    content:""; position:absolute; border-radius:50%;
+    filter: blur(140px); pointer-events:none;
+  }
+  .hero::before{ width: 620px; height: 620px; background:#ff7a3d; top:-200px; right:-140px; opacity:.32; }
+  .hero::after{  width: 480px; height: 480px; background:#e94e3a; bottom:-220px; left:-140px; opacity:.20; }
+  /* contrast scrim so white text stays crisp on any gradient */
+  .hero-scrim{
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(0,0,0,.30) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,.35) 100%);
+    pointer-events:none;
+  }
+  .hero-grid{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at 50% 30%, black 25%, transparent 75%);
+    pointer-events:none;
+  }
+  /* subtle film grain via SVG noise */
+  .hero-noise{
+    position:absolute; inset:0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/></svg>");
+    opacity: .035;
+    mix-blend-mode: overlay;
+    pointer-events:none;
+  }
+  .hero h1{
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: #ffffff;
+    text-shadow: 0 2px 18px rgba(0,0,0,.20);
+  }
+  .hero p.lead{ color: #ffffff; }
+  .hero .text-white\/85,
+  .hero .text-white\/75,
+  .hero .text-white\/70{ color: #ffffff !important; }
+  .hero .eyebrow{ color: #ffffff; }
+  .hero, .hero *{ color: #ffffff; }
+  .hero .eyebrow{
+    display:inline-flex; align-items:center; gap:.5rem;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.14);
+    padding: .4rem .85rem; border-radius: 999px;
+    font-size: .8rem; font-weight: 600; letter-spacing: .04em;
+    backdrop-filter: blur(10px);
+  }
+  .hero .stat-card{
+    background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.02) 100%);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 18px;
+    padding: 1rem 1.1rem;
+    backdrop-filter: blur(12px);
+    color: #ffffff;
+    box-shadow: 0 1px 0 rgba(255,255,255,.04) inset;
+  }
+  .hero .stat-card,
+  .hero .stat-card *{
+    color: #ffffff !important;
+  }
+
+  /* ===== TOC chip grid in hero ===== */
+  .toc-card{
+    background: linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,.015) 100%);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 22px;
+    padding: 1.25rem;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 30px 60px rgba(0,0,0,.45);
+  }
+  .toc-chip{
+    display:flex; align-items:center; gap:.7rem;
+    padding: .8rem .9rem;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 12px;
+    color: #ffffff; font-weight: 600; font-size: .92rem;
+    transition: background .15s, transform .15s, border-color .15s;
+  }
+  .toc-chip:hover{
+    background: rgba(255,255,255,.06);
+    border-color: rgba(255,255,255,.18);
+    transform: translateY(-1px);
+  }
+  .toc-chip .num{
+    width: 30px; height: 26px; border-radius: 7px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.10);
+    display:grid; place-items:center;
+    font-family: Inter, sans-serif; font-weight: 800; font-size: .82rem;
+    color: #ffffff;
+    flex-shrink: 0;
+    letter-spacing: .03em;
+  }
+
+  /* ===== Sidebar ===== */
+  .sidebar{
+    position: sticky; top: 88px;
+    align-self: start;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+    padding-right: .25rem;
+  }
+  .sidebar::-webkit-scrollbar{ width: 6px; }
+  .sidebar::-webkit-scrollbar-thumb{ background: var(--line); border-radius: 3px; }
+
+  .side-item{
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: .65rem;
+    align-items: center;
+    padding: .55rem .55rem;
+    border-radius: 10px;
+    color: var(--ink-2);
+    font-weight: 500; font-size: .9rem;
+    line-height: 1.3;
+    transition: background .15s, color .15s;
+    position: relative;
+  }
+  .side-item:hover{ background: var(--line-2); color: var(--ink); }
+  .side-item.active{
+    background: color-mix(in oklab, var(--grad-start) 10%, var(--surface));
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .side-item.active::before{
+    content:""; position:absolute; left:-12px; top:8px; bottom:8px;
+    width: 3px; border-radius: 2px;
+    background: var(--grad);
+  }
+  .side-num{
+    width: 32px; height: 32px; border-radius: 9px;
+    display:grid; place-items:center;
+    font-family: Inter, sans-serif; font-weight: 700; font-size: .85rem;
+    background: var(--line-2); color: var(--ink-2);
+    border: 1px solid var(--line);
+    transition: all .2s;
+  }
+  .side-item.active .side-num,
+  .side-item.complete .side-num{
+    background: var(--grad); color: white; border-color: transparent;
+    box-shadow: 0 4px 12px color-mix(in oklab, var(--grad-start) 30%, transparent);
+  }
+  .side-item.complete .side-num::after{
+    content: "✓";
+  }
+  .side-item.complete .side-num > span{ display: none; }
+  .side-item.complete .side-label{ text-decoration: line-through; opacity: .65; }
+
+  .side-progress{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1rem;
+  }
+  .side-progress .bar{
+    height: 8px; border-radius: 999px;
+    background: var(--line-2); overflow: hidden;
+    margin-top: .55rem;
+  }
+  .side-progress .bar > span{
+    display:block; height: 100%; width: 0%;
+    background: var(--grad); border-radius: 999px;
+    transition: width .4s ease;
+  }
+
+  /* ===== Section ===== */
+  .section{
+    margin-bottom: 5rem;
+    scroll-margin-top: 100px;
+  }
+  .section-card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    box-shadow: var(--shadow-md);
+  }
+  .step-badge{
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: var(--grad);
+    color: white;
+    display: grid; place-items: center;
+    font-family: Inter, sans-serif;
+    font-weight: 900;
+    font-size: 1.6rem;
+    box-shadow: 0 12px 30px color-mix(in oklab, var(--grad-start) 40%, transparent);
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .step-badge .lbl{ font-size: .55rem; font-weight: 600; letter-spacing: .12em; opacity: .85; margin-bottom: 2px; }
+  .step-badge .num{ font-size: 1.7rem; font-weight: 900; }
+
+  .section-title{
+    font-weight: 800; letter-spacing: -0.01em; line-height: 1.2;
+    color: var(--ink);
+  }
+  .meta-pill{
+    display:inline-flex; align-items:center; gap:.4rem;
+    padding: .3rem .7rem; border-radius: 999px;
+    font-size: .78rem; font-weight: 600;
+    background: var(--line-2); color: var(--ink-2);
+    border: 1px solid var(--line);
+  }
+
+  /* ===== Sub-headings inside step ===== */
+  .sub-head{
+    font-weight: 700; font-size: 1.15rem;
+    color: var(--ink);
+    display: flex; align-items: center; gap: .6rem;
+    margin: 1.75rem 0 .85rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px dashed var(--line);
+  }
+  .sub-head .sh-num{
+    font-family: Inter, sans-serif;
+    font-size: .8rem; font-weight: 800;
+    background: var(--grad);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+    letter-spacing: .04em;
+  }
+
+  /* ===== Numbered list ===== */
+  ol.guided{ counter-reset: guided; list-style: none; padding: 0; margin: 0; }
+  ol.guided > li{
+    counter-increment: guided;
+    position: relative;
+    padding: .65rem 0 .65rem 2.4rem;
+    color: var(--ink-2);
+    line-height: 1.65;
+  }
+  ol.guided > li::before{
+    content: counter(guided);
+    position: absolute; left: 0; top: .65rem;
+    width: 1.7rem; height: 1.7rem;
+    background: var(--line-2);
+    color: var(--ink);
+    font-family: Inter, sans-serif; font-weight: 700; font-size: .82rem;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    border: 1px solid var(--line);
+  }
+
+  /* ===== Callouts ===== */
+  .callout{
+    border-radius: 14px;
+    padding: 1rem 1.15rem 1rem 1rem;
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: .85rem;
+    margin: 1rem 0;
+    line-height: 1.55;
+    border: 1px solid;
+  }
+  .callout .ic{
+    width: 28px; height: 28px; border-radius: 8px;
+    display:grid; place-items:center;
+    color: white; font-weight: 800; font-size: .9rem;
+    flex-shrink: 0;
+  }
+  .callout-warn  { background: color-mix(in oklab, var(--warn) 10%, var(--surface)); border-color: color-mix(in oklab, var(--warn) 40%, var(--line)); }
+  .callout-warn .ic { background: var(--warn); color:#3a2a00; }
+  .callout-danger{ background: color-mix(in oklab, var(--danger) 8%, var(--surface)); border-color: color-mix(in oklab, var(--danger) 45%, var(--line)); }
+  .callout-danger .ic{ background: var(--danger); }
+  .callout-ok    { background: color-mix(in oklab, var(--ok) 8%, var(--surface)); border-color: color-mix(in oklab, var(--ok) 45%, var(--line)); }
+  .callout-ok .ic{ background: var(--ok); }
+  .callout-info  { background: color-mix(in oklab, var(--grad-start) 6%, var(--surface)); border-color: color-mix(in oklab, var(--grad-start) 28%, var(--line)); }
+  .callout-info .ic{ background: var(--grad); }
+
+  .callout strong{ color: var(--ink); }
+
+  /* ===== Save reminder ===== */
+  .save-card{
+    background: linear-gradient(135deg,
+      color-mix(in oklab, var(--ok) 12%, var(--surface)),
+      color-mix(in oklab, var(--ok) 4%, var(--surface)));
+    border: 1px solid color-mix(in oklab, var(--ok) 35%, var(--line));
+    border-radius: 16px;
+    padding: 1.15rem 1.25rem;
+    margin: 1.25rem 0 .25rem;
+  }
+  .save-card .save-head{
+    display:flex; align-items:center; gap:.6rem;
+    font-weight: 800; color: var(--ink);
+    margin-bottom: .55rem;
+  }
+  .save-card .save-head .pin{
+    background: var(--ok); color:white;
+    width: 26px; height: 26px; border-radius: 7px;
+    display:grid; place-items:center; font-size: .85rem;
+  }
+  .save-card ul{ list-style:none; padding:0; margin:0; }
+  .save-card li{
+    padding: .35rem 0;
+    color: var(--ink-2);
+    display: flex; gap: .55rem; align-items: baseline;
+  }
+  .save-card li::before{
+    content: "›"; color: var(--ok); font-weight: 800;
+  }
+  .save-card .save-note{
+    margin-top: .85rem;
+    padding: .65rem .85rem;
+    border-left: 3px solid var(--danger);
+    background: color-mix(in oklab, var(--danger) 7%, transparent);
+    border-radius: 0 8px 8px 0;
+  }
+  .save-card .save-note p{
+    color: var(--danger); font-weight: 600; font-size: .85rem;
+    line-height: 1.55; margin: 0;
+  }
+  .save-card .save-note p + p{ margin-top: .35rem; }
+  .save-card .key{
+    font-family: Inter, ui-monospace, monospace;
+    font-weight: 700; color: var(--ink);
+    background: color-mix(in oklab, var(--ok) 16%, transparent);
+    padding: .05rem .45rem; border-radius: 6px;
+    font-size: .85rem;
+  }
+
+  /* ===== URL Builder widget ===== */
+  .url-builder{
+    background: var(--code-bg);
+    border: 1px solid color-mix(in oklab, var(--code-ink) 12%, transparent);
+    border-radius: 14px;
+    padding: 1rem 1.1rem 1.1rem;
+    margin: 1.25rem 0;
+  }
+  .url-builder .ub-label{
+    display:block; font-weight: 700; font-size: .85rem;
+    color: rgba(255,255,255,.92); margin-bottom: .55rem;
+    letter-spacing: .02em;
+  }
+  .url-builder .ub-input-row{
+    display:flex; gap:.4rem; align-items:stretch;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 10px;
+    padding: .25rem .25rem .25rem .6rem;
+  }
+  .url-builder .ub-input{
+    flex: 1; min-width: 0;
+    background: transparent; border: 0; outline: 0;
+    color: rgba(255,255,255,.96);
+    font-family: Inter, ui-monospace, "SFMono-Regular", Menlo, monospace;
+    font-size: .9rem; padding: .55rem .25rem;
+  }
+  .url-builder .ub-input::placeholder{ color: rgba(255,255,255,.35); }
+  .url-builder .ub-btn{
+    appearance:none; border:0;
+    font-family: inherit; font-weight: 700; font-size: .85rem;
+    cursor: pointer; transition: all .15s ease;
+    border-radius: 8px;
+    display:inline-flex; align-items:center; justify-content:center; gap:.35rem;
+    white-space: nowrap;
+  }
+  .url-builder .ub-btn-ghost{
+    background: transparent; color: rgba(255,255,255,.55);
+    padding: 0 .65rem; min-width: 36px;
+    border: 1px solid transparent;
+  }
+  .url-builder .ub-btn-ghost:hover{ background: rgba(255,255,255,.08); color:rgba(255,255,255,.9); }
+  .url-builder .ub-output{
+    margin-top: .85rem;
+    padding: .85rem 1rem;
+    background: rgba(0,0,0,.35);
+    border: 1px dashed rgba(255,255,255,.2);
+    border-radius: 10px;
+    font-family: Inter, ui-monospace, "SFMono-Regular", Menlo, monospace;
+    font-size: .82rem; line-height: 1.6;
+    word-break: break-all;
+    color: rgba(255,255,255,.78);
+  }
+  .url-builder .ub-output .ub-prefix{ color: rgba(255,255,255,.62); }
+  .url-builder .ub-output .ub-token{ color: var(--grad-end); font-weight: 600; }
+  .url-builder .ub-output.is-filled .ub-token{ color: #6ee7b7; }
+  .url-builder .ub-actions{
+    display:flex; flex-wrap:wrap; gap:.5rem; align-items:center;
+    margin-top: .85rem;
+  }
+  .url-builder .ub-btn-primary{
+    background: var(--grad);
+    color: white;
+    padding: .65rem 1.1rem;
+    box-shadow: 0 6px 16px -8px color-mix(in oklab, var(--grad-end) 60%, transparent);
+  }
+  .url-builder .ub-btn-primary:hover:not([disabled]){ transform: translateY(-1px); box-shadow: 0 8px 20px -8px color-mix(in oklab, var(--grad-end) 70%, transparent); }
+  .url-builder .ub-btn-secondary{
+    background: rgba(255,255,255,.1);
+    color: rgba(255,255,255,.92);
+    padding: .65rem 1rem;
+    border: 1px solid rgba(255,255,255,.18);
+  }
+  .url-builder .ub-btn-secondary:hover:not([disabled]){ background: rgba(255,255,255,.18); }
+  .url-builder .ub-btn[disabled]{ opacity: .35; cursor: not-allowed; }
+  .url-builder .ub-status{
+    font-size: .8rem; color: #6ee7b7; font-weight: 700;
+    opacity: 0; transition: opacity .2s;
+  }
+  .url-builder .ub-status.show{ opacity: 1; }
+
+  /* ===== Code / URL ===== */
+  code, .codeblock{
+    font-family: Inter, ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  code.inline{
+    background: var(--line-2); color: var(--ink);
+    padding: .12rem .45rem; border-radius: 6px;
+    font-size: .88em;
+    border: 1px solid var(--line);
+    word-break: break-all;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+    position: relative;
+  }
+  code.inline:hover{
+    background: color-mix(in oklab, var(--grad-start) 10%, var(--line-2));
+    border-color: color-mix(in oklab, var(--grad-start) 35%, var(--line));
+  }
+  code.inline.copied{
+    background: color-mix(in oklab, var(--ok) 18%, var(--surface));
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+  code.inline.copied::after{
+    content: " ✓ コピーしました";
+    font-weight: 700; font-size: .85em;
+  }
+  .codeblock{
+    background: var(--code-bg); color: var(--code-ink);
+    padding: 1rem 1.15rem; border-radius: 12px;
+    font-size: .88rem; line-height: 1.6;
+    overflow-x: auto;
+    border: 1px solid color-mix(in oklab, var(--code-bg) 70%, var(--line));
+    position: relative;
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
+  .codeblock .placeholder{
+    color: #ffd166; font-weight: 700;
+  }
+
+  /* ===== Screenshot placeholder ===== */
+  figure.screenshot{
+    margin: 1.25rem 0;
+    border-radius: 14px;
+    background:
+      linear-gradient(135deg,
+        color-mix(in oklab, var(--grad-start) 8%, var(--surface)),
+        color-mix(in oklab, var(--grad-end)  8%, var(--surface)));
+    border: 2px dashed color-mix(in oklab, var(--grad-start) 30%, var(--line));
+    padding: 2.5rem 1.5rem;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    color: var(--ink-3);
+    min-height: 180px;
+    transition: border-color .2s, background .2s;
+  }
+  figure.screenshot:hover{
+    border-color: color-mix(in oklab, var(--grad-start) 50%, var(--line));
+  }
+  figure.screenshot .ph-icon{
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    background: var(--grad);
+    color: white;
+    display: grid; place-items: center;
+    margin-bottom: .85rem;
+    box-shadow: 0 8px 22px color-mix(in oklab, var(--grad-start) 30%, transparent);
+  }
+  figure.screenshot figcaption{
+    font-weight: 600; color: var(--ink-2);
+    font-size: .92rem;
+  }
+  figure.screenshot .ph-sub{
+    font-size: .8rem; color: var(--ink-3); margin-top: .2rem;
+    font-family: Inter, sans-serif;
+  }
+
+  /* ===== Table ===== */
+  .keys-table{
+    width: 100%;
+    border-collapse: separate; border-spacing: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    font-size: .92rem;
+  }
+  .keys-table th, .keys-table td{
+    text-align: left;
+    padding: .85rem 1rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+  }
+  .keys-table thead th{
+    background: var(--line-2);
+    color: var(--ink-2);
+    font-weight: 700;
+    font-size: .8rem;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+  }
+  .keys-table tr:last-child td{ border-bottom: none; }
+  .keys-table .keyname{
+    font-family: Inter, ui-monospace, monospace;
+    font-weight: 800; color: var(--ink);
+    font-size: .92rem;
+  }
+  .keys-table .keyname a{
+    color: var(--ink);
+    border-bottom: 2px solid color-mix(in oklab, var(--grad-start) 50%, transparent);
+    padding-bottom: 1px;
+    transition: color .15s;
+  }
+  .keys-table .keyname a:hover{ color: var(--grad-start); }
+  .keys-table .where{ color: var(--ink-2); font-size: .88rem; }
+  .keys-table .where a{
+    color: var(--ink-2);
+    border-bottom: 1px dashed color-mix(in oklab, var(--grad-start) 40%, transparent);
+    padding-bottom: 1px;
+    transition: color .15s, border-color .15s;
+  }
+  .keys-table .where a:hover{ color: var(--grad-start); border-bottom-color: var(--grad-start); }
+  .keys-table .fmt{ color: var(--ink-3); font-size: .82rem; font-family: Inter, sans-serif; }
+
+  /* ===== Big copy button (Step 2) ===== */
+  .big-cta{
+    display: inline-flex; align-items: center; gap: .85rem;
+    background: var(--grad); color: white;
+    padding: 1.1rem 1.75rem;
+    border-radius: 16px;
+    font-size: 1.1rem; font-weight: 800;
+    box-shadow: 0 14px 34px color-mix(in oklab, var(--grad-start) 40%, transparent);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .big-cta:hover{ transform: translateY(-2px); box-shadow: 0 18px 40px color-mix(in oklab, var(--grad-start) 50%, transparent); }
+  .big-cta .emoji{ font-size: 1.4rem; }
+
+  /* ===== Checklist ===== */
+  .step-check{
+    display: flex; align-items: flex-start; gap: .75rem;
+    background: var(--line-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: .85rem 1rem;
+    margin-top: 1.25rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background .15s;
+  }
+  .step-check:hover{ background: color-mix(in oklab, var(--grad-start) 5%, var(--line-2)); }
+  .step-check input{
+    appearance: none;
+    width: 22px; height: 22px;
+    border: 2px solid var(--line);
+    background: var(--surface);
+    border-radius: 7px;
+    flex-shrink: 0;
+    cursor: pointer;
+    display: grid; place-items: center;
+    margin-top: 1px;
+    transition: all .15s;
+  }
+  .step-check input:checked{
+    background: var(--grad); border-color: transparent;
+  }
+  .step-check input:checked::after{
+    content: "✓"; color: white; font-weight: 800; font-size: .85rem;
+  }
+  .step-check .label{
+    font-weight: 600; color: var(--ink);
+    font-size: .95rem;
+  }
+  .step-check .label .sub{
+    display: block; font-weight: 500; color: var(--ink-3);
+    font-size: .82rem; margin-top: .15rem;
+  }
+
+  /* ===== FAQ accordion ===== */
+  .faq-item{
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+    overflow: hidden;
+    margin-bottom: .75rem;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .faq-item.open{
+    border-color: color-mix(in oklab, var(--grad-start) 35%, var(--line));
+    box-shadow: var(--shadow-sm);
+  }
+  .faq-q{
+    display: flex; justify-content: space-between; align-items: center;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    text-align: left;
+    font-weight: 700; color: var(--ink);
+    font-size: 1rem;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+  }
+  .faq-q .chev{
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--line-2);
+    display: grid; place-items: center;
+    transition: transform .25s, background .15s;
+    flex-shrink: 0;
+    margin-left: .75rem;
+  }
+  .faq-item.open .faq-q .chev{ transform: rotate(180deg); background: var(--grad); color: white; }
+  .faq-a{
+    max-height: 0; overflow: hidden;
+    transition: max-height .35s ease;
+    color: var(--ink-2); line-height: 1.65;
+  }
+  .faq-a-inner{ padding: 0 1.25rem 1.15rem; }
+  .faq-item.open .faq-a{ max-height: 600px; }
+
+  /* ===== Reveal animation ===== */
+  .reveal{
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .reveal.in{ opacity: 1; transform: none; }
+
+  /* ===== Footer ===== */
+  footer{
+    margin-top: 5rem;
+    padding: 3rem 0 2rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-3);
+    font-size: .9rem;
+  }
+  footer a:hover{ color: var(--ink); }
+
+  /* ===== Tweaks panel ===== */
+  .tweaks-panel{
+    position: fixed; right: 16px; bottom: 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    padding: 1rem 1.1rem;
+    width: 280px;
+    z-index: 100;
+    display: none;
+  }
+  .tweaks-panel.show{ display: block; }
+  .tweaks-panel h4{
+    font-weight: 800; font-size: 1rem;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: .85rem;
+  }
+  .tweaks-panel label{
+    display: block;
+    font-size: .78rem; font-weight: 600;
+    color: var(--ink-2);
+    margin-top: .85rem; margin-bottom: .35rem;
+  }
+  .tweaks-panel input[type="color"]{
+    width: 100%; height: 36px; padding: 2px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--surface); cursor: pointer;
+  }
+  .tweaks-panel input[type="range"]{ width: 100%; }
+  .tweaks-row{ display:flex; gap:.5rem; align-items:center; }
+  .tweaks-row > *{ flex: 1; }
+  .tw-toggle{
+    display:flex; align-items:center; gap:.5rem;
+    padding:.45rem .7rem; border-radius:8px;
+    background: var(--line-2); border: 1px solid var(--line);
+    cursor: pointer; font-weight: 600; font-size: .85rem;
+    transition: background .15s;
+  }
+  .tw-toggle:hover{ background: color-mix(in oklab, var(--grad-start) 8%, var(--line-2)); }
+  .tw-toggle.on{ background: var(--grad); color: white; border-color: transparent; }
+  .tw-close{
+    background: var(--line-2); border: 1px solid var(--line);
+    width: 26px; height: 26px; border-radius: 8px;
+    display:grid; place-items:center; cursor: pointer;
+    color: var(--ink-2);
+  }
+  .tw-close:hover{ background: var(--danger); color: white; border-color: transparent; }
+
+  /* ===== Mobile ===== */
+  @media (max-width: 1024px){
+    .layout-grid{ grid-template-columns: 1fr !important; }
+    .sidebar{ display: none; }
+    .mobile-progress{ display: block !important; }
+  }
+  @media (max-width: 768px){
+    .nav-links{ display: none !important; }
+    .hero h1{ font-size: 2.2rem !important; }
+    .hero p.lead{ font-size: 1rem !important; }
+    .step-badge{ width: 56px; height: 56px; }
+    .step-badge .num{ font-size: 1.3rem; }
+    .section-card{ padding: 1.5rem !important; }
+  }
 </style>
 </head>
 <body>
 
-<div class="hero">
-<h1>セットアップ手順書</h1>
-<p>取得した値を即「APIキー設定」シートに保存する方式（GitHub不要・90分で完了）</p>
+<!-- ============ TOP NAV ============ -->
+<nav class="nav-blur fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-[1400px] mx-auto px-5 lg:px-8 h-16 flex items-center justify-between gap-4">
+    <a href="#top" class="flex items-center gap-2.5">
+      <div class="leading-tight">
+        <div class="font-extrabold text-[15px]">スレッズスケジューラー</div>
+        <div class="text-[11px] text-[color:var(--ink-3)] font-en tracking-wider">SETUP GUIDE</div>
+      </div>
+    </a>
+
+    <div class="nav-links hidden lg:flex items-center gap-1">
+      <a class="nav-link" href="#step1">事前準備</a>
+      <a class="nav-link" href="#step2">スプシコピー</a>
+      <a class="nav-link" href="#step3">セットアップ</a>
+      <a class="nav-link" href="#step4">トークン取得</a>
+      <a class="nav-link" href="#step7">Webhook</a>
+      <a class="nav-link" href="#step8">テスト</a>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <a href="#purchase" class="btn-primary text-sm">サポート →</a>
+    </div>
+  </div>
+</nav>
+
+<a id="top"></a>
+
+<!-- ============ HERO ============ -->
+<section class="hero pt-28 lg:pt-32 pb-20 px-5 lg:px-8">
+  <div class="hero-grid"></div>
+  <div class="hero-noise"></div>
+  <div class="hero-scrim"></div>
+  <div class="max-w-[1200px] mx-auto relative">
+    <div class="grid lg:grid-cols-[1.3fr_1fr] gap-12 items-center">
+      <div>
+        <div class="eyebrow mb-5">
+          <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+          プログラミング不要・30分で完了
+        </div>
+        <h1 class="text-5xl md:text-6xl lg:text-7xl mb-6">
+          セットアップ<br/>手順書
+        </h1>
+        <p class="lead text-lg md:text-xl text-white/85 max-w-2xl leading-relaxed mb-8">
+          取得した値をその場で「初回セットアップ」に入力する方式。<br class="hidden md:block"/>
+          画面の流れに沿って進めるだけで、Threadsの予約投稿が動き出します。
+        </p>
+
+        <div class="grid grid-cols-3 gap-3 max-w-xl">
+          <div class="stat-card">
+            <div class="font-en font-extrabold text-3xl text-white">30<span class="text-base text-white">分</span></div>
+            <div class="text-xs text-white mt-0.5">所要時間目安</div>
+          </div>
+          <div class="stat-card">
+            <div class="font-en font-extrabold text-3xl text-white">8<span class="text-base text-white">step</span></div>
+            <div class="text-xs text-white mt-0.5">実作業ステップ</div>
+          </div>
+          <div class="stat-card">
+            <div class="font-en font-extrabold text-3xl text-white">5<span class="text-base text-white">key</span></div>
+            <div class="text-xs text-white mt-0.5">入力する値</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOC chip grid -->
+      <div>
+        <div class="toc-card">
+          <div class="text-xs font-bold tracking-[.18em] text-white/65 mb-3 font-en">CONTENTS</div>
+          <div class="grid grid-cols-2 gap-2.5">
+          <a href="#step1" class="toc-chip"><span class="num">01</span><span>事前準備</span></a>
+          <a href="#step2" class="toc-chip"><span class="num">02</span><span>スプシコピー</span></a>
+          <a href="#step3" class="toc-chip"><span class="num">03</span><span>初回セットアップ</span></a>
+          <a href="#step4" class="toc-chip"><span class="num">04</span><span>Meta App作成</span></a>
+          <a href="#step5" class="toc-chip"><span class="num">05</span><span>トークン取得</span></a>
+          <a href="#step6" class="toc-chip"><span class="num">06</span><span>User ID取得</span></a>
+          <a href="#step7" class="toc-chip"><span class="num">07</span><span>Discord Webhook</span></a>
+          <a href="#step8" class="toc-chip"><span class="num">08</span><span>テスト・運用開始</span></a>
+          <a href="#operation" class="toc-chip"><span class="num">09</span><span>運用</span></a>
+          <a href="#faq"      class="toc-chip"><span class="num">10</span><span>よくある質問</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Mobile progress (visible <1024px) ============ -->
+<div class="mobile-progress hidden max-w-[1200px] mx-auto px-5 -mt-8 mb-8 relative">
+  <div class="rounded-2xl bg-[color:var(--surface)] border border-[color:var(--line)] shadow-lg p-4">
+    <div class="flex items-center justify-between mb-2">
+      <div class="font-bold text-sm">セットアップ進捗</div>
+      <div class="font-en text-xs text-[color:var(--ink-3)]"><span id="mProgressText">0/8</span></div>
+    </div>
+    <div class="h-2 rounded-full bg-[color:var(--line-2)] overflow-hidden">
+      <div id="mProgressBar" style="width:0%; height:100%; background: var(--grad); border-radius:999px; transition:width .4s;"></div>
+    </div>
+  </div>
 </div>
 
-<div class="container">
+<!-- ============ MAIN LAYOUT ============ -->
+<main class="max-w-[1400px] mx-auto px-5 lg:px-8 mt-12 lg:mt-16">
+  <div class="layout-grid grid lg:grid-cols-[260px_1fr] gap-10">
 
-<div class="notice">
-<strong>進め方の特徴</strong>: マスタースプシを最初にコピーし、各APIキーを取得するたびに <strong>すぐ「APIキー設定」シートに入力→保存</strong> するので、メモ取り不要・紛失リスクなし。
-</div>
+    <!-- ====== SIDEBAR ====== -->
+    <aside class="sidebar hidden lg:block">
+      <div class="side-progress">
+        <div class="flex items-center justify-between text-sm">
+          <div class="font-bold">進捗</div>
+          <div class="font-en text-[color:var(--ink-3)] text-xs"><span id="progressText">0/8</span></div>
+        </div>
+        <div class="bar"><span id="progressBar"></span></div>
+        <button id="resetProgress" class="text-xs text-[color:var(--ink-3)] hover:text-[color:var(--ink)] mt-2 font-medium">↻ リセット</button>
+      </div>
 
-<div class="toc">
-<h3>進行ステップ</h3>
-<ol>
-  <li>事前にご準備いただくもの</li>
-  <li>Googleスプシをコピー（最初にやる）</li>
-  <li>「APIキー設定」シートを準備</li>
-  <li>Meta Developer アプリ作成 → <code>APP_ID</code> / <code>APP_SECRET</code> を取得 → 即保存</li>
-  <li>Threads長期トークン取得 → <code>ACCESS_TOKEN</code> を取得 → 即保存</li>
-  <li>Threads User ID取得 → <code>USER_ID</code> を取得 → 即保存</li>
-  <li>Discord Webhook作成 → <code>WEBHOOK_URL</code> を取得 → 即保存</li>
-  <li>テスト投稿で動作確認 → トリガーをインストール</li>
-</ol>
-</div>
+      <nav id="sideNav" class="flex flex-col gap-0.5">
+        <a class="side-item" href="#step1" data-step="1"><span class="side-num"><span>01</span></span><span class="side-label">事前準備</span></a>
+        <a class="side-item" href="#step2" data-step="2"><span class="side-num"><span>02</span></span><span class="side-label">スプシコピー</span></a>
+        <a class="side-item" href="#step3" data-step="3"><span class="side-num"><span>03</span></span><span class="side-label">初回セットアップ</span></a>
+        <a class="side-item" href="#step4" data-step="4"><span class="side-num"><span>04</span></span><span class="side-label">Meta App作成</span></a>
+        <a class="side-item" href="#step5" data-step="5"><span class="side-num"><span>05</span></span><span class="side-label">トークン取得</span></a>
+        <a class="side-item" href="#step6" data-step="6"><span class="side-num"><span>06</span></span><span class="side-label">User ID取得</span></a>
+        <a class="side-item" href="#step7" data-step="7"><span class="side-num"><span>07</span></span><span class="side-label">Discord Webhook</span></a>
+        <a class="side-item" href="#step8" data-step="8"><span class="side-num"><span>08</span></span><span class="side-label">テスト・運用開始</span></a>
+        <div class="border-t border-[color:var(--line)] my-2"></div>
+        <a class="side-item" href="#operation"><span class="side-num"><span>📌</span></span><span class="side-label">完了後の運用</span></a>
+        <a class="side-item" href="#faq"><span class="side-num"><span>?</span></span><span class="side-label">よくある質問</span></a>
+      </nav>
+    </aside>
 
-<h2>1. 事前にご準備いただくもの</h2>
-<p style="font-size:0.9em; color:#666; margin-bottom:8px;">サービス名をタップするとログイン画面が開きます。</p>
-<ul>
-  <li><a href="https://accounts.google.com/" target="_blank" rel="noopener">Googleアカウント</a>（個人でも業務でも可）</li>
-  <li><a href="https://www.threads.net/" target="_blank" rel="noopener">Threadsアカウント</a>（投稿先）</li>
-  <li><a href="discord://">Discordアカウント</a>（エラー通知受信用・<a href="https://discord.com/login" target="_blank" rel="noopener" style="font-size:0.85em;">ブラウザで開く</a>）</li>
-  <li>電話番号（Meta Developer登録のSMS認証で必須・<strong>Facebookアカウントと連携している電話番号</strong>を用意・IP電話/050は不可）</li>
-  <li>Zoomで画面共有できるPC環境</li>
-</ul>
-<h2>2. テンプレートのスプレッドシートのコピーを作成する</h2>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>下のボタンをクリック → 「コピーを作成」ダイアログが表示される</li>
-  <li>「<strong>コピーを作成</strong>」ボタンをクリック → ご自身のGoogleドライブに自動でコピーされる</li>
-  <li>コピー後、画面上部メニューに <strong>「スレッズスケジューラー」</strong> が表示されることを確認</li>
-</ol>
-<p style="text-align:center; margin:1.4em 0;">
-<a href="https://docs.google.com/spreadsheets/d/1a05tRc9-jMv-P7VNJQgn5jyyJHBQ2Zdp1zwsJiyxYI8/copy" target="_blank" rel="noopener" style="display:inline-block; background:#2575fc; color:white; padding:13px 28px; border-radius:24px; text-decoration:none; font-weight:bold; font-size:1.05em;">📋 テンプレートをコピーする</a>
-</p>
-</div>
-<h2>3. 初回セットアップで5項目を入力</h2>
-<p>スプシメニュー <strong>「🔧 初回セットアップ」</strong> を実行すると、以下の5項目が順番にプロンプトで聞かれます。Step 4 〜 7 で各値を取得して、ここに順次入力していきます。</p>
+    <!-- ====== CONTENT ====== -->
+    <div class="min-w-0">
 
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>スプシ上部メニューから <strong>「スレッズスケジューラー → 🔧 初回セットアップ」</strong> をクリック</li>
-  <li>初回は権限承認ダイアログが出るので「許可」</li>
-  <li>以下の順番で5つのプロンプトが表示されるので、各値を入力</li>
-  <li>完了画面で <strong>5項目すべてが「✅ 設定済」</strong> になっていれば成功</li>
-</ol>
-</div>
+      <!-- ===== STEP 1 ===== -->
+      <section id="step1" class="section reveal">
+        <div class="section-card">
+          <div class="flex items-start gap-5 mb-6">
+            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">01</div></div></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="meta-pill">⏱ 所要時間 5分</span>
+                <span class="meta-pill">📋 準備物の確認</span>
+              </div>
+              <h2 class="section-title text-3xl md:text-4xl">事前にご準備いただくもの</h2>
+            </div>
+          </div>
 
-<h3>入力する5項目（タップで取得方法にジャンプ）</h3>
-<table style="font-size: 1.05em;">
-<thead><tr><th>キー名</th><th>取得場所</th><th>形式</th></tr></thead>
-<tbody>
-<tr><td><a href="#step4" style="font-size: 1.1em; font-weight: 600;"><code>THREADS_APP_ID</code></a></td><td><a href="#step4">Step 4 - Meta Developerアプリ作成</a></td><td>数字（例: 1644...）</td></tr>
-<tr><td><a href="#step4" style="font-size: 1.1em; font-weight: 600;"><code>THREADS_APP_SECRET</code></a></td><td><a href="#step4">Step 4 - Meta Developerアプリ作成</a></td><td>「表示」で取得</td></tr>
-<tr><td><a href="#step5" style="font-size: 1.1em; font-weight: 600;"><code>THREADS_ACCESS_TOKEN</code></a></td><td><a href="#step5">Step 5 - Threads長期トークン取得</a></td><td><code>THAA</code>で始まる長文字列</td></tr>
-<tr><td><a href="#step6" style="font-size: 1.1em; font-weight: 600;"><code>THREADS_USER_ID</code></a></td><td><a href="#step6">Step 6 - Threads User ID取得</a></td><td>17桁前後の数字</td></tr>
-<tr><td><a href="#step7" style="font-size: 1.1em; font-weight: 600;"><code>DISCORD_WEBHOOK_URL</code></a></td><td><a href="#step7">Step 7 - Discord Webhook作成</a></td><td><code>https://discord.com/api/webhooks/...</code></td></tr>
-</tbody>
-</table>
+          <p class="text-[color:var(--ink-2)] leading-relaxed mb-5">
+            Zoomサポートをスムーズに進めるため、開始までに下記をご用意ください。
+            <strong>パスワードやカード情報は一切お伺いしません。</strong>
+          </p>
 
-<div class="check">
-キー名をタップすると、各値の取得方法に直接ジャンプできます。<br>
-取得した値は、その都度メニュー「🔧 初回セットアップ」を再実行して該当項目だけ入力することもできます（空欄でOKを押せば既存値を保持）。
-</div>
+          <div class="grid md:grid-cols-2 gap-3">
+            <a href="https://accounts.google.com" target="_blank" class="block p-4 rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] hover:border-[color:var(--ink-3)] transition">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg grid place-items-center text-white font-extrabold" style="background:var(--grad)">G</div>
+                <div class="flex-1">
+                  <div class="font-bold">Googleアカウント</div>
+                  <div class="text-xs text-[color:var(--ink-3)]">個人 / 業務どちらでもOK</div>
+                </div>
+                <span class="text-[color:var(--ink-3)]">↗</span>
+              </div>
+            </a>
+            <a href="https://www.threads.com/" target="_blank" class="block p-4 rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] hover:border-[color:var(--ink-3)] transition">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg grid place-items-center bg-black text-white font-extrabold">@</div>
+                <div class="flex-1">
+                  <div class="font-bold">Threadsアカウント</div>
+                  <div class="text-xs text-[color:var(--ink-3)]">投稿先となるアカウント</div>
+                </div>
+                <span class="text-[color:var(--ink-3)]">↗</span>
+              </div>
+            </a>
+            <a href="discord://" onclick="setTimeout(()=>{location.href='https://discord.com/login'},500)" class="block p-4 rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] hover:border-[color:var(--ink-3)] transition">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg grid place-items-center text-white font-extrabold" style="background:#5865F2">D</div>
+                <div class="flex-1">
+                  <div class="font-bold">Discordアカウント</div>
+                  <div class="text-xs text-[color:var(--ink-3)]">投稿結果通知の受信用</div>
+                </div>
+                <span class="text-[color:var(--ink-3)]">↗</span>
+              </div>
+            </a>
+            <div class="block p-4 rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)]">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg grid place-items-center text-white font-extrabold" style="background:var(--ok)">☎</div>
+                <div class="flex-1">
+                  <div class="font-bold">電話番号(SMS受信可)</div>
+                  <div class="text-xs text-[color:var(--ink-3)]">Facebook連携必須・IP電話/050不可</div>
+                </div>
+              </div>
+            </div>
+            <div class="block p-4 rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] md:col-span-2">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg grid place-items-center text-white font-extrabold" style="background:#0f1733">💻</div>
+                <div class="flex-1">
+                  <div class="font-bold">Zoom画面共有可能なPC環境</div>
+                  <div class="text-xs text-[color:var(--ink-3)]">スマホのみでも進行可能ですが、操作の確認はPC推奨</div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-<h2 id="step4">4. Meta Developer アプリ作成 → <code>APP_ID</code> / <code>APP_SECRET</code> 取得 → 即保存</h2>
+          <div class="callout callout-danger mt-5">
+            <div class="ic">!</div>
+            <div>
+              <strong>パスワード・カード情報は一切お伺いしません。</strong><br/>
+              「教えてください」と言われた場合は<strong>当社を装った第三者の可能性</strong>があります。即時にサポート窓口までご連絡ください。
+            </div>
+          </div>
 
-<div class="danger">
-電話番号認証では <strong>Facebookアカウントと連携している電話番号</strong> をご利用ください。連携していない番号だと認証が通らない or アカウントロックの原因になります。
-</div>
+          <div class="callout callout-warn">
+            <div class="ic">⚠</div>
+            <div>
+              電話番号は <strong>Facebookアカウントと連携している番号</strong> をご準備ください。Step 4 の認証でこの番号宛にSMSが届きます。
+            </div>
+          </div>
 
-<h3>4-1. Meta Developer登録</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li><a href="https://developers.facebook.com" target="_blank">developers.facebook.com</a> へログイン</li>
-  <li>電話番号認証 → 開発者規約に同意</li>
-</ol>
-</div>
+          <label class="step-check" data-progress-key="step1">
+            <input type="checkbox" />
+            <span class="label">準備物が揃いました <span class="sub">次へ進む準備OK</span></span>
+          </label>
 
-<h3>4-2. アプリ作成</h3>
-<p style="text-align:center; margin:1em 0;">
-<img src="./images/step4-2-create-app.png" alt="アプリを作成ボタン" style="max-width:240px; width:100%; border:1px solid #e6e6ee; border-radius:8px;">
-</p>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li><code>マイアプリ → アプリを作成</code></li>
-  <li>ユースケースで <strong>「Threads APIにアクセス」</strong> を選択</li>
-  <li>アプリ名は任意（例: <code>my-threads-scheduler</code>）</li>
-</ol>
-</div>
+          <div class="mt-6 p-4 rounded-xl bg-[color:var(--line-2)] text-sm text-[color:var(--ink-2)]">
+            💡 <strong>つまずきポイント:</strong> 050などのIP電話番号ではMeta側のSMS認証が通りません。確実に受信できる携帯番号をご用意ください。
+          </div>
+        </div>
+      </section>
 
-<h3>4-3. アプリの基本設定</h3>
-<div class="danger">
-新UIでは保存時に「フォームを保存できません」エラーが頻発します。<strong>以下すべてを揃えて初めて保存できます。</strong>
-</div>
-<p>左メニュー <code>アプリの設定 → ベーシック</code>:</p>
-<ul>
-  <li><strong>カテゴリ</strong>: <code>ビジネス・ページ</code> を選択（他カテゴリだと保存不可）</li>
-  <li><strong>プライバシーポリシーURL</strong>: <code>https://www.facebook.com/privacy/policy/</code> でも可</li>
-  <li><strong>利用規約URL</strong>: 任意のURL（例: <code>https://www.google.com/</code>）</li>
-</ul>
-<p>左メニュー <code>ユースケース → カスタマイズ → 設定</code>:</p>
-<ul>
-  <li><strong>コールバックURLをリダイレクト</strong>: <code>https://www.google.com/</code></li>
-  <li><strong>アンインストールコールバックURL</strong>: <code>https://www.google.com/</code></li>
-  <li><strong>削除コールバックURL</strong>: <code>https://www.google.com/</code></li>
-</ul>
-<p>権限:</p>
-<ul>
-  <li><code>threads_basic</code></li>
-  <li><code>threads_content_publish</code></li>
-</ul>
+      <!-- ===== STEP 2 ===== -->
+      <section id="step2" class="section reveal">
+        <div class="section-card">
+          <div class="flex items-start gap-5 mb-6">
+            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">02</div></div></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="meta-pill">⏱ 所要時間 2分</span>
+                <span class="meta-pill">📄 スプシ複製</span>
+              </div>
+              <h2 class="section-title text-3xl md:text-4xl">テンプレートのスプレッドシートをコピー</h2>
+            </div>
+          </div>
 
-<h3>4-4. APP_ID と APP_SECRET を取得</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>左メニュー <code>アプリの設定 → ベーシック</code> を開く</li>
-  <li>画面上部の <strong>アプリID</strong>（数字）をコピー</li>
-  <li>「アプリシークレット」の <strong>「表示」</strong> ボタンをクリック → 表示された値をコピー</li>
-</ol>
-</div>
+          <p class="text-[color:var(--ink-2)] leading-relaxed mb-6">
+            下のボタンをクリックすると、Googleスプレッドシートの<strong>コピー作成ダイアログ</strong>が開きます。
+            「コピーを作成」を押せば、ご自身のドライブにテンプレが複製されます。
+          </p>
 
-<div class="save-block">
-<h4>💾 ここで「🔧 初回セットアップ」に入力</h4>
-<ol>
-  <li>スプシメニュー <strong>「スレッズスケジューラー → 🔧 初回セットアップ」</strong> をクリック</li>
-  <li><code>THREADS_APP_ID</code> のプロンプトでアプリIDを入力</li>
-  <li><code>THREADS_APP_SECRET</code> のプロンプトでアプリシークレットを入力</li>
-  <li>残りのプロンプト（ACCESS_TOKEN/USER_ID/WEBHOOK_URL）は<strong>空欄でOKを押す</strong>と既存値を保持してスキップ</li>
-  <li>完了画面で2項目が「✅ 設定済」になっていれば成功</li>
-</ol>
-</div>
+          <div class="text-center my-8">
+            <a href="https://docs.google.com/spreadsheets/d/1a05tRc9-jMv-P7VNJQgn5jyyJHBQ2Zdp1zwsJiyxYI8/copy" target="_blank" class="big-cta">
+              <span class="emoji">📋</span>
+              テンプレートをコピーする
+              <span class="text-white/70 text-sm font-medium">→</span>
+            </a>
+            <div class="text-xs text-[color:var(--ink-3)] mt-3 font-en">opens docs.google.com</div>
+          </div>
 
-<h2 id="step5">5. Threads長期トークン取得 → <code>ACCESS_TOKEN</code> 取得 → 即保存</h2>
+          <ol class="guided">
+            <li>ボタンをクリック → Googleスプレッドシートの<strong>コピー作成ダイアログ</strong>が表示</li>
+            <li>「<strong>コピーを作成</strong>」をクリック → 自分のドライブに自動コピー</li>
+            <li>シート上部に<strong>「スレッズスケジューラー」メニュー</strong>が表示されることを確認</li>
+          </ol>
 
-<h3>5-1. ユーザートークン生成ツールを開く</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>Meta Developerダッシュボードで対象アプリを開く</li>
-  <li>左メニュー <code>ユースケース → Threads APIにアクセス → カスタマイズ → 設定</code></li>
-  <li>右側ペインを下方向にスクロール → <strong>「ユーザートークン生成ツール」</strong> セクション</li>
-</ol>
-</div>
+          <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+            <img src="images/step2-menu.png" alt="「スレッズスケジューラー」メニュー表示の様子" style="display:block; width:100%; height:auto;" />
+            <figcaption style="padding: .75rem 1rem; font-weight: 600; color: var(--ink-2); font-size: .9rem; border-top: 1px solid var(--line); text-align: left;">「スレッズスケジューラー」メニューが表示されている状態</figcaption>
+          </figure>
 
-<h3>5-2. Threadsテスター追加 + 承認</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>「<strong>Threadsテスターを追加</strong>」ボタンをクリック</li>
-  <li>対象のThreadsアカウント名を検索（例: <code>@tamago_app</code>）→「追加」</li>
-  <li>同じアカウントで <strong>Threadsアプリ または <a href="https://www.threads.net/" target="_blank">Threads Web</a></strong> を開く</li>
-  <li>右下プロフィール → <strong>設定 → アカウント → ウェブサイトの権限</strong></li>
-  <li>「<strong>招待</strong>」セクションで「<strong>承認</strong>」をタップ</li>
-  <li>即時で「保留中 → 承認済み」に変わる</li>
-</ol>
-</div>
-<div class="notice">
-招待が表示されない場合: 5〜10分待ってから再確認、または Threadsアプリで上から下にスワイプして再読み込み。
-</div>
+          <div class="callout callout-info">
+            <div class="ic">i</div>
+            <div>
+              メニューが表示されない場合は、シートを<strong>一度リロード</strong>してください。
+              初回はGoogle Apps Scriptの読み込みに10〜30秒かかることがあります。
+            </div>
+          </div>
 
-<h3>5-3. 長期アクセストークンを生成</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>Meta Developer の「ユーザートークン生成ツール」に戻る → ページ再読み込み</li>
-  <li>承認済みアカウントの右側「<strong>アクセストークンを生成</strong>」をクリック</li>
-  <li>ポップアップで「<strong>許可</strong>」</li>
-  <li>表示された長期アクセストークン（60日有効）を <strong>コピー</strong>ボタンで取得</li>
-</ol>
-</div>
-<div class="check">
-形式: <code>THAA</code> で始まる長い英数字（150〜200文字程度）
-</div>
+          <label class="step-check" data-progress-key="step2">
+            <input type="checkbox" />
+            <span class="label">スプシをコピーし、メニューが表示された <span class="sub">右上に「スレッズスケジューラー」が見えていればOK</span></span>
+          </label>
 
-<div class="save-block">
-<h4>💾 ここで「🔧 初回セットアップ」に入力</h4>
-<ol>
-  <li>メニュー <strong>「🔧 初回セットアップ」</strong> をクリック</li>
-  <li><code>THREADS_ACCESS_TOKEN</code> のプロンプトでトークンを入力</li>
-  <li>他のプロンプトは空欄OKでスキップ（既存値を保持）</li>
-</ol>
-</div>
+          <div class="mt-6 p-4 rounded-xl bg-[color:var(--line-2)] text-sm text-[color:var(--ink-2)]">
+            💡 <strong>つまずきポイント:</strong> 共有でコピー先を間違えがち。「自分のドライブ > 任意のフォルダ」に保存しておくと、あとで見つかりやすいです。
+          </div>
+        </div>
+      </section>
 
-<h2 id="step6">6. Threads User ID取得 → <code>USER_ID</code> 取得 → 即保存</h2>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>ブラウザのアドレスバーに以下を貼り付け（<code>&lt;長期トークン&gt;</code> を Step 5-3 で取得した実際のトークンに置換）</li>
-</ol>
-<pre>https://graph.threads.net/v1.0/me?fields=id&amp;access_token=&lt;長期トークン&gt;</pre>
-<ol start="2">
-  <li>Enter → JSON表示: <code>{"id":"35107700672178457"}</code></li>
-  <li><code>id</code> の値（数字）をコピー</li>
-</ol>
-</div>
-<div class="check">
-形式: 17桁前後の数字
-</div>
+      <!-- ===== STEP 3 ===== -->
+      <section id="step3" class="section reveal">
+        <div class="section-card">
+          <div class="flex items-start gap-5 mb-6">
+            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">03</div></div></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="meta-pill">🔧 入力フォーム理解</span>
+              </div>
+              <h2 class="section-title text-3xl md:text-4xl">初回セットアップで5項目を入力</h2>
+            </div>
+          </div>
 
-<div class="save-block">
-<h4>💾 ここで「🔧 初回セットアップ」に入力</h4>
-<ol>
-  <li>メニュー <strong>「🔧 初回セットアップ」</strong> をクリック</li>
-  <li><code>THREADS_USER_ID</code> のプロンプトで数字を入力</li>
-  <li>他のプロンプトは空欄OKでスキップ</li>
-</ol>
-</div>
+          <p class="text-[color:var(--ink-2)] leading-relaxed mb-5">
+            メニュー <code class="inline">🔧 初回セットアップ</code> を実行すると、<strong>5つの値</strong>を順番に聞かれます。
+            この手順書では、<strong>1項目ずつ取得 → その場で入力</strong> していきます。空欄でOKを押せば既存値は保持されます。
+          </p>
 
-<h2 id="step7">7. Discord Webhook作成 → <code>WEBHOOK_URL</code> 取得 → 即保存</h2>
+          <div class="overflow-x-auto">
+            <table class="keys-table">
+              <thead>
+                <tr>
+                  <th>キー名</th>
+                  <th>取得場所</th>
+                  <th>形式</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="keyname"><a href="#step4">THREADS_APP_ID</a></td>
+                  <td class="where"><a href="#step4">Step 4 — Meta Developer アプリ作成</a></td>
+                  <td class="fmt">数字(例: 1644…)</td>
+                </tr>
+                <tr>
+                  <td class="keyname"><a href="#step4">THREADS_APP_SECRET</a></td>
+                  <td class="where"><a href="#step4">Step 4 — 「表示」で取得</a></td>
+                  <td class="fmt">英数字</td>
+                </tr>
+                <tr>
+                  <td class="keyname"><a href="#step5">THREADS_ACCESS_TOKEN</a></td>
+                  <td class="where"><a href="#step5">Step 5 — 長期トークン</a></td>
+                  <td class="fmt">THAA…(150〜200文字)</td>
+                </tr>
+                <tr>
+                  <td class="keyname"><a href="#step6">THREADS_USER_ID</a></td>
+                  <td class="where"><a href="#step6">Step 6 — User ID取得</a></td>
+                  <td class="fmt">17桁前後の数字</td>
+                </tr>
+                <tr>
+                  <td class="keyname"><a href="#step7">DISCORD_WEBHOOK_URL</a></td>
+                  <td class="where"><a href="#step7">Step 7 — Discord Webhook</a></td>
+                  <td class="fmt">https://discord.com/api/webhooks/…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-<h3>7-1. 開発者モードを有効化</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>Discordアプリ または ブラウザ版を開く</li>
-  <li>左下のユーザー設定（歯車アイコン）</li>
-  <li>左メニュー <code>APP設定 → 詳細設定</code> → <strong>開発者モードON</strong></li>
-</ol>
-</div>
+          <div class="callout callout-ok mt-5">
+            <div class="ic">✓</div>
+            <div>
+              取得した値はその都度メニュー <code class="inline">🔧 初回セットアップ</code> を再実行して、該当項目だけ入力すればOK。
+              他の項目は<strong>空欄のままOKを押せば、既存値はそのまま保持</strong>されます。
+            </div>
+          </div>
 
-<h3>7-2. 通知用チャンネル作成</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>既存サーバー or 新規サーバーで「チャンネルを作成」</li>
-  <li>テキストチャンネル / 名前: <code>threads-scheduler</code> 等</li>
-</ol>
-</div>
+          <figure class="screenshot" style="padding: 1.25rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block;">
+            <img src="images/step3-setup.png" alt="5項目入力プロンプトの画面" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm);" />
+            <figcaption style="padding-top: .85rem; font-weight: 600; color: var(--ink-2); font-size: .9rem; text-align: center;">「🔧 初回セットアップ」実行時の入力プロンプト</figcaption>
+          </figure>
 
-<h3>7-3. Webhook URLを取得</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>作成したチャンネル名右の歯車 → <code>連携サービス → ウェブフック → ウェブフックを作成</code></li>
-  <li>名前を「Threads Scheduler」等に</li>
-  <li>「<strong>ウェブフックURLをコピー</strong>」</li>
-</ol>
-</div>
-<div class="check">
-形式: <code>https://discord.com/api/webhooks/...</code>
-</div>
+          <label class="step-check" data-progress-key="step3">
+            <input type="checkbox" />
+            <span class="label">5項目の入力フォームを確認した <span class="sub">これから1つずつ取得していきます</span></span>
+          </label>
 
-<div class="save-block">
-<h4>💾 ここで「🔧 初回セットアップ」に入力</h4>
-<ol>
-  <li>メニュー <strong>「🔧 初回セットアップ」</strong> をクリック</li>
-  <li><code>DISCORD_WEBHOOK_URL</code> のプロンプトでURLを入力</li>
-  <li>これで5つすべてが入力完了 → 完了画面で全項目「✅ 設定済」を確認</li>
-</ol>
-</div>
+          <div class="mt-6 p-4 rounded-xl bg-[color:var(--line-2)] text-sm text-[color:var(--ink-2)]">
+            💡 <strong>つまずきポイント:</strong> 全部の値を一度に揃えようとすると挫折しがち。<strong>1項目取って入力 → 次へ</strong>の流れで進めるのがコツ。
+          </div>
+        </div>
+      </section>
 
-<h2>8. テスト投稿で動作確認 → トリガーをインストール</h2>
+      <!-- ===== STEP 4 ===== -->
+      <section id="step4" class="section reveal">
+        <div class="section-card">
+          <div class="flex items-start gap-5 mb-6">
+            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">04</div></div></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="meta-pill">⏱ 所要時間 15分</span>
+                <span class="meta-pill" style="background:color-mix(in oklab, var(--danger) 12%, var(--surface)); color:var(--danger); border-color:color-mix(in oklab,var(--danger) 30%,var(--line))">⚠ 最重要パート</span>
+              </div>
+              <h2 class="section-title text-3xl md:text-4xl">Meta Developer アプリ作成 → APP_ID / SECRET取得</h2>
+            </div>
+          </div>
 
-<h3>8-1. 設定状況の最終確認</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>メニュー <strong>「🔍 設定状況を確認」</strong> をクリック</li>
-  <li>5つすべてが <strong>✅ 設定済</strong> になっているか確認</li>
-</ol>
-</div>
+          <div class="callout callout-danger">
+            <div class="ic">!</div>
+            <div>
+              電話番号認証は <strong>Facebookアカウントと連携している電話番号</strong> でないと通りません。
+              Facebookアカウントが無い方は、サポート窓口までご相談ください。
+            </div>
+          </div>
 
-<h3>8-2. テスト投稿</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>「投稿予約」シートに新しい行:
-    <ul>
-      <li>A列: 今日の日付</li>
-      <li>B列: 1〜2分前の時刻（例: 22:35）</li>
-      <li>C列: <code>テスト投稿</code></li>
-      <li>E列: <code>未投稿</code>（プルダウン）</li>
-    </ul>
-  </li>
-  <li>M列に投稿日時が自動表示されることを確認</li>
-  <li>メニュー <strong>「▶️ 今すぐ投稿チェック」</strong> をクリック</li>
-  <li>数秒後、Threadsに投稿が反映されたか確認</li>
-  <li>スプシのE列ステータスが <code>投稿済</code> に変わったか確認</li>
-  <li>Discordに <code>✅ 投稿成功</code> 通知が届いたか確認</li>
-</ol>
-</div>
+          <h3 class="sub-head"><span class="sh-num">4-1</span>Meta Developer登録</h3>
+          <ol class="guided">
+            <li><a href="https://developers.facebook.com" target="_blank" class="font-bold underline">developers.facebook.com</a> にFacebookアカウントでログイン</li>
+            <li>電話番号認証(SMS) + 開発者規約に同意</li>
+          </ol>
 
-<h3>8-3. トリガーをインストール（自動運用開始）</h3>
-<div class="step">
-<span class="step-num">手順</span>
-<ol>
-  <li>メニュー <strong>「⏰ トリガーをインストール」</strong> をクリック</li>
-  <li>「インストールしました」のダイアログが出れば完了</li>
-</ol>
-</div>
-<div class="check">
-これで完全自動運用開始。以降は「投稿予約」シートに行を追加するだけで、10分以内に自動投稿されます。
-</div>
+          <h3 class="sub-head"><span class="sh-num">4-2</span>アプリ作成</h3>
+          <div class="grid sm:grid-cols-2 gap-4 my-3">
+            <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block;">
+              <img src="images/step4-create-app-1.png" alt="マイアプリ → アプリを作成" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 6px;" />
+              <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">① マイアプリ(右上)</figcaption>
+            </figure>
+            <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block;">
+              <img src="images/step4-create-app-2.png" alt="ユースケースで「Threads APIにアクセス」を選択" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 6px;" />
+              <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">② アプリ作成(右上)</figcaption>
+            </figure>
+          </div>
+          <ol class="guided">
+            <li>右上 <strong>マイアプリ → アプリを作成</strong></li>
+            <li>アプリ名は任意(例: <code class="inline">my-threads-scheduler</code>) <span class="text-xs text-[color:var(--ink-3)]">(名前をタップするとコピーできます)</span></li>
+            <li>ユースケースで <strong>「Threads APIにアクセス」</strong> を選択</li>
+            <li>リンクする <strong>Instagramのアカウント</strong> を選択する</li>
+            <li><strong>「公開の要件」は空白でOK</strong></li>
+            <li>内容を確認して、よければ <strong>「アプリを作成」</strong> をタップ</li>
+          </ol>
 
-<h2>セットアップ完了後の運用</h2>
-<ul>
-  <li><strong>新規予約投稿</strong>: 「投稿予約」シートに A=日付、B=時刻、C=本文、E=未投稿 を入れるだけ</li>
-  <li><strong>状態確認</strong>: E列ステータス・Discord通知</li>
-  <li><strong>トークン更新</strong>: 毎週日曜9時に自動実行（手動操作不要）</li>
-</ul>
+          <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+            <img src="images/step4-overview-masked.png?v=3" alt="アプリ作成 概要画面 — アプリ名・ユースケース・ビジネス・必要条件の確認" style="display:block; width:100%; height:auto;" />
+            <figcaption style="padding: .75rem 1rem; font-weight: 600; color: var(--ink-2); font-size: .9rem; border-top: 1px solid var(--line); text-align: left;">最終確認画面 — アプリ名 / ユースケース「Threads APIにアクセス」 / ビジネス / 必要条件 が揃っていれば「アプリを作成」へ</figcaption>
+          </figure>
 
-<h2>トラブル時のセルフチェック</h2>
-<p>「投稿が飛ばない」「Discordにエラーが来た」など、何かおかしいと感じたら、下の2つのメニューを順番に確認してください。原因の9割はこのどちらかで特定できます。</p>
+          <h3 class="sub-head"><span class="sh-num">4-3</span>ユースケースのカスタマイズ・権限追加</h3>
+          <p class="text-[color:var(--ink-2)] leading-relaxed">
+            アプリ作成直後は権限が空です。<strong>threads_basic</strong> と <strong>threads_content_publish</strong> を追加し、それぞれ <strong>「テスト準備完了」</strong> ステータスに切り替えます。
+          </p>
+          <ol class="guided">
+            <li><strong>マイアプリ</strong> の「管理者アプリ」から、作成したアプリをクリック</li>
+            <li>ダッシュボードの <strong>「Threads APIへのアクセス」 → カスタマイズ</strong> をクリック</li>
+            <li><code class="inline">threads_basic</code> と <code class="inline">threads_content_publish</code> を <strong>「+ 追加」</strong> ボタンで追加し、それぞれの <strong>ステータスを「テスト準備完了」</strong> に切り替える<div class="text-xs text-[color:var(--ink-3)] mt-1 font-normal">※ <code class="inline">my-threads-scheduler</code> は初期設定で「アクション」になっています</div></li>
+          </ol>
 
-<div class="step">
-<span class="step-num">①</span>
-<strong>🔍 設定状況を確認</strong>
-<p style="margin:0.6em 0;">スプシ上部メニュー「スレッズスケジューラー → 🔍 設定状況を確認」をクリック。下のように5項目が表示されます。</p>
-<pre style="background:#f5f5f5; padding:12px; border-radius:6px; font-size:0.9em; line-height:1.5;">THREADS_APP_ID: ✅ 1234...5678
+          <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+            <img src="images/step4-permissions.png" alt="ユースケースをカスタマイズ — threads_basic と threads_content_publish がテスト準備完了になっている画面" style="display:block; width:100%; height:auto;" />
+            <figcaption style="padding: .75rem 1rem; font-weight: 600; color: var(--ink-2); font-size: .9rem; border-top: 1px solid var(--line); text-align: left;">2つの権限が <strong style="color: var(--grad-start);">「テスト準備完了」</strong> になっていればOK(threads_delete は不要)</figcaption>
+          </figure>
+
+          <h3 class="sub-head"><span class="sh-num">4-4</span>アプリの基本設定</h3>
+
+          <div class="rounded-xl border border-[color:var(--line)] p-4 my-3 bg-[color:var(--line-2)]">
+            <div class="font-bold text-sm mb-2 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full" style="background:var(--grad-start)"></span>
+              基本設定 <span class="text-xs font-medium text-[color:var(--ink-3)]">(⚙️ 左側のアプリの設定 ➡️ ベーシック)</span>
+              <span class="text-[11px] font-bold ml-auto" style="color: var(--danger);">📋 各URLはタップでコピー</span>
+            </div>
+            <ul class="space-y-1.5 text-sm text-[color:var(--ink-2)] list-none p-0">
+              <li>• <strong>表示名:</strong> なんでもOK</li>
+              <li>• <strong>プライバシーポリシーURL:</strong> <code class="inline">https://tamagoojiji.github.io/bridgesquare-legal/privacy-policy.html</code></li>
+              <li>• <strong>利用規約URL:</strong> <code class="inline">https://tamagoojiji.github.io/bridgesquare-legal/terms-of-service.html</code></li>
+              <li>• <strong>ユーザーデータの削除 — データの削除手順URL:</strong> <code class="inline">https://tamagoojiji.github.io/bridgesquare-legal/data-deletion.html</code></li>
+              <li>• <strong>カテゴリ:</strong> ビジネス・ページ</li>
+              <li class="pt-1">• <strong>「変更を保存」</strong> で保存する</li>
+            </ul>
+          </div>
+
+          <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+            <img src="images/step4-basic.png" alt="基本設定画面 — 表示名 / プライバシーポリシーURL / 利用規約URL / データ削除URL / カテゴリを入力した状態" style="display:block; width:100%; height:auto;" />
+            <figcaption style="padding: .75rem 1rem; font-weight: 600; color: var(--ink-2); font-size: .9rem; border-top: 1px solid var(--line); text-align: left;">「アプリの設定 → ベーシック」で 5項目すべてを入力した状態</figcaption>
+          </figure>
+
+          <div class="rounded-xl border border-[color:var(--line)] p-4 my-3 bg-[color:var(--line-2)]">
+            <div class="font-bold text-sm mb-2 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full" style="background:var(--grad-end)"></span>
+              ユースケースをカスタマイズ <span class="text-xs font-medium text-[color:var(--ink-3)]">(左側のユースケース ➡️ カスタマイズ ➡️ 設定)</span>
+              <span class="text-[11px] font-bold ml-auto" style="color: var(--danger);">📋 各URLはタップでコピー</span>
+            </div>
+            <ul class="space-y-1.5 text-sm text-[color:var(--ink-2)] list-none p-0">
+              <li>
+                • <strong>コールバックURLをリダイレクト:</strong> <code class="inline">https://www.google.com/</code>
+                <div class="text-xs text-[color:var(--ink-3)] mt-1 leading-relaxed pl-3">
+                  ※ URLをコピペ後に <span style="display:inline-block; padding: 1px 6px; border-radius:4px; background: color-mix(in oklab, var(--grad-start) 18%, var(--surface)); color: var(--grad-start); font-weight:600;">青背景のURL</span> が出てくるのでそれをクリック ➡️ <span style="display:inline-block; padding: 1px 6px; border-radius:4px; background: var(--line-2); border: 1px solid var(--line); color: var(--ink-2); font-family: ui-monospace, monospace; font-size: .9em;">グレーで囲われたURL</span> になる
+                </div>
+              </li>
+              <li>• <strong>アンインストールコールバックURL:</strong> <code class="inline">https://www.google.com/</code></li>
+              <li>• <strong>削除コールバックURL:</strong> <code class="inline">https://www.google.com/</code></li>
+              <li class="pt-1">• <strong>「保存する」をクリック</strong></li>
+            </ul>
+            <div class="mt-3 p-3 rounded-lg" style="background:color-mix(in oklab, var(--danger) 10%, var(--surface)); border:1px solid color-mix(in oklab, var(--danger) 35%, var(--line));">
+              <strong style="color:var(--danger)">⚠ 3箇所すべてに入力</strong> <span class="text-xs text-[color:var(--ink-2)]">(1つでも空欄だと保存エラー)</span>
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4 my-3">
+            <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+              <img src="images/step4-usecase-blue.png" alt="コールバックURLリダイレクトをコピペした直後、青背景のURLサジェストが表示されている画面" style="display:block; width:100%; height:auto;" />
+              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">① コピペ直後に出る<span style="display:inline-block; padding: 1px 6px; border-radius:4px; background: color-mix(in oklab, var(--grad-start) 18%, var(--surface)); color: var(--grad-start); font-weight:700;">青背景のURL</span>をクリック</figcaption>
+            </figure>
+            <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+              <img src="images/step4-usecase-filled.png" alt="コールバックURLリダイレクト・アンインストール・削除の3つのURLをすべて入力した状態のスクリーンショット" style="display:block; width:100%; height:auto;" />
+              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">② 3つのURLをすべて入力した状態</figcaption>
+            </figure>
+          </div>
+
+          <h3 class="sub-head"><span class="sh-num">4-5</span>APP_ID と APP_SECRET を取得 ➡️ スプシに登録 <span style="font-size: .75em; font-weight: 500; color: var(--ink-3); margin-left: .4rem;">(1個ずつ実施)</span></h3>
+          <ol class="guided">
+            <li><strong>(左側の)ユースケース ➡️ カスタマイズ ➡️ 設定</strong> を開く</li>
+            <li><strong>ThreadsアプリID</strong> をコピー</li>
+            <li>
+              スプレッドシートのメニュー <code class="inline">スレッズスケジューラー</code> ➡️ <code class="inline">🔧 初回セットアップ</code> を実行
+              <div class="text-xs text-[color:var(--ink-3)] mt-2 leading-relaxed pl-3" style="border-left: 3px solid color-mix(in oklab, var(--grad-start) 35%, var(--line)); padding-left: .65rem;">
+                <div class="font-semibold text-[color:var(--ink-2)] mb-1">※ 初回の時のみ「認証が必要になります」</div>
+                <ol class="list-decimal pl-4 space-y-0.5">
+                  <li><strong>「このアプリはGoogleで確認されていません」</strong> と出るが、左下の <strong>「詳細」</strong> をクリック</li>
+                  <li><strong>「スレッズスケジューラー(安全ではないページ)に移動」</strong> をクリック</li>
+                  <li><strong>「アクセスできる情報を選択してください」</strong> で <strong>「全てを選択」</strong> にチェックを入れて進める</li>
+                </ol>
+                <div class="mt-2 p-2 rounded-md text-[color:var(--ink-2)]" style="background:color-mix(in oklab, var(--warning) 12%, var(--surface)); border:1px solid color-mix(in oklab, var(--warning) 30%, var(--line));">
+                  💡 <strong>「スクリプト起動しています」から動かない場合</strong> はリロードしてからもう一度実行してください。
+                </div>
+              </div>
+            </li>
+            <li><span class="key">THREADS_APP_ID</span> を貼り付け</li>
+            <li><strong>「Threadsのapp secret」を表示</strong> してコピー <span class="text-xs text-[color:var(--ink-3)]">(Facebookのパスワード入力)</span></li>
+            <li>スプレッドシートの <span class="key">THREADS_APP_SECRET</span> を入力</li>
+            <li>残りはひとまず <strong>空欄でOKを押してスキップ</strong></li>
+            <li>完了画面で <strong>2項目「✅ 設定済」</strong> 表示を確認</li>
+          </ol>
+
+          <div class="grid sm:grid-cols-2 gap-4 my-3">
+            <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+              <img src="images/step4-auth-warn.png" alt="このアプリはGoogleで確認されていません警告画面 — 詳細を表示してから「安全ではないページに移動」をクリックする画面" style="display:block; width:100%; height:auto;" />
+              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">① 詳細 ➡️ <strong>「安全ではないページに移動」</strong> をクリック</figcaption>
+            </figure>
+            <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+              <img src="images/step4-auth-perms.png" alt="アクセスできる情報を選択してください — すべて選択にチェックが入った状態の画面" style="display:block; width:100%; height:auto;" />
+              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">② <strong>「すべて選択」</strong> にチェックを入れて進める</figcaption>
+            </figure>
+          </div>
+
+          <div class="grid sm:grid-cols-3 gap-4 my-3">
+            <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+              <img src="images/step4-input-app-id.png" alt="THREADS_APP_ID を設定するダイアログ — 新しい値を入力する欄" style="display:block; width:100%; height:auto;" />
+              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">① <span class="key" style="font-size:.85em;">THREADS_APP_ID</span> を貼り付け ➡️ OK</figcaption>
+            </figure>
+            <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+              <img src="images/step4-input-app-secret.png" alt="THREADS_APP_SECRET を設定するダイアログ — 新しい値を入力する欄" style="display:block; width:100%; height:auto;" />
+              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">② <span class="key" style="font-size:.85em;">THREADS_APP_SECRET</span> を貼り付け ➡️ OK</figcaption>
+            </figure>
+            <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+              <img src="images/step4-setup-complete.png" alt="セットアップ完了 — THREADS_APP_ID と THREADS_APP_SECRET が設定済 / 残り3項目が未設定の確認画面" style="display:block; width:100%; height:auto;" />
+              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">③ 完了画面で <strong style="color: var(--ok);">2項目「✅ 設定済」</strong> を確認</figcaption>
+            </figure>
+          </div>
+
+          <label class="step-check" data-progress-key="step4">
+            <input type="checkbox" />
+            <span class="label">APP_ID / APP_SECRET を入力し「✅ 設定済」を確認 <span class="sub">残り3項目は次の Step 5・6・7 で取得</span></span>
+          </label>
+
+          <div class="mt-6 p-4 rounded-xl bg-[color:var(--line-2)] text-sm text-[color:var(--ink-2)]">
+            💡 <strong>つまずきポイント:</strong> 「保存」を押しても何も起こらない場合、URL3箇所のうちどれかが空欄です。<strong>赤くハイライトされている欄</strong>を確認してください。
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== STEP 5 ===== -->
+      <section id="step5" class="section reveal">
+        <div class="section-card">
+          <div class="flex items-start gap-5 mb-6">
+            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">05</div></div></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="meta-pill">⏱ 所要時間 10分</span>
+                <span class="meta-pill">🔑 長期アクセストークン</span>
+              </div>
+              <h2 class="section-title text-3xl md:text-4xl">Threads長期トークン取得 → ACCESS_TOKEN</h2>
+            </div>
+          </div>
+
+          <h3 class="sub-head"><span class="sh-num">5-1</span>ユーザートークン生成ツールを開く</h3>
+          <p class="text-[color:var(--ink-2)] leading-relaxed">
+            <strong>ユースケース → Threads APIにアクセス → カスタマイズ → 設定</strong> と進み、
+            ページ下部にスクロールすると <strong>「ユーザートークン生成ツール」</strong> があります。
+          </p>
+
+          <figure class="screenshot" style="padding: 1.25rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block;">
+            <img src="images/s5-img1.png" alt="ユースケースをカスタマイズ画面 - ユーザートークン生成ツール" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--line);" />
+            <figcaption style="padding-top: .85rem; font-weight: 600; color: var(--ink-2); font-size: .9rem; text-align: center;">ユースケースをカスタマイズ画面 ➡️ 設定タブ ➡️ 下部のユーザートークン生成ツール</figcaption>
+          </figure>
+
+          <h3 class="sub-head"><span class="sh-num">5-2</span>Threadsテスター追加または削除 + 承認</h3>
+          <ol class="guided">
+            <li>
+              <strong>「Threadsテスターを追加または削除」</strong> から自分のThreadsアカウントを追加
+              <div class="text-xs text-[color:var(--ink-3)] mt-2 leading-relaxed pl-3" style="border-left: 3px solid color-mix(in oklab, var(--grad-start) 35%, var(--line)); padding-left: .65rem;">
+                <ol class="list-decimal pl-4 space-y-0.5">
+                  <li><strong>「メンバーを追加」</strong> を選択</li>
+                  <li>➡️ <strong>「Threadsテスター」</strong> を選択</li>
+                  <li>➡️ 一番下にアカウント名を入れて選択する</li>
+                  <li>➡️ <strong>「追加」</strong> をクリック</li>
+                </ol>
+                <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block; margin-top: .85rem;">
+                  <img src="images/s5-img2.png" alt="アプリに人を追加 - Threadsテスター選択" style="display:block; max-width:420px; width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--line);" />
+                  <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">「アプリに人を追加」ダイアログ ➡️ Threadsテスター選択</figcaption>
+                </figure>
+              </div>
+            </li>
+            <li>
+              Threadsで招待を承認する
+              <div class="text-xs text-[color:var(--ink-3)] mt-2 leading-relaxed pl-3" style="border-left: 3px solid color-mix(in oklab, var(--grad-end) 35%, var(--line)); padding-left: .65rem;">
+                <div class="font-semibold text-[color:var(--ink-2)] mb-1">「Threadsユーザーは、プロフィールのウェブサイトのアクセス許可セクションから招待を管理できます」の <strong>ウェブサイトのアクセス許可</strong> をタップし、Threadsへ移動</div>
+                <ol class="list-decimal pl-4 space-y-0.5">
+                  <li>➡️ <strong>ウェブサイトのアクセス許可</strong></li>
+                  <li>➡️ <strong>「招待」</strong></li>
+                  <li>➡️ <strong>同意する</strong></li>
+                  <li>➡️ MetaのDeveloperのサイトに戻ってリロード</li>
+                  <li>➡️ ステータスの <strong>「承認待ち」が消えている</strong> ことを確認する</li>
+                </ol>
+                <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block; margin-top: .85rem;">
+                  <img src="images/s5-img6.png?v=2" alt="Threadsテスター行 - ウェブサイトのアクセス許可リンク" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--line);" />
+                  <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">Threadsテスター行に表示される「ウェブサイトのアクセス許可」リンク</figcaption>
+                </figure>
+                <figure class="screenshot" style="padding: 1rem; background: #0e1116; border-style: solid; border-color: var(--line); display: block; margin-top: .85rem;">
+                  <img src="images/s5-img4.png?v=2" alt="Threadsアプリ - アカウント設定" style="display:block; max-width:520px; width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm);" />
+                  <figcaption style="padding-top: .65rem; font-weight: 600; color: rgba(255,255,255,.85); font-size: .85rem; text-align: center;">Threadsアプリ ➡️ アカウント ➡️ ウェブサイトのアクセス許可</figcaption>
+                </figure>
+                <figure class="screenshot" style="padding: 1rem; background: #0e1116; border-style: solid; border-color: var(--line); display: block; margin-top: .85rem;">
+                  <img src="images/s5-img5.png" alt="招待タブ - 同意する" style="display:block; max-width:420px; width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm);" />
+                  <figcaption style="padding-top: .65rem; font-weight: 600; color: rgba(255,255,255,.85); font-size: .85rem; text-align: center;">招待タブ ➡️ 「同意する」をタップ</figcaption>
+                </figure>
+                <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block; margin-top: .85rem;">
+                  <img src="images/s5-img3.png?v=2" alt="アプリの役割 - 承認待ちが消えた状態" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--line);" />
+                  <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">Metaに戻ってリロード ➡️ ステータスの「承認待ち」が消えていればOK</figcaption>
+                </figure>
+              </div>
+            </li>
+          </ol>
+
+          <div class="callout callout-warn">
+            <div class="ic">⚠</div>
+            <div>
+              <strong>招待が表示されない場合:</strong>
+              5〜10分待つ、もしくはアプリで<strong>上から下にスワイプして再読み込み</strong>してください。
+            </div>
+          </div>
+
+          <h3 class="sub-head"><span class="sh-num">5-3</span>長期アクセストークンを生成</h3>
+          <ol class="guided">
+            <li>ユーザートークン生成ツールに戻る → <strong>ページ再読み込み</strong>
+              <div class="text-xs text-[color:var(--ink-3)] mt-1">(ユースケース ➡️ カスタマイズ ➡️ 設定 ➡️ 一番下)</div>
+            </li>
+            <li>承認済アカウントの右側 <strong>「アクセストークンを生成」</strong> → <strong>「許可」</strong></li>
+            <li>表示されたトークン(<strong>60日有効</strong>)を <strong>コピーボタン</strong>で取得</li>
+          </ol>
+
+          <div class="callout callout-ok">
+            <div class="ic">✓</div>
+            <div>
+              <strong>THAA</strong> で始まる長い英数字(<strong>150〜200文字</strong>)になっていればOK。
+            </div>
+          </div>
+
+          <div class="save-card">
+            <div class="save-head">
+              <div class="pin">💾</div>
+              ここでスプレッドシートの「🔧 初回セットアップ」に入力
+            </div>
+            <ul>
+              <li>メニュー右端の <code class="inline">スレッズスケジューラー</code> ➡️ <code class="inline">🔧 初回セットアップ</code> を実行</li>
+              <li><span class="key">THREADS_ACCESS_TOKEN</span> トークンを貼り付け</li>
+              <li>他の項目は <strong>空欄でOK押下してスキップ</strong></li>
+            </ul>
+            <div class="save-note">
+              <p><strong>⚠ 長期トークンは次の Step でも使用します</strong>(再度コピーする必要はありません)。</p>
+              <p><strong>⚠ 万が一トークンを再生成した場合は、スプレッドシートの「🔧 初回セットアップ」も新しい値に更新してください。</strong></p>
+            </div>
+          </div>
+
+          <figure class="screenshot screenshot-img" style="max-width: 360px; margin-left:auto; margin-right:auto;">
+            <img src="images/step5-setup-complete.png" alt="セットアップ完了ダイアログ — THREADS_APP_ID / APP_SECRET / ACCESS_TOKEN が設定済、USER_ID と DISCORD_WEBHOOK_URL は未設定の状態" />
+            <figcaption>セットアップ完了ダイアログ:この時点では <code class="inline">THREADS_USER_ID</code> と <code class="inline">DISCORD_WEBHOOK_URL</code> は未設定でOK(Step 6・7で取得)</figcaption>
+          </figure>
+
+          <label class="step-check" data-progress-key="step5">
+            <input type="checkbox" />
+            <span class="label">ACCESS_TOKEN を入力した <span class="sub">THAAから始まる文字列をペースト</span></span>
+          </label>
+
+          <div class="mt-6 p-4 rounded-xl bg-[color:var(--line-2)] text-sm text-[color:var(--ink-2)]">
+            💡 <strong>つまずきポイント:</strong> 招待が承認できない場合、<strong>同じMetaアカウントでログイン</strong>しているかを確認してください。サブアカウントでログイン中だと招待が見えません。
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== STEP 6 ===== -->
+      <section id="step6" class="section reveal">
+        <div class="section-card">
+          <div class="flex items-start gap-5 mb-6">
+            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">06</div></div></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="meta-pill">⏱ 所要時間 2分</span>
+                <span class="meta-pill">🔢 ID取得</span>
+              </div>
+              <h2 class="section-title text-3xl md:text-4xl">Threads User ID取得 → USER_ID</h2>
+            </div>
+          </div>
+
+          <p class="text-[color:var(--ink-2)] leading-relaxed mb-4">
+            <strong>長期トークンを貼るとURLが生成されます</strong>。「ブラウザで開く」を押すと JSON 表示画面が開きます。<br>
+            <span class="text-xs" style="color:color-mix(in oklab, var(--ok) 70%, var(--ink-2)); font-weight: 600;">🔒 入力したトークンは<strong>このページ上だけで使われ、送信・保存されません</strong>。</span>
+          </p>
+
+          <div class="url-builder" data-url-builder>
+            <label class="ub-label" for="ub-token-step6">下に長期アクセストークンを貼り付け</label>
+            <div class="ub-input-row">
+              <input id="ub-token-step6" type="password" class="ub-input" placeholder="THAA… で始まる長い文字列" autocomplete="off" spellcheck="false" data-ub-token />
+              <button type="button" class="ub-btn ub-btn-ghost" data-ub-toggle aria-label="表示切替">👁️</button>
+              <button type="button" class="ub-btn ub-btn-ghost" data-ub-clear aria-label="クリア">×</button>
+            </div>
+            <div class="ub-output" data-ub-output>
+              <span class="ub-prefix">https://graph.threads.net/v1.0/me?fields=id&amp;access_token=</span><span class="ub-token" data-ub-token-display>&lt;長期トークン&gt;</span>
+            </div>
+            <div class="ub-actions">
+              <button type="button" class="ub-btn ub-btn-primary" data-ub-open disabled>ブラウザで開く ↗</button>
+            </div>
+          </div>
+
+          <p class="text-[color:var(--ink-2)] leading-relaxed mt-5">
+            開くと、ブラウザに以下のような<strong>JSON</strong>が表示されます:
+          </p>
+
+          <pre class="codeblock">{"id":"<span class="placeholder">35107700672178457</span>"}</pre>
+
+          <p class="text-[color:var(--ink-2)] leading-relaxed mt-5">
+            <strong><code class="inline">id</code>の値(数字)</strong> が <strong>THREADS_USER_ID</strong> です(17桁前後)。
+          </p>
+
+          <div class="save-card">
+            <div class="save-head">
+              <div class="pin">💾</div>
+              ここでスプレッドシートの「🔧 初回セットアップ」に入力
+            </div>
+            <ul>
+              <li>メニュー右端の <code class="inline">スレッズスケジューラー</code> ➡️ <code class="inline">🔧 初回セットアップ</code> を実行</li>
+              <li><span class="key">THREADS_USER_ID</span> 数字(17桁前後)を入力</li>
+            </ul>
+          </div>
+
+          <figure class="screenshot screenshot-img" style="max-width: 360px; margin-left:auto; margin-right:auto;">
+            <img src="images/step6-setup-complete.png" alt="セットアップ完了ダイアログ — APP_ID / APP_SECRET / ACCESS_TOKEN / USER_ID が設定済、DISCORD_WEBHOOK_URL のみ未設定の状態" />
+            <figcaption>セットアップ完了ダイアログ:USER_ID も設定済になり、残るは <code class="inline">DISCORD_WEBHOOK_URL</code>(Step 7 で取得)</figcaption>
+          </figure>
+
+          <label class="step-check" data-progress-key="step6">
+            <input type="checkbox" />
+            <span class="label">USER_ID を入力した <span class="sub">17桁前後の数字</span></span>
+          </label>
+
+          <div class="mt-6 p-4 rounded-xl bg-[color:var(--line-2)] text-sm text-[color:var(--ink-2)]">
+            💡 <strong>つまずきポイント:</strong> JSONがエラーで表示される場合、トークンの末尾に<strong>余計な空白</strong>が混入しているケースが多いです。コピーし直してください。
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== STEP 7 ===== -->
+      <section id="step7" class="section reveal">
+        <div class="section-card">
+          <div class="flex items-start gap-5 mb-6">
+            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">07</div></div></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="meta-pill">⏱ 所要時間 5分</span>
+                <span class="meta-pill">🔔 通知用</span>
+              </div>
+              <h2 class="section-title text-3xl md:text-4xl">Discord Webhook作成 → WEBHOOK_URL</h2>
+            </div>
+          </div>
+
+          <h3 class="sub-head"><span class="sh-num">7-1</span>開発者モードを有効化</h3>
+          <ol class="guided">
+            <li>Discordアプリ・ブラウザ版を開く</li>
+            <li>左下の <strong>ユーザー設定(歯車アイコン)</strong></li>
+            <li>左メニュー一番下の <strong>&lt;&gt; 開発者</strong></li>
+            <li><strong>開発者モード</strong> を <strong>ON</strong></li>
+          </ol>
+
+          <figure class="screenshot screenshot-img">
+            <img src="images/step7-developer-mode.png" alt="Discord ユーザー設定 — 開発者ページで開発者モードがONになった状態" />
+            <figcaption>左メニュー <strong>&lt;&gt; 開発者</strong> を開いて <strong>開発者モード</strong> をONにする</figcaption>
+          </figure>
+
+          <h3 class="sub-head"><span class="sh-num">7-2</span>通知用チャンネル作成</h3>
+          <ol class="guided">
+            <li>既存サーバー or 新規サーバーで <strong>「チャンネルを作成」</strong></li>
+            <li><strong>テキストチャンネル</strong> を選択 / 名前は <code class="inline">threads-scheduler</code> 等 <span class="text-xs text-[color:var(--ink-3)]">(名前をタップするとコピーできます)</span></li>
+          </ol>
+
+          <h3 class="sub-head"><span class="sh-num">7-3</span>Webhook URLを取得</h3>
+          <ol class="guided">
+            <li>チャンネル名右の <strong>歯車</strong> → <strong>連携サービス</strong> → <strong>ウェブフック</strong> → <strong>新しいウェブフック</strong></li>
+            <li>名前を設定(例: <code class="inline">Threads Scheduler</code>) <span class="text-xs text-[color:var(--ink-3)]">(名前をタップするとコピーできます)</span></li>
+            <li><strong>「ウェブフックURLをコピー」</strong> をクリック</li>
+          </ol>
+
+          <div class="grid sm:grid-cols-2 gap-4 my-3">
+            <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block;">
+              <img src="images/step7-webhook-1.png" alt="連携サービス画面 — ウェブフック1件" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 6px;" />
+              <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">① 連携サービス → ウェブフック</figcaption>
+            </figure>
+            <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block;">
+              <img src="images/step7-webhook-2.png" alt="新しいウェブフックを作成" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 6px;" />
+              <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">② 新しいウェブフックを作成</figcaption>
+            </figure>
+          </div>
+
+          <div class="callout callout-ok">
+            <div class="ic">✓</div>
+            <div>
+              <code class="inline">https://discord.com/api/webhooks/...</code> で始まっていればOK。
+            </div>
+          </div>
+
+          <div class="save-card">
+            <div class="save-head">
+              <div class="pin">💾</div>
+              ここでスプレッドシートの「🔧 初回セットアップ」に入力
+            </div>
+            <ul>
+              <li>メニュー右端の <code class="inline">スレッズスケジューラー</code> ➡️ <code class="inline">🔧 初回セットアップ</code> を実行</li>
+              <li><span class="key">DISCORD_WEBHOOK_URL</span> URLを入力</li>
+              <li><strong>これで5項目すべて入力完了 →</strong> 完了画面で全項目「✅ 設定済」確認</li>
+            </ul>
+          </div>
+
+          <figure class="screenshot screenshot-img" style="max-width: 360px; margin-left:auto; margin-right:auto;">
+            <img src="images/step7-setup-complete.png" alt="セットアップ完了ダイアログ — 5項目すべて設定済" />
+            <figcaption>🎉 セットアップ完了:5項目すべて <strong>「✅ 設定済」</strong> になればOK</figcaption>
+          </figure>
+
+          <label class="step-check" data-progress-key="step7">
+            <input type="checkbox" />
+            <span class="label">WEBHOOK_URL 入力 → 全5項目「✅ 設定済」 <span class="sub">いよいよテスト投稿へ</span></span>
+          </label>
+
+          <div class="mt-6 p-4 rounded-xl bg-[color:var(--line-2)] text-sm text-[color:var(--ink-2)]">
+            💡 <strong>つまずきポイント:</strong> サーバーの管理権限がないとウェブフックが作成できません。<strong>自分が管理者のサーバー</strong>で作るのが確実です。
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== STEP 8 ===== -->
+      <section id="step8" class="section reveal">
+        <div class="section-card">
+          <div class="flex items-start gap-5 mb-6">
+            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">08</div></div></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="meta-pill">⏱ 所要時間 5分</span>
+                <span class="meta-pill">🚀 動作確認 + 自動運用開始</span>
+              </div>
+              <h2 class="section-title text-3xl md:text-4xl">テスト投稿で動作確認 → トリガーをインストール</h2>
+            </div>
+          </div>
+
+          <h3 class="sub-head"><span class="sh-num">8-1</span>設定状況の最終確認</h3>
+          <p class="text-[color:var(--ink-2)] leading-relaxed">
+            メニュー「スレッズスケジューラー」の <code class="inline">🔍 設定状況を確認</code> を実行 → <strong>5項目すべてが「✅ 設定済」</strong> になっていることを確認。
+          </p>
+
+          <h3 class="sub-head"><span class="sh-num">8-2</span>テスト投稿</h3>
+          <ol class="guided">
+            <li>「投稿予約」シートに新規行を追加:
+              <ul class="mt-2 ml-2 space-y-1 text-sm list-none p-0">
+                <li>📅 <strong>A列(日付):</strong> 今日の日付</li>
+                <li>🕒 <strong>B列(時刻):</strong> 1〜2分前の時刻(例: 14:30)</li>
+                <li>📝 <strong>C列(投稿本文):</strong> 「テスト投稿」など</li>
+                <li>🏷 <strong>E列(ステータス):</strong> 「未投稿」(プルダウンで選択)</li>
+              </ul>
+            </li>
+            <li><strong>M列に投稿日時が自動表示</strong>されることを確認</li>
+            <li>メニュー「スレッズスケジューラー」の <code class="inline">▶️ 今すぐ投稿チェック</code> を実行</li>
+            <li>数秒後に <strong>Threadsへ投稿が反映</strong> されることを確認</li>
+            <li><strong>E列が「投稿済」</strong> に変わることを確認</li>
+            <li><strong>Discordに「✅ 投稿成功」通知</strong> が届くことを確認</li>
+          </ol>
+
+          <h3 class="sub-head"><span class="sh-num">8-3</span>トリガーをインストール(自動運用開始)</h3>
+          <p class="text-[color:var(--ink-2)] leading-relaxed">
+            メニュー <code class="inline">⏰ トリガーをインストール</code> → 完了ダイアログ
+          </p>
+          <p class="text-[color:var(--ink-2)] leading-relaxed mt-2">
+            以降、<strong>10分ごと自動チェック</strong> + <strong>週1回トークン自動更新</strong> が動き続けます。操作不要。
+          </p>
+
+          <div class="callout callout-ok">
+            <div class="ic">🎉</div>
+            <div>
+              <strong>セットアップ完了です!</strong> Threadsの予約投稿が自動で動き始めます。
+              以降は「投稿予約」シートに行を追加するだけで運用できます。
+            </div>
+          </div>
+
+          <figure class="screenshot screenshot-img" style="max-width: 380px; margin-left:auto; margin-right:auto;">
+            <img src="images/step8-trigger-installed.png" alt="トリガーをインストールしました — postRunner: 10分ごと(投稿チェック)、refreshTokenJob: 毎週日曜 9時(トークン更新)" />
+            <figcaption>トリガーインストール完了ダイアログ<br/>・<strong>10分ごとの投稿チェック</strong><br/>・<strong>週1回のトークン更新</strong> が登録されます</figcaption>
+          </figure>
+
+          <label class="step-check" data-progress-key="step8">
+            <input type="checkbox" />
+            <span class="label">テスト投稿成功 + トリガーインストール完了 <span class="sub">🎉 これで自動運用が始まりました</span></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- ===== OPERATION ===== -->
+      <section id="operation" class="section reveal">
+        <div class="section-card" style="background: linear-gradient(135deg, color-mix(in oklab, var(--grad-start) 6%, var(--surface)), color-mix(in oklab, var(--grad-end) 4%, var(--surface)));">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="meta-pill">📌 完了後の運用</span>
+          </div>
+          <h2 class="section-title text-3xl md:text-4xl mb-6">セットアップ完了後の運用</h2>
+
+          <ol class="guided mb-6">
+            <li><strong>新規予約投稿:</strong> 「投稿予約」シートに <code class="inline">A=日付</code> / <code class="inline">B=時刻</code> / <code class="inline">C=本文</code> / <code class="inline">E=未投稿</code> を入れるだけ</li>
+            <li><strong>状態確認:</strong> E列ステータス + Discord通知</li>
+            <li><strong>トークン更新:</strong> 毎週日曜9時に自動実行(<strong>手動操作不要</strong>)</li>
+          </ol>
+
+          <h3 class="sub-head"><span class="sh-num">🛟</span>トラブル時のセルフチェック</h3>
+          <p class="text-[color:var(--ink-2)] leading-relaxed">
+            「投稿が飛ばない」「Discordにエラーが来た」など、何かおかしいと感じたら、下の <strong>2つのメニュー</strong> を順番に確認してください。原因の <strong>9割はこのどちらか</strong> で特定できます。
+          </p>
+
+          <div class="save-card" style="margin-top: 1rem;">
+            <div class="save-head">
+              <div class="pin">①</div>
+              <code class="inline" style="font-size: 1.05rem; padding: .35rem .7rem;">🔍 設定状況を確認</code>
+            </div>
+            <p class="text-sm text-[color:var(--ink-2)] leading-relaxed mb-2" style="margin: .25rem 0 .5rem;">
+              スプシ上部メニュー「<strong>スレッズスケジューラー → 🔍 設定状況を確認</strong>」をクリック。下のように5項目が表示されます。
+            </p>
+            <pre style="background: var(--line-2); padding: .85rem 1rem; border-radius: 8px; font-family: Inter, ui-monospace, monospace; font-size: .85rem; line-height: 1.7; color: var(--ink); border: 1px solid var(--line); overflow-x: auto; margin: .25rem 0 .75rem;">THREADS_APP_ID: ✅ 1234...5678
 THREADS_APP_SECRET: ✅ abcd...wxyz
 THREADS_ACCESS_TOKEN: ✅ THAA...XYZ9
 THREADS_USER_ID: ✅ 3510...8457
 DISCORD_WEBHOOK_URL: ✅ http...zzzz</pre>
-<ul style="margin-top:0.6em;">
-  <li><strong>全部 ✅ なのに投稿が飛ばない</strong> → ②のトリガー一覧へ</li>
-  <li><strong>どれか ❌ 未設定</strong> → 「🔧 初回セットアップ」をもう一度実行してその項目だけ入力</li>
-  <li><strong>THREADS_ACCESS_TOKEN が ❌</strong>（または60日以上更新されていない疑い）→ メニュー「🔄 トークン手動更新」を実行</li>
-</ul>
-</div>
+            <ul>
+              <li><strong>全部 ✅ なのに投稿が飛ばない</strong> → ②のトリガー一覧へ</li>
+              <li><strong>どれか ❌ 未設定</strong> → <code class="inline">🔧 初回セットアップ</code> をもう一度実行してその項目だけ入力</li>
+              <li><strong>THREADS_ACCESS_TOKEN が ❌</strong>(または60日以上更新されていない疑い)→ メニュー <code class="inline">🔄 トークン手動更新</code> を実行</li>
+            </ul>
+          </div>
 
-<div class="step">
-<span class="step-num">②</span>
-<strong>📋 トリガー一覧</strong>
-<p style="margin:0.6em 0;">スプシ上部メニュー「スレッズスケジューラー → 📋 トリガー一覧」をクリック。正常な状態は以下の2件です。</p>
-<pre style="background:#f5f5f5; padding:12px; border-radius:6px; font-size:0.9em; line-height:1.5;">現在のトリガー: 2件
+          <div class="save-card" style="margin-top: 1rem;">
+            <div class="save-head">
+              <div class="pin">②</div>
+              <code class="inline" style="font-size: 1.05rem; padding: .35rem .7rem;">📋 トリガー一覧</code>
+            </div>
+            <p class="text-sm text-[color:var(--ink-2)] leading-relaxed mb-2" style="margin: .25rem 0 .5rem;">
+              スプシ上部メニュー「<strong>スレッズスケジューラー → 📋 トリガー一覧</strong>」をクリック。正常な状態は <strong>以下の2件</strong> です。
+            </p>
+            <pre style="background: var(--line-2); padding: .85rem 1rem; border-radius: 8px; font-family: Inter, ui-monospace, monospace; font-size: .85rem; line-height: 1.7; color: var(--ink); border: 1px solid var(--line); overflow-x: auto; margin: .25rem 0 .75rem;">現在のトリガー: 2件
 
 ・postRunner (id=...)
 ・refreshTokenJob (id=...)</pre>
-<ul style="margin-top:0.6em;">
-  <li><strong>2件揃っている</strong> → 自動投稿は正常稼働中。投稿が飛ばない場合はスプシのE列ステータス（「投稿済」「失敗」「未投稿」）を確認</li>
-  <li><strong>0件 / 1件しかない</strong> → メニュー「⏰ トリガーをインストール」を再実行</li>
-  <li><strong>同じ関数名が3件以上ある</strong> → メニュー「🗑 トリガーを削除」→「⏰ トリガーをインストール」でリセット</li>
-</ul>
-</div>
+            <ul>
+              <li><strong>2件揃っている</strong> → 自動投稿は正常稼働中。投稿が飛ばない場合はスプシのE列ステータス(「投稿済」「失敗」「未投稿」)を確認</li>
+              <li><strong>0件 / 1件しかない</strong> → メニュー <code class="inline">⏰ トリガーをインストール</code> を再実行</li>
+              <li><strong>同じ関数名が3件以上ある</strong> → メニュー <code class="inline">🗑 トリガーを削除</code> → <code class="inline">⏰ トリガーをインストール</code> でリセット</li>
+            </ul>
+          </div>
 
-<div class="check">
-それでも解決しない場合は、Discordチャンネルに通知されたエラーメッセージのスクショと一緒に、購入時のサポート窓口へお問い合わせください。
-</div>
+          <div class="callout callout-info" style="margin-top: 1rem;">
+            <div class="ic">💬</div>
+            <div>
+              それでも解決しない場合は、<strong>Discordチャンネルに通知されたエラーメッセージのスクショ</strong>と一緒に、<strong>購入時のサポート窓口</strong>へお問い合わせください。
+            </div>
+          </div>
+        </div>
+      </section>
 
-<h2>関連リンク</h2>
-<ul>
-  <li><a href="./index.html">トップに戻る</a></li>
-  <li><a href="./privacy-policy.html">プライバシーポリシー</a></li>
-  <li><a href="./terms.html">利用規約</a></li>
-  <li><a href="./data-deletion.html">データ削除手順</a></li>
-</ul>
+      <!-- ===== FAQ ===== -->
+      <section id="faq" class="section reveal">
+        <div class="section-card">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="meta-pill">? よくある質問</span>
+          </div>
+          <h2 class="section-title text-3xl md:text-4xl mb-6">よくある質問</h2>
 
-</div>
+          <div id="faqList">
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>SMS認証が通りません(電話番号エラー)</span>
+                <span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></span>
+              </button>
+              <div class="faq-a"><div class="faq-a-inner">
+                050などのIP電話番号、固定電話、海外番号ではMeta側のSMS認証は通りません。<strong>Facebookアカウントに紐付いた携帯番号</strong>をご利用ください。
+              </div></div>
+            </div>
 
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>アプリ基本設定で保存ボタンが押せません</span>
+                <span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></span>
+              </button>
+              <div class="faq-a"><div class="faq-a-inner">
+                Step 4-3 の<strong>URL3箇所</strong>(コールバック・アンインストール・削除)のうち1つでも空欄だと保存に失敗します。すべて <code class="inline">https://www.google.com/</code> を入れて保存してください。
+              </div></div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>招待が表示されません</span>
+                <span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></span>
+              </button>
+              <div class="faq-a"><div class="faq-a-inner">
+                Threadsアプリで上から下にスワイプして再読み込みしてください。それでも表示されない場合は5〜10分待ってから再度確認を。<br/>
+                また、Threadsで<strong>同じMetaアカウントでログイン</strong>しているかも合わせて確認してください。
+              </div></div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>トークンの有効期限はありますか?</span>
+                <span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></span>
+              </button>
+              <div class="faq-a"><div class="faq-a-inner">
+                長期トークンは<strong>60日有効</strong>ですが、Step 8 でトリガーをインストールすると<strong>毎週日曜9時に自動で更新</strong>されます。基本的に手動操作は不要です。
+              </div></div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>テスト投稿しても反映されません</span>
+                <span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></span>
+              </button>
+              <div class="faq-a"><div class="faq-a-inner">
+                まずメニュー <code class="inline">🔍 設定状況を確認</code> で5項目すべて「✅ 設定済」かを確認してください。<br/>
+                B列の時刻が<strong>未来の時刻</strong>になっていると次のチェックタイミングまで投稿されません。テスト時は<strong>1〜2分前の時刻</strong>に設定するのがコツです。
+              </div></div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>GitHubアカウントは必要ですか?</span>
+                <span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></span>
+              </button>
+              <div class="faq-a"><div class="faq-a-inner">
+                <strong>不要です。</strong> このスケジューラーは Google スプレッドシート + Google Apps Script のみで動きます。GitHub の操作・アカウントは一切必要ありません。
+              </div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== PURCHASE / OFFER ===== -->
+      <section id="purchase" class="section reveal">
+        <div class="section-card relative overflow-hidden" style="background: var(--grad); color: white; border:none;">
+          <div style="position:absolute; inset:0; background-image: linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px); background-size: 32px 32px; mask-image: radial-gradient(ellipse at 70% 30%, black 30%, transparent 70%); pointer-events:none;"></div>
+          <div class="relative">
+            <div class="text-xs font-bold tracking-widest opacity-80 mb-2 font-en">AFTER SUPPORT</div>
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-2 leading-tight">アフターフォロー（任意）</h2>
+            <p class="text-white/85 mb-6 leading-relaxed max-w-xl">
+              セットアップ後の運用サポート・トラブル対応・仕様変更への追従など、月額制で継続サポートを受けられます。
+            </p>
+
+            <div class="max-w-md">
+              <div class="rounded-2xl p-6 bg-white text-[color:var(--ink)] relative shadow-xl">
+                <div class="absolute -top-2 left-4 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold tracking-wide" style="background:var(--danger); color:white">初月無料</div>
+                <div class="text-xs text-[color:var(--ink-3)] mb-1 font-bold">アフターフォロー</div>
+                <div class="font-en font-extrabold text-4xl mb-1" style="background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;">¥500<span class="text-base font-medium" style="color:var(--ink-3); -webkit-text-fill-color:var(--ink-3);">/月</span></div>
+                <div class="text-xs font-bold mb-3" style="color:var(--danger);">初月無料 / 翌月1日付で請求開始</div>
+                <ul class="space-y-1.5 text-sm text-[color:var(--ink-2)] list-none p-0 mt-3 pt-3 border-t border-[color:var(--line)]">
+                  <li>• 操作・運用に関する質問対応</li>
+                  <li>• Threads API / GAS の仕様変更への追従</li>
+                  <li>• エラー発生時の調査・修正サポート</li>
+                  <li>• いつでも解約OK</li>
+                </ul>
+                <div class="mt-4 pt-3 border-t border-[color:var(--line)]">
+                  <div class="text-xs font-bold text-[color:var(--ink-3)] mb-1.5">お支払い方法</div>
+                  <ul class="space-y-1 text-sm text-[color:var(--ink-2)] list-none p-0">
+                    <li>• PayPay</li>
+                    <li>• 銀行振込</li>
+                    <li class="text-xs text-[color:var(--ink-3)]">※ クレジットカード等は今後対応予定</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<!-- ============ FOOTER ============ -->
 <footer>
-© 2026 @tamago_app. All rights reserved.<br>
-<a href="./privacy-policy.html">プライバシーポリシー</a> | <a href="./terms.html">利用規約</a> | <a href="./data-deletion.html">データ削除</a>
+  <div class="max-w-[1400px] mx-auto px-5 lg:px-8">
+    <div class="grid md:grid-cols-[1.2fr_1fr_1fr] gap-8 mb-8">
+      <div>
+        <div class="flex items-center gap-2.5 mb-3">
+          <div class="logo-mark"><img src="images/brand-icon.png" alt="アプリ工房"/></div>
+          <div class="font-extrabold">スレッズスケジューラー</div>
+        </div>
+        <p class="text-[color:var(--ink-3)] leading-relaxed text-sm max-w-md">
+          Threadsの予約投稿を Google スプレッドシート + Google Apps Script で自動化するツールです。
+        </p>
+      </div>
+      <div>
+        <div class="font-bold text-[color:var(--ink)] mb-2 text-sm">ガイド</div>
+        <ul class="space-y-1.5 text-sm">
+          <li><a href="#step1">事前準備</a></li>
+          <li><a href="#step3">初回セットアップ</a></li>
+          <li><a href="#operation">完了後の運用</a></li>
+          <li><a href="#faq">よくある質問</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-bold text-[color:var(--ink)] mb-2 text-sm">リンク</div>
+        <ul class="space-y-1.5 text-sm">
+          <li><a href="https://tamagoojiji.github.io/bridgesquare-legal/privacy-policy.html" target="_blank">プライバシーポリシー</a></li>
+          <li><a href="https://tamagoojiji.github.io/bridgesquare-legal/terms-of-service.html" target="_blank">利用規約</a></li>
+          <li><a href="https://tamagoojiji.github.io/bridgesquare-legal/data-deletion.html" target="_blank">データ削除手順</a></li>
+          <li><a href="#top">↑ トップに戻る</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-[color:var(--line)] pt-5 flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-xs">
+      <div class="text-[color:var(--ink-3)]">© 2026 @tamago_app — All rights reserved.</div>
+      <div class="text-[color:var(--ink-3)]">※ Threads™ は Meta Platforms, Inc. の商標です</div>
+    </div>
+  </div>
 </footer>
 
+<!-- ============ TWEAKS PANEL ============ -->
+<div class="tweaks-panel" id="tweaksPanel">
+  <h4>
+    <span>表示設定</span>
+    <button class="tw-close" id="tweaksClose" aria-label="閉じる">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </h4>
+
+  <label>グラデーション開始色</label>
+  <input type="color" id="twGradStart" />
+
+  <label>グラデーション終了色</label>
+  <input type="color" id="twGradEnd" />
+
+  <div class="mt-3 grid grid-cols-3 gap-1.5">
+    <button class="tw-toggle" data-preset="brand-warm">橙→赤</button>
+    <button class="tw-toggle" data-preset="brand-sun">黄→橙</button>
+    <button class="tw-toggle" data-preset="brand-navy">赤→紺</button>
+  </div>
+
+  <label>フォントサイズ <span class="font-en font-bold text-[color:var(--ink)]" id="twFsLabel">100%</span></label>
+  <input type="range" id="twFontScale" min="0.85" max="1.25" step="0.05" />
+
+  <label>テーマ</label>
+  <div class="grid grid-cols-2 gap-1.5">
+    <button class="tw-toggle" id="twLight">☀ ライト</button>
+    <button class="tw-toggle" id="twDark">🌙 ダーク</button>
+  </div>
+
+  <button id="twReset" class="mt-4 text-xs text-[color:var(--ink-3)] hover:text-[color:var(--ink)] font-medium w-full text-left">↻ デフォルトに戻す</button>
+</div>
+
+<!-- ============ JS ============ -->
+<script>
+(function(){
+  /* ============ Apply tweaks ============ */
+  function applyTweaks(){
+    const root = document.documentElement;
+    root.style.setProperty('--grad-start', TWEAKS.gradStart);
+    root.style.setProperty('--grad-end',   TWEAKS.gradEnd);
+    root.style.setProperty('--font-scale', TWEAKS.fontScale);
+    root.classList.toggle('dark', !!TWEAKS.dark);
+
+    // Update controls
+    const gs = document.getElementById('twGradStart');
+    const ge = document.getElementById('twGradEnd');
+    const fs = document.getElementById('twFontScale');
+    if (gs) gs.value = TWEAKS.gradStart;
+    if (ge) ge.value = TWEAKS.gradEnd;
+    if (fs) fs.value = TWEAKS.fontScale;
+    const lbl = document.getElementById('twFsLabel');
+    if (lbl) lbl.textContent = Math.round(TWEAKS.fontScale*100) + '%';
+    document.getElementById('twLight')?.classList.toggle('on', !TWEAKS.dark);
+    document.getElementById('twDark')?.classList.toggle('on',  !!TWEAKS.dark);
+  }
+  function setTweak(patch){
+    Object.assign(TWEAKS, patch);
+    applyTweaks();
+    try { localStorage.setItem('tssg_tweaks', JSON.stringify(TWEAKS)); } catch(e){}
+    try {
+      window.parent?.postMessage({type:'__edit_mode_set_keys', edits: patch}, '*');
+    } catch(e){}
+  }
+  // Restore from localStorage
+  try {
+    const saved = JSON.parse(localStorage.getItem('tssg_tweaks') || 'null');
+    if (saved && typeof saved === 'object') Object.assign(TWEAKS, saved);
+  } catch(e){}
+  applyTweaks();
+
+  /* ============ Tweaks panel UI ============ */
+  const panel = document.getElementById('tweaksPanel');
+  document.getElementById('tweaksOpen')?.addEventListener('click', () => panel.classList.add('show'));
+  document.getElementById('tweaksClose')?.addEventListener('click', () => {
+    panel.classList.remove('show');
+    try { window.parent?.postMessage({type:'__edit_mode_dismissed'}, '*'); } catch(e){}
+  });
+  document.getElementById('twGradStart')?.addEventListener('input', e => setTweak({gradStart: e.target.value}));
+  document.getElementById('twGradEnd')  ?.addEventListener('input', e => setTweak({gradEnd:   e.target.value}));
+  document.getElementById('twFontScale')?.addEventListener('input', e => setTweak({fontScale: parseFloat(e.target.value)}));
+  document.getElementById('twLight')    ?.addEventListener('click', () => setTweak({dark: false}));
+  document.getElementById('twDark')     ?.addEventListener('click', () => setTweak({dark: true}));
+  document.getElementById('twReset')    ?.addEventListener('click', () => setTweak({gradStart:'#ff7a3d', gradEnd:'#e94e3a', fontScale:1, dark:false}));
+
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const presets = {
+        'brand-warm': ['#ff7a3d','#e94e3a'],
+        'brand-sun':  ['#fbb12e','#ff7a3d'],
+        'brand-navy': ['#e94e3a','#1f3a6e'],
+      };
+      const p = presets[btn.dataset.preset];
+      if (p) setTweak({gradStart:p[0], gradEnd:p[1]});
+    });
+  });
+
+  // Host integration: Tweaks toggle
+  window.addEventListener('message', (e) => {
+    const t = e?.data?.type;
+    if (t === '__activate_edit_mode') panel.classList.add('show');
+    if (t === '__deactivate_edit_mode') panel.classList.remove('show');
+  });
+  try { window.parent?.postMessage({type:'__edit_mode_available'}, '*'); } catch(e){}
+
+  /* ============ Click-to-copy on inline code ============ */
+  document.querySelectorAll('code.inline').forEach(el => {
+    el.title = 'クリックでコピー';
+    el.addEventListener('click', async () => {
+      const text = el.textContent || '';
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch(e) {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta);
+        ta.select(); try { document.execCommand('copy'); } catch(_){}
+        document.body.removeChild(ta);
+      }
+      el.classList.add('copied');
+      setTimeout(() => el.classList.remove('copied'), 1400);
+    });
+  });
+
+  /* ============ URL Builder (token → URL, client-side only) ============ */
+  document.querySelectorAll('[data-url-builder]').forEach(root => {
+    const input = root.querySelector('[data-ub-token]');
+    const display = root.querySelector('[data-ub-token-display]');
+    const output = root.querySelector('[data-ub-output]');
+    const openBtn = root.querySelector('[data-ub-open]');
+    const clearBtn = root.querySelector('[data-ub-clear]');
+    const toggleBtn = root.querySelector('[data-ub-toggle]');
+    const PREFIX = 'https://graph.threads.net/v1.0/me?fields=id&access_token=';
+    const PLACEHOLDER = '<長期トークン>';
+
+    function maskToken(t) {
+      if (!t) return '';
+      if (t.length <= 12) return '•'.repeat(t.length);
+      return t.slice(0,4) + '•'.repeat(Math.min(20, t.length - 8)) + t.slice(-4);
+    }
+    function update() {
+      const t = input.value.trim();
+      const has = t.length > 0;
+      if (has) {
+        // Show masked token in display when input is password-type, full when text-type
+        display.textContent = (input.type === 'password') ? maskToken(t) : t;
+        output.classList.add('is-filled');
+      } else {
+        display.textContent = PLACEHOLDER;
+        output.classList.remove('is-filled');
+      }
+      openBtn.disabled = !has;
+    }
+
+    input.addEventListener('input', update);
+    clearBtn.addEventListener('click', () => { input.value = ''; update(); input.focus(); });
+    toggleBtn.addEventListener('click', () => {
+      input.type = (input.type === 'password') ? 'text' : 'password';
+      update();
+    });
+    openBtn.addEventListener('click', () => {
+      const t = input.value.trim();
+      if (!t) return;
+      window.open(PREFIX + encodeURIComponent(t), '_blank', 'noopener,noreferrer');
+    });
+    update();
+  });
+
+  /* ============ Reveal on scroll ============ */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        en.target.classList.add('in');
+        io.unobserve(en.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  /* ============ FAQ accordion ============ */
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-q').addEventListener('click', () => {
+      item.classList.toggle('open');
+    });
+  });
+
+  /* ============ Progress (checkboxes + sidebar sync) ============ */
+  const STEP_KEYS = ['step1','step2','step3','step4','step5','step6','step7','step8'];
+  const stored = (() => {
+    try { return JSON.parse(localStorage.getItem('tssg_progress') || '{}'); } catch(e){ return {}; }
+  })();
+  function saveProgress(){
+    try { localStorage.setItem('tssg_progress', JSON.stringify(stored)); } catch(e){}
+  }
+  function refreshProgressUI(){
+    const done = STEP_KEYS.filter(k => stored[k]).length;
+    const pct  = Math.round((done / STEP_KEYS.length) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressText').textContent = done + '/' + STEP_KEYS.length;
+    const mb = document.getElementById('mProgressBar');
+    const mt = document.getElementById('mProgressText');
+    if (mb) mb.style.width = pct + '%';
+    if (mt) mt.textContent = done + '/' + STEP_KEYS.length;
+
+    document.querySelectorAll('#sideNav .side-item[data-step]').forEach(item => {
+      const idx = parseInt(item.dataset.step, 10);
+      const key = STEP_KEYS[idx-1];
+      item.classList.toggle('complete', !!stored[key]);
+    });
+  }
+  document.querySelectorAll('.step-check').forEach(lab => {
+    const key = lab.dataset.progressKey;
+    const cb  = lab.querySelector('input');
+    cb.checked = !!stored[key];
+    cb.addEventListener('change', () => {
+      stored[key] = cb.checked;
+      saveProgress();
+      refreshProgressUI();
+    });
+  });
+  document.getElementById('resetProgress')?.addEventListener('click', () => {
+    STEP_KEYS.forEach(k => delete stored[k]);
+    document.querySelectorAll('.step-check input').forEach(i => i.checked = false);
+    saveProgress();
+    refreshProgressUI();
+  });
+  refreshProgressUI();
+
+  /* ============ Active section in sidebar + top nav ============ */
+  const allSections = ['step1','step2','step3','step4','step5','step6','step7','step8','operation','faq'];
+  const sideItems   = document.querySelectorAll('#sideNav .side-item');
+  const navLinks    = document.querySelectorAll('.nav-link');
+  function setActive(id){
+    sideItems.forEach(i => i.classList.toggle('active', i.getAttribute('href') === '#' + id));
+    navLinks.forEach(n => n.classList.toggle('active', n.getAttribute('href') === '#' + id));
+  }
+  const ioActive = new IntersectionObserver((entries) => {
+    // pick the one closest to top in viewport
+    const visible = entries.filter(e => e.isIntersecting)
+      .sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    if (visible[0]) setActive(visible[0].target.id);
+  }, { rootMargin: '-30% 0px -50% 0px', threshold: 0 });
+  allSections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) ioActive.observe(el);
+  });
+})();
+</script>
 </body>
 </html>
