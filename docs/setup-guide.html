@@ -83,17 +83,20 @@
 <a href="https://docs.google.com/spreadsheets/d/1a05tRc9-jMv-P7VNJQgn5jyyJHBQ2Zdp1zwsJiyxYI8/copy" target="_blank" rel="noopener" style="display:inline-block; background:#2575fc; color:white; padding:13px 28px; border-radius:24px; text-decoration:none; font-weight:bold; font-size:1.05em;">📋 テンプレートをコピーする</a>
 </p>
 </div>
-<h2>3. 「APIキー設定」シートを準備</h2>
+<h2>3. 初回セットアップで5項目を入力</h2>
+<p>スプシメニュー <strong>「🔧 初回セットアップ」</strong> を実行すると、以下の5項目が順番にプロンプトで聞かれます。Step 4 〜 7 で各値を取得して、ここに順次入力していきます。</p>
+
 <div class="step">
 <span class="step-num">手順</span>
 <ol>
-  <li>スプシ上部メニューから <strong>「スレッズスケジューラー → ⚙️ 設定シートを準備」</strong> をクリック</li>
+  <li>スプシ上部メニューから <strong>「スレッズスケジューラー → 🔧 初回セットアップ」</strong> をクリック</li>
   <li>初回は権限承認ダイアログが出るので「許可」</li>
-  <li>「APIキー設定」シートが新規作成され、以下の5項目の入力欄が表示される</li>
+  <li>以下の順番で5つのプロンプトが表示されるので、各値を入力</li>
+  <li>完了画面で <strong>5項目すべてが「✅ 設定済」</strong> になっていれば成功</li>
 </ol>
 </div>
 
-<h3>登録する5項目（タップで取得方法にジャンプ）</h3>
+<h3>入力する5項目（タップで取得方法にジャンプ）</h3>
 <table>
 <thead><tr><th>キー名</th><th>取得場所</th><th>形式</th></tr></thead>
 <tbody>
@@ -106,8 +109,8 @@
 </table>
 
 <div class="check">
-このシートのB列に、以降の各ステップで取得した値を順番に貼り付けていきます。<br>
-キー名をタップすると、各値の取得方法に直接ジャンプできます。
+キー名をタップすると、各値の取得方法に直接ジャンプできます。<br>
+取得した値は、その都度メニュー「🔧 初回セットアップ」を再実行して該当項目だけ入力することもできます（空欄でOKを押せば既存値を保持）。
 </div>
 
 <h2 id="step4">4. Meta Developer アプリ作成 → <code>APP_ID</code> / <code>APP_SECRET</code> 取得 → 即保存</h2>
@@ -168,13 +171,13 @@
 </div>
 
 <div class="save-block">
-<h4>💾 ここで「APIキー設定」シートに保存</h4>
+<h4>💾 ここで「🔧 初回セットアップ」に入力</h4>
 <ol>
-  <li>スプシに戻り <strong>「APIキー設定」シート</strong> を開く</li>
-  <li><code>THREADS_APP_ID</code> 行のB列にアプリIDを貼り付け</li>
-  <li><code>THREADS_APP_SECRET</code> 行のB列にアプリシークレットを貼り付け</li>
-  <li>メニュー <strong>「💾 設定シートからPropertiesに保存」</strong> をクリック</li>
-  <li>B列が空欄になり、C列に「✅ 保存済」が表示されればOK</li>
+  <li>スプシメニュー <strong>「スレッズスケジューラー → 🔧 初回セットアップ」</strong> をクリック</li>
+  <li><code>THREADS_APP_ID</code> のプロンプトでアプリIDを入力</li>
+  <li><code>THREADS_APP_SECRET</code> のプロンプトでアプリシークレットを入力</li>
+  <li>残りのプロンプト（ACCESS_TOKEN/USER_ID/WEBHOOK_URL）は<strong>空欄でOKを押す</strong>と既存値を保持してスキップ</li>
+  <li>完了画面で2項目が「✅ 設定済」になっていれば成功</li>
 </ol>
 </div>
 
@@ -221,11 +224,11 @@
 </div>
 
 <div class="save-block">
-<h4>💾 ここで「APIキー設定」シートに保存</h4>
+<h4>💾 ここで「🔧 初回セットアップ」に入力</h4>
 <ol>
-  <li><code>THREADS_ACCESS_TOKEN</code> 行のB列にコピーしたトークンを貼り付け</li>
-  <li>メニュー「💾 設定シートからPropertiesに保存」</li>
-  <li>B列空欄＋C列「✅ 保存済」確認</li>
+  <li>メニュー <strong>「🔧 初回セットアップ」</strong> をクリック</li>
+  <li><code>THREADS_ACCESS_TOKEN</code> のプロンプトでトークンを入力</li>
+  <li>他のプロンプトは空欄OKでスキップ（既存値を保持）</li>
 </ol>
 </div>
 
@@ -246,10 +249,11 @@
 </div>
 
 <div class="save-block">
-<h4>💾 ここで「APIキー設定」シートに保存</h4>
+<h4>💾 ここで「🔧 初回セットアップ」に入力</h4>
 <ol>
-  <li><code>THREADS_USER_ID</code> 行のB列にコピーした数字を貼り付け</li>
-  <li>メニュー「💾 設定シートからPropertiesに保存」</li>
+  <li>メニュー <strong>「🔧 初回セットアップ」</strong> をクリック</li>
+  <li><code>THREADS_USER_ID</code> のプロンプトで数字を入力</li>
+  <li>他のプロンプトは空欄OKでスキップ</li>
 </ol>
 </div>
 
@@ -288,11 +292,11 @@
 </div>
 
 <div class="save-block">
-<h4>💾 ここで「APIキー設定」シートに保存</h4>
+<h4>💾 ここで「🔧 初回セットアップ」に入力</h4>
 <ol>
-  <li><code>DISCORD_WEBHOOK_URL</code> 行のB列にコピーしたURLを貼り付け</li>
-  <li>メニュー「💾 設定シートからPropertiesに保存」</li>
-  <li>これで5つすべてが保存完了</li>
+  <li>メニュー <strong>「🔧 初回セットアップ」</strong> をクリック</li>
+  <li><code>DISCORD_WEBHOOK_URL</code> のプロンプトでURLを入力</li>
+  <li>これで5つすべてが入力完了 → 完了画面で全項目「✅ 設定済」を確認</li>
 </ol>
 </div>
 
