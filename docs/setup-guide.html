@@ -351,10 +351,47 @@
   <li><strong>新規予約投稿</strong>: 「投稿予約」シートに A=日付、B=時刻、C=本文、E=未投稿 を入れるだけ</li>
   <li><strong>状態確認</strong>: E列ステータス・Discord通知</li>
   <li><strong>トークン更新</strong>: 毎週日曜9時に自動実行（手動操作不要）</li>
-  <li><strong>詰まったら</strong>: メニュー「🔍 設定状況を確認」「📋 トリガー一覧」で動作確認</li>
 </ul>
 
-<h2>困ったら</h2>
+<h2>トラブル時のセルフチェック</h2>
+<p>「投稿が飛ばない」「Discordにエラーが来た」など、何かおかしいと感じたら、下の2つのメニューを順番に確認してください。原因の9割はこのどちらかで特定できます。</p>
+
+<div class="step">
+<span class="step-num">①</span>
+<strong>🔍 設定状況を確認</strong>
+<p style="margin:0.6em 0;">スプシ上部メニュー「スレッズスケジューラー → 🔍 設定状況を確認」をクリック。下のように5項目が表示されます。</p>
+<pre style="background:#f5f5f5; padding:12px; border-radius:6px; font-size:0.9em; line-height:1.5;">THREADS_APP_ID: ✅ 1234...5678
+THREADS_APP_SECRET: ✅ abcd...wxyz
+THREADS_ACCESS_TOKEN: ✅ THAA...XYZ9
+THREADS_USER_ID: ✅ 3510...8457
+DISCORD_WEBHOOK_URL: ✅ http...zzzz</pre>
+<ul style="margin-top:0.6em;">
+  <li><strong>全部 ✅ なのに投稿が飛ばない</strong> → ②のトリガー一覧へ</li>
+  <li><strong>どれか ❌ 未設定</strong> → 「🔧 初回セットアップ」をもう一度実行してその項目だけ入力</li>
+  <li><strong>THREADS_ACCESS_TOKEN が ❌</strong>（または60日以上更新されていない疑い）→ メニュー「🔄 トークン手動更新」を実行</li>
+</ul>
+</div>
+
+<div class="step">
+<span class="step-num">②</span>
+<strong>📋 トリガー一覧</strong>
+<p style="margin:0.6em 0;">スプシ上部メニュー「スレッズスケジューラー → 📋 トリガー一覧」をクリック。正常な状態は以下の2件です。</p>
+<pre style="background:#f5f5f5; padding:12px; border-radius:6px; font-size:0.9em; line-height:1.5;">現在のトリガー: 2件
+
+・postRunner (id=...)
+・refreshTokenJob (id=...)</pre>
+<ul style="margin-top:0.6em;">
+  <li><strong>2件揃っている</strong> → 自動投稿は正常稼働中。投稿が飛ばない場合はスプシのE列ステータス（「投稿済」「失敗」「未投稿」）を確認</li>
+  <li><strong>0件 / 1件しかない</strong> → メニュー「⏰ トリガーをインストール」を再実行</li>
+  <li><strong>同じ関数名が3件以上ある</strong> → メニュー「🗑 トリガーを削除」→「⏰ トリガーをインストール」でリセット</li>
+</ul>
+</div>
+
+<div class="check">
+それでも解決しない場合は、Discordチャンネルに通知されたエラーメッセージのスクショと一緒に、購入時のサポート窓口へお問い合わせください。
+</div>
+
+<h2>関連リンク</h2>
 <ul>
   <li><a href="./index.html">トップに戻る</a></li>
   <li><a href="./privacy-policy.html">プライバシーポリシー</a></li>
