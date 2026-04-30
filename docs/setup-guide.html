@@ -1239,15 +1239,20 @@
 
           <h3 class="sub-head"><span class="sh-num">4-1</span>Meta Developer登録</h3>
           <ol class="guided">
-            <li><a href="https://developers.facebook.com" target="_blank" rel="noopener noreferrer" class="font-bold underline">developers.facebook.com</a> にFacebookアカウントでログイン</li>
+            <li><a href="https://developers.facebook.com" rel="noopener noreferrer" class="font-bold underline">developers.facebook.com</a> にFacebookアカウントでログイン</li>
             <li>電話番号認証(SMS) + 開発者規約に同意</li>
           </ol>
 
           <div class="callout callout-warn">
             <div class="ic">⚠</div>
             <div>
-              <strong>「接続が拒否されました」「ログインできない」エラーが出る場合</strong> は、ブラウザのキャッシュ・拡張機能・Cookieが原因のことが多いです。<strong>シークレットモード（プライベートブラウズ）</strong> で開き直すと解消することが多いのでお試しください。<br>
-              <span class="text-xs text-[color:var(--ink-3)]">Chrome: Cmd+Shift+N / Edge: Ctrl+Shift+N / Safari: Cmd+Shift+N / Firefox: Cmd+Shift+P</span>
+              <strong>うまく開けない・「接続が拒否」「Navigation was blocked by Cross-Origin-Opener-Policy」が出る場合</strong>:
+              <ul class="list-disc pl-5 mt-2 space-y-1">
+                <li><strong>iPhone Safari</strong>: リンクを <strong>長押し</strong> → 「<strong>新規タブで開く</strong>」を選択（タップで同タブ遷移すれば一番安全）</li>
+                <li><strong>Discord等のアプリ内ブラウザ</strong>から開いている場合: 「<strong>Safariで開く</strong>」を選んで標準ブラウザに切り替える</li>
+                <li><strong>キャッシュ・Cookie・拡張機能</strong>が原因なら <strong>シークレットモード</strong> で開き直す<br><span class="text-xs text-[color:var(--ink-3)]">Chrome: Cmd+Shift+N / Edge: Ctrl+Shift+N / Safari: Cmd+Shift+N / Firefox: Cmd+Shift+P</span></li>
+                <li>それでもダメなら URL を <strong>コピペで直接アドレスバーに貼り付け</strong>: <code class="inline">https://developers.facebook.com</code></li>
+              </ul>
             </div>
           </div>
 
