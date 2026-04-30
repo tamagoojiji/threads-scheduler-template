@@ -1334,10 +1334,14 @@
             </div>
           </div>
 
-          <div class="my-3">
+          <div class="grid sm:grid-cols-2 gap-4 my-3">
             <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
-              <img src="images/step4-usecase-blue.png" alt="コールバックURLリダイレクトをコピペした直後、青背景のURLサジェスト → 3つのURLをすべて入力した状態" style="display:block; width:100%; height:auto;" />
-              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">① コピペ直後の<span style="display:inline-block; padding: 1px 6px; border-radius:4px; background: color-mix(in oklab, var(--grad-start) 18%, var(--surface)); color: var(--grad-start); font-weight:700;">青背景のURL</span>をクリック ➡️ ② 3つのURLをすべて入力</figcaption>
+              <img src="images/step4-usecase-blue.png" alt="コールバックURLリダイレクトをコピペした直後、青背景のURLサジェストが表示されている画面" style="display:block; width:100%; height:auto;" />
+              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">① コピペ直後に出る<span style="display:inline-block; padding: 1px 6px; border-radius:4px; background: color-mix(in oklab, var(--grad-start) 18%, var(--surface)); color: var(--grad-start); font-weight:700;">青背景のURL</span>をクリック</figcaption>
+            </figure>
+            <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+              <img src="images/step4-usecase-filled.png" alt="コールバックURLリダイレクト・アンインストール・削除の3つのURLをすべて入力した状態のスクリーンショット" style="display:block; width:100%; height:auto;" />
+              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">② 3つのURLをすべて入力した状態</figcaption>
             </figure>
           </div>
 
@@ -1366,17 +1370,29 @@
             <li>完了画面で <strong>2項目「✅ 設定済」</strong> 表示を確認</li>
           </ol>
 
-          <div class="my-3">
+          <div class="grid sm:grid-cols-2 gap-4 my-3">
             <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
-              <img src="images/step4-auth-warn.png" alt="Google警告画面 → アクセス権限すべて選択" style="display:block; width:100%; height:auto;" />
-              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">① 詳細 ➡️ <strong>「安全ではないページに移動」</strong> ➡️ ② <strong>「すべて選択」</strong> にチェック</figcaption>
+              <img src="images/step4-auth-warn.png" alt="このアプリはGoogleで確認されていません警告画面 — 詳細を表示してから「安全ではないページに移動」をクリックする画面" style="display:block; width:100%; height:auto;" />
+              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">① 詳細 ➡️ <strong>「安全ではないページに移動」</strong> をクリック</figcaption>
+            </figure>
+            <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+              <img src="images/step4-auth-perms.png" alt="アクセスできる情報を選択してください — すべて選択にチェックが入った状態の画面" style="display:block; width:100%; height:auto;" />
+              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">② <strong>「すべて選択」</strong> にチェックを入れて進める</figcaption>
             </figure>
           </div>
 
-          <div class="my-3">
+          <div class="grid sm:grid-cols-3 gap-4 my-3">
             <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
-              <img src="images/step4-input-app-id.png" alt="APP_ID 入力 → APP_SECRET 入力 → 完了画面で2項目設定済" style="display:block; width:100%; height:auto;" />
-              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">① <span class="key" style="font-size:.85em;">THREADS_APP_ID</span> 貼り付け ➡️ ② <span class="key" style="font-size:.85em;">THREADS_APP_SECRET</span> 貼り付け ➡️ ③ <strong style="color: var(--ok);">2項目「✅ 設定済」</strong> 確認</figcaption>
+              <img src="images/step4-input-app-id.png" alt="THREADS_APP_ID を設定するダイアログ — 新しい値を入力する欄" style="display:block; width:100%; height:auto;" />
+              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">① <span class="key" style="font-size:.85em;">THREADS_APP_ID</span> を貼り付け ➡️ OK</figcaption>
+            </figure>
+            <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+              <img src="images/step4-input-app-secret.png" alt="THREADS_APP_SECRET を設定するダイアログ — 新しい値を入力する欄" style="display:block; width:100%; height:auto;" />
+              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">② <span class="key" style="font-size:.85em;">THREADS_APP_SECRET</span> を貼り付け ➡️ OK</figcaption>
+            </figure>
+            <figure class="screenshot" style="padding: 0; background: var(--surface); border-style: solid; border-color: var(--line); overflow: hidden; display: block;">
+              <img src="images/step4-setup-complete.png" alt="セットアップ完了 — THREADS_APP_ID と THREADS_APP_SECRET が設定済 / 残り3項目が未設定の確認画面" style="display:block; width:100%; height:auto;" />
+              <figcaption style="padding: .65rem .85rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; border-top: 1px solid var(--line); text-align: left;">③ 完了画面で <strong style="color: var(--ok);">2項目「✅ 設定済」</strong> を確認</figcaption>
             </figure>
           </div>
 
@@ -1631,10 +1647,14 @@
             <li><strong>「ウェブフックURLをコピー」</strong> をクリック</li>
           </ol>
 
-          <div class="my-3">
+          <div class="grid sm:grid-cols-2 gap-4 my-3">
             <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block;">
-              <img src="images/step7-webhook-1.png" alt="連携サービス → ウェブフック → 新しいウェブフックを作成" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 6px;" />
-              <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">① 連携サービス → ウェブフック ➡️ ② 新しいウェブフックを作成</figcaption>
+              <img src="images/step7-webhook-1.png" alt="連携サービス画面 — ウェブフック1件" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 6px;" />
+              <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">① 連携サービス → ウェブフック</figcaption>
+            </figure>
+            <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block;">
+              <img src="images/step7-webhook-2.png" alt="新しいウェブフックを作成" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 6px;" />
+              <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">② 新しいウェブフックを作成</figcaption>
             </figure>
           </div>
 
