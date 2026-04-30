@@ -1006,7 +1006,7 @@
           </p>
 
           <div class="grid md:grid-cols-2 gap-3">
-            <a href="https://accounts.google.com" target="_blank" class="block p-4 rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] hover:border-[color:var(--ink-3)] transition">
+            <a href="https://accounts.google.com" target="_blank" rel="noopener noreferrer" class="block p-4 rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] hover:border-[color:var(--ink-3)] transition">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-lg grid place-items-center text-white font-extrabold" style="background:var(--grad)">G</div>
                 <div class="flex-1">
@@ -1016,7 +1016,7 @@
                 <span class="text-[color:var(--ink-3)]">↗</span>
               </div>
             </a>
-            <a href="https://www.threads.com/" target="_blank" class="block p-4 rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] hover:border-[color:var(--ink-3)] transition">
+            <a href="https://www.threads.com/" target="_blank" rel="noopener noreferrer" class="block p-4 rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] hover:border-[color:var(--ink-3)] transition">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-lg grid place-items-center bg-black text-white font-extrabold">@</div>
                 <div class="flex-1">
@@ -1102,7 +1102,7 @@
           </p>
 
           <div class="text-center my-8">
-            <a href="https://docs.google.com/spreadsheets/d/1a05tRc9-jMv-P7VNJQgn5jyyJHBQ2Zdp1zwsJiyxYI8/copy" target="_blank" class="big-cta">
+            <a href="https://docs.google.com/spreadsheets/d/1a05tRc9-jMv-P7VNJQgn5jyyJHBQ2Zdp1zwsJiyxYI8/copy" target="_blank" rel="noopener noreferrer" class="big-cta">
               <span class="emoji">📋</span>
               テンプレートをコピーする
               <span class="text-white/70 text-sm font-medium">→</span>
@@ -1245,7 +1245,7 @@
 
           <h3 class="sub-head"><span class="sh-num">4-1</span>Meta Developer登録</h3>
           <ol class="guided">
-            <li><a href="https://developers.facebook.com" target="_blank" class="font-bold underline">developers.facebook.com</a> にFacebookアカウントでログイン</li>
+            <li><a href="https://developers.facebook.com" target="_blank" rel="noopener noreferrer" class="font-bold underline">developers.facebook.com</a> にFacebookアカウントでログイン</li>
             <li>電話番号認証(SMS) + 開発者規約に同意</li>
           </ol>
 
@@ -1363,7 +1363,7 @@
                   <li><strong>「スレッズスケジューラー(安全ではないページ)に移動」</strong> をクリック</li>
                   <li><strong>「アクセスできる情報を選択してください」</strong> で <strong>「全てを選択」</strong> にチェックを入れて進める</li>
                 </ol>
-                <div class="mt-2 p-2 rounded-md text-[color:var(--ink-2)]" style="background:color-mix(in oklab, var(--warning) 12%, var(--surface)); border:1px solid color-mix(in oklab, var(--warning) 30%, var(--line));">
+                <div class="mt-2 p-2 rounded-md text-[color:var(--ink-2)]" style="background:color-mix(in oklab, var(--warn) 12%, var(--surface)); border:1px solid color-mix(in oklab, var(--warn) 30%, var(--line));">
                   💡 <strong>「スクリプト起動しています」から動かない場合</strong> はリロードしてからもう一度実行してください。
                 </div>
               </div>
@@ -1556,8 +1556,8 @@
           </div>
 
           <p class="text-[color:var(--ink-2)] leading-relaxed mb-4">
-            <strong>長期トークンを貼るとURLが生成されます</strong>。「ブラウザで開く」を押すと JSON 表示画面が開きます。<br>
-            <span class="text-xs" style="color: var(--danger); font-weight: 600;">🔒 入力したトークンは<strong>このページ上だけで使われ、送信・保存されません</strong>。</span>
+            <strong>長期トークンを貼るとURLが生成されます</strong>。「ブラウザで開く」を押すと、トークン入りURLが Meta API (graph.threads.net) に直接送信され、JSON 表示画面が開きます。<br>
+            <span class="text-xs" style="color: var(--danger); font-weight: 600;">🔒 このページや localStorage には保存されません。<strong>「ブラウザで開く」を押した時のみ Meta API に送信</strong>されます(ブラウザ履歴に残る点に注意)。</span>
           </p>
 
           <div class="url-builder" data-url-builder>
@@ -1968,9 +1968,9 @@ DISCORD_WEBHOOK_URL: ✅ http...zzzz</pre>
       <div>
         <div class="font-bold text-[color:var(--ink)] mb-2 text-sm">リンク</div>
         <ul class="space-y-1.5 text-sm">
-          <li><a href="https://tamagoojiji.github.io/bridgesquare-legal/privacy-policy.html" target="_blank">プライバシーポリシー</a></li>
-          <li><a href="https://tamagoojiji.github.io/bridgesquare-legal/terms-of-service.html" target="_blank">利用規約</a></li>
-          <li><a href="https://tamagoojiji.github.io/bridgesquare-legal/data-deletion.html" target="_blank">データ削除手順</a></li>
+          <li><a href="https://tamagoojiji.github.io/bridgesquare-legal/privacy-policy.html" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a></li>
+          <li><a href="https://tamagoojiji.github.io/bridgesquare-legal/terms-of-service.html" target="_blank" rel="noopener noreferrer">利用規約</a></li>
+          <li><a href="https://tamagoojiji.github.io/bridgesquare-legal/data-deletion.html" target="_blank" rel="noopener noreferrer">データ削除手順</a></li>
           <li><a href="#top">↑ トップに戻る</a></li>
         </ul>
       </div>
