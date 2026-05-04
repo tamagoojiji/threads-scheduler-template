@@ -33,12 +33,17 @@
 | K | threads_post_id | 文字列 | — | ✅ | Threads投稿ID |
 | L | error_message | 文字列 | — | ✅ | 失敗時のエラー概要 |
 | M | 投稿日時 | 数式 | — | — | `=IFERROR(IF(AND(NOT(ISBLANK(A2)),NOT(ISBLANK(B2))),A2+TIMEVALUE(B2),""),"")` |
+| N | ツリーID | 文字列 | ✅ | — | **将来用・予約**。同じツリーに属する投稿のグループID（空欄=単発投稿） |
+| O | ツリー内順序 | 数値 | ✅ | — | **将来用・予約**。0=ルート / 1, 2, ... = 返信の順 |
 
 ### ヘッダー行（1行目）
 
 ```
-日付 | 時刻 | 投稿本文 | 画像URL | ステータス | operation_id | attempt_count | state_updated_at | creation_id | posted_at | threads_post_id | error_message | 投稿日時
+日付 | 時刻 | 投稿本文 | 画像URL | ステータス | operation_id | attempt_count | state_updated_at | creation_id | posted_at | threads_post_id | error_message | 投稿日時 | ツリーID | ツリー内順序
 ```
+
+> ⚠️ コード（`gas/sheets.js`）はヘッダー名で列を解決するため、ツリーID/ツリー内順序が無くても動作する。
+> 列の追加・並び替えはヘッダー名さえ維持されれば自由（必須ヘッダー: 日付/時刻/投稿本文/画像URL/ステータス/operation_id/attempt_count/state_updated_at/creation_id/posted_at/threads_post_id/error_message/投稿日時）。
 
 ### データ検証
 
@@ -48,8 +53,14 @@
 - **M列（投稿日時）**: 数式・グレーアウト・触らない
 
 ### コード側の参照範囲
-- **読み取り**: `投稿予約!A2:M`（reader.ts）
-- **更新**: `投稿予約!E{row}:L{row}`（writer.ts）
+- **読み取り**: `投稿予約!A2:{lastCol}`（`gas/sheets.js` の `readPendingRows()`、ヘッダー名で列解決）
+- **更新**: 列ごとに個別書き込み（`updateRow()`、列順序非依存）
+
+### ツリー機能（将来実装）
+
+- N列「ツリーID」/ O列「ツリー内順序」を入力すると、**同ツリーの順序0をルート投稿として publish → その `threads_post_id` を順序1の `reply_to_id` に設定 → 連鎖publish** する想定
+- 実装は `runner.js` の `processRow()` に分岐を追加するのみ（現在の単発投稿ロジックはそのまま流用）
+- 画像URL列は各投稿（行）ごとに独立して設定可能
 
 ### ProtectedRange設定
 

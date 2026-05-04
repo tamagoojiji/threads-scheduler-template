@@ -982,6 +982,7 @@
         <a class="side-item" href="#step8" data-step="8"><span class="side-num"><span>08</span></span><span class="side-label">テスト・運用開始</span></a>
         <div class="border-t border-[color:var(--line)] my-2"></div>
         <a class="side-item" href="#operation"><span class="side-num"><span>📌</span></span><span class="side-label">完了後の運用</span></a>
+        <a class="side-item" href="#image-upload"><span class="side-num"><span>📷</span></span><span class="side-label">画像投稿(任意)</span></a>
         <a class="side-item" href="#faq"><span class="side-num"><span>?</span></span><span class="side-label">よくある質問</span></a>
       </nav>
     </aside>
@@ -1831,6 +1832,83 @@ DISCORD_WEBHOOK_URL: ✅ http...zzzz</pre>
             <div class="ic">💬</div>
             <div>
               それでも解決しない場合は、<strong>Discordチャンネルに通知されたエラーメッセージのスクショ</strong>と一緒に、<strong>購入時のサポート窓口</strong>へお問い合わせください。
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== IMAGE UPLOAD (OPTIONAL) ===== -->
+      <section id="image-upload" class="section reveal">
+        <div class="section-card">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="meta-pill">📷 オプション機能</span>
+            <span class="meta-pill">⏱ 設定5分・必要時のみ</span>
+          </div>
+          <h2 class="section-title text-3xl md:text-4xl mb-6">画像つき投稿を使う</h2>
+
+          <p class="text-[color:var(--ink-2)] leading-relaxed mb-4">
+            画像を添付したThreads投稿を予約する場合の追加設定です。<strong>テキストだけでよい場合は不要</strong>です。
+            画像はあなた自身のGitHubリポジトリに保存され、<strong>tamago側のサーバーには一切残りません</strong>。
+          </p>
+
+          <h3 class="sub-head"><span class="sh-num">📦</span>仕組み</h3>
+          <ol class="guided">
+            <li>スプシのメニュー <code class="inline">📷 画像をアップロード</code> から画像を選択</li>
+            <li>あなたのGitHubリポジトリ（Step 2でテンプレートからコピーしたrepo）の <code class="inline">assets/images/</code> に自動コミット</li>
+            <li>GitHub Pages の公開URL（<code class="inline">https://{owner}.github.io/{repo}/assets/images/...</code>）が、選択中のセル（D列「画像URL」）に自動入力</li>
+            <li>投稿時刻になるとThreads APIが上記URLから画像を取得して投稿</li>
+          </ol>
+
+          <h3 class="sub-head"><span class="sh-num">⚠️</span>前提条件</h3>
+          <ul class="guided">
+            <li>テンプレート由来のあなたのGitHubリポジトリで <strong>Settings → Pages</strong> が有効になっていること（テンプレ複製時にデフォルトで有効化される想定）</li>
+            <li>GitHub Personal Access Token（PAT）に <strong><code class="inline">contents:write</code> スコープ</strong>があること</li>
+            <li><strong>設定の Branch は GitHub Pages の公開元ブランチと一致</strong>させること（通常は <code class="inline">main</code>）。ズレているとアップロード自体は成功しても画像URLが404になる</li>
+            <li>画像ディレクトリは <strong><code class="inline">assets/</code> 配下のみ</strong>指定可能（<code class="inline">.github/workflows/</code> 等の重要パスへの誤書き込み防止のため）</li>
+          </ul>
+
+          <h3 class="sub-head"><span class="sh-num">①</span>GitHub PAT を準備</h3>
+          <p class="text-[color:var(--ink-2)] leading-relaxed">
+            <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener">Fine-grained PAT 作成画面</a> を開く。Step 5 で取得した <code class="inline">PAT_FOR_SECRETS</code> を画像用にも流用できますが、<strong>Repository permissions → Contents → Read and write</strong> が付与されているか確認してください。なければ新規発行を推奨。
+          </p>
+
+          <h3 class="sub-head"><span class="sh-num">②</span>スプシで画像設定を登録</h3>
+          <ol class="guided">
+            <li>スプシ上部メニュー「<strong>スレッズスケジューラー → 🖼️ 画像アップロード設定</strong>」</li>
+            <li>順番にダイアログに入力:
+              <ul class="mt-2 ml-2 space-y-1 text-sm list-none p-0">
+                <li>🔑 <strong>GitHub PAT:</strong> 上記で取得した値</li>
+                <li>👤 <strong>GitHub Owner:</strong> あなたのGitHubユーザー名</li>
+                <li>📦 <strong>GitHub Repo 名:</strong> Step 2 でコピーしたリポジトリ名</li>
+                <li>🌿 <strong>Branch:</strong> 通常は空欄でOK（main）。<strong>GitHub Pagesの公開元ブランチと一致が必須</strong></li>
+                <li>📁 <strong>画像ディレクトリ:</strong> 通常は空欄でOK（<code class="inline">assets/images</code>）。<code class="inline">assets/</code> 配下以外は拒否されます</li>
+              </ul>
+            </li>
+            <li>メニュー <code class="inline">🔍 画像設定を確認</code> で全項目 ✅ になっていればOK</li>
+          </ol>
+
+          <h3 class="sub-head"><span class="sh-num">③</span>使い方</h3>
+          <ol class="guided">
+            <li>「投稿予約」シートの <strong>D列（画像URL）</strong> のセルを1つクリックして選択</li>
+            <li>メニュー <code class="inline">📷 画像をアップロード</code> をクリック</li>
+            <li>ダイアログで画像ファイルを選択（JPEG / PNG / WebP・8MBまで）</li>
+            <li><code class="inline">アップロード</code> ボタンを押すと、選択中のセルに公開URLが自動入力される</li>
+            <li>あとは通常通り、A列・B列・C列・E列を埋めれば画像つき投稿として予約完了</li>
+          </ol>
+
+          <div class="callout callout-info" style="margin-top: 1rem;">
+            <div class="ic">⏱</div>
+            <div>
+              アップロード直後はGitHub PagesのCDN反映に <strong>1〜2分</strong> かかる場合があります。
+              投稿時刻まで余裕をもって登録してください。
+            </div>
+          </div>
+
+          <div class="callout callout-info" style="margin-top: 1rem;">
+            <div class="ic">🔒</div>
+            <div>
+              <strong>プライバシー設計:</strong> 画像はあなたのGitHub repoに保存され、tamago側のサーバーには一切経由しません。
+              不要になった画像は、GitHub上で直接削除してください（<code class="inline">assets/images/</code> フォルダ）。
             </div>
           </div>
         </div>
