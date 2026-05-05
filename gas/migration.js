@@ -204,15 +204,11 @@ function applyValidationsAndFormatting(sheet) {
     .build();
   sheet.getRange('A2:A').setDataValidation(statusValidation);
 
-  // 時刻列(C)プルダウン: 30分刻み 00:00〜23:30
-  const times = [];
-  for (let h = 0; h < 24; h++) {
-    times.push(('0' + h).slice(-2) + ':00');
-    times.push(('0' + h).slice(-2) + ':30');
-  }
+  // 時刻列(C): 手入力。半角 HH:MM (00:00〜23:59) のみ許可、不正値は入力時エラー
   const timeValidation = SpreadsheetApp.newDataValidation()
-    .requireValueInList(times, true)
+    .requireFormulaSatisfied('=REGEXMATCH(C2, "^([01][0-9]|2[0-3]):[0-5][0-9]$")')
     .setAllowInvalid(false)
+    .setHelpText('時刻は半角で「HH:MM」形式で入力してください（例: 09:30 / 14:00 / 23:59）。全角文字や1桁時間（例: 9:30）は不可。')
     .build();
   sheet.getRange('C2:C').setDataValidation(timeValidation);
 
