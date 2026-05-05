@@ -41,12 +41,14 @@ function migrateSheetToTreeLayout() {
     return String(h).trim();
   });
   if (existingHeaders[0] === 'ステータス' && (existingHeaders.indexOf('ツリー1') >= 0 || existingHeaders.indexOf('返信1') >= 0)) {
-    // 旧名称「返信1〜4」だったら現名称「ツリー1〜4」にリネームのみ実施
+    // 旧名称「返信1〜4」だったら現名称「ツリー1〜4」にリネーム
     const renamed = renameLegacyReplyHeaders(sheet, existingHeaders);
+    // 既に新レイアウト化済でもデータ検証/条件付き書式が旧位置に残っている可能性があるので冪等に再適用
+    applyValidationsAndFormatting(sheet);
     if (renamed > 0) {
-      ui.alert('既存の新レイアウトを検知しました。\n旧ヘッダー名「返信1〜4」を最新の「ツリー1〜4」にリネーム: ' + renamed + ' 列\n\n変換不要のため終了します。');
+      ui.alert('既存の新レイアウトを検知しました。\n旧ヘッダー名「返信1〜4」→「ツリー1〜4」にリネーム: ' + renamed + ' 列\nデータ検証・条件付き書式も最新に再適用しました。');
     } else {
-      ui.alert('このシートは既に最新レイアウト（ツリー1〜4）に変換済みです');
+      ui.alert('このシートは既に最新レイアウト。\nデータ検証・条件付き書式を最新に再適用しました（プルダウン・色分けが正しい列に設定されます）。');
     }
     return;
   }
@@ -152,38 +154,8 @@ function migrateSheetToTreeLayout() {
     '=ARRAYFORMULA(IF(LEN(B2:B)*LEN(C2:C)=0,"",IFERROR(B2:B+TIMEVALUE(C2:C),"")))'
   );
 
-  // ステータス列(A)プルダウン
-  const statusValidation = SpreadsheetApp.newDataValidation()
-    .requireValueInList(['未投稿', '処理中', '投稿済', 'エラー', 'スキップ'], true)
-    .setAllowInvalid(false)
-    .build();
-  sheet.getRange('A2:A').setDataValidation(statusValidation);
-
-  // 時刻列(C)プルダウン: 30分刻み 00:00〜23:30
-  const times = [];
-  for (let h = 0; h < 24; h++) {
-    times.push(('0' + h).slice(-2) + ':00');
-    times.push(('0' + h).slice(-2) + ':30');
-  }
-  const timeValidation = SpreadsheetApp.newDataValidation()
-    .requireValueInList(times, true)
-    .setAllowInvalid(false)
-    .build();
-  sheet.getRange('C2:C').setDataValidation(timeValidation);
-
-  // 条件付き書式: ステータス別の行色分け（A〜J列＝利用者列のみ）
-  const visibleRange = sheet.getRange('A2:J');
-  const rules = [
-    SpreadsheetApp.newConditionalFormatRule()
-      .whenFormulaSatisfied('=$A2="処理中"').setBackground('#fff7e0').setRanges([visibleRange]).build(),
-    SpreadsheetApp.newConditionalFormatRule()
-      .whenFormulaSatisfied('=$A2="投稿済"').setBackground('#e6f4ea').setRanges([visibleRange]).build(),
-    SpreadsheetApp.newConditionalFormatRule()
-      .whenFormulaSatisfied('=$A2="エラー"').setBackground('#fce4e4').setRanges([visibleRange]).build(),
-    SpreadsheetApp.newConditionalFormatRule()
-      .whenFormulaSatisfied('=$A2="スキップ"').setBackground('#eeeeee').setRanges([visibleRange]).build(),
-  ];
-  sheet.setConditionalFormatRules(rules);
+  // データ検証（プルダウン）と条件付き書式を新レイアウトに合わせて適用
+  applyValidationsAndFormatting(sheet);
 
   // 列幅調整（読みやすさ）
   sheet.setColumnWidth(1, 80);   // ステータス
@@ -210,6 +182,53 @@ function migrateSheetToTreeLayout() {
     '📦 バックアップ: シート「' + backupName + '」\n' +
     '※ データを確認してから不要なら削除してOKです'
   );
+}
+
+/**
+ * シート全体のデータ検証を一旦クリアし、新レイアウトに合った位置に再適用する
+ * - A列: ステータス プルダウン
+ * - C列: 時刻 30分刻みプルダウン
+ * - 条件付き書式: ステータス別の行色分け（A〜J列）
+ *
+ * sheet.clear() ではデータ検証/条件付き書式が消えないため、旧レイアウトの残骸が
+ * 新レイアウトの別列に残ってしまう問題（例: 旧E列ステータス→新E列投稿本文 にプルダウン残存）を解決する
+ */
+function applyValidationsAndFormatting(sheet) {
+  // 既存データ検証を全面クリア（旧位置の残骸を消す）
+  sheet.getRange(1, 1, sheet.getMaxRows(), sheet.getMaxColumns()).clearDataValidations();
+
+  // ステータス列(A)プルダウン
+  const statusValidation = SpreadsheetApp.newDataValidation()
+    .requireValueInList(['未投稿', '処理中', '投稿済', 'エラー', 'スキップ'], true)
+    .setAllowInvalid(false)
+    .build();
+  sheet.getRange('A2:A').setDataValidation(statusValidation);
+
+  // 時刻列(C)プルダウン: 30分刻み 00:00〜23:30
+  const times = [];
+  for (let h = 0; h < 24; h++) {
+    times.push(('0' + h).slice(-2) + ':00');
+    times.push(('0' + h).slice(-2) + ':30');
+  }
+  const timeValidation = SpreadsheetApp.newDataValidation()
+    .requireValueInList(times, true)
+    .setAllowInvalid(false)
+    .build();
+  sheet.getRange('C2:C').setDataValidation(timeValidation);
+
+  // 条件付き書式: ステータス別の行色分け（旧ルールを破棄して再設定）
+  const visibleRange = sheet.getRange('A2:J');
+  const rules = [
+    SpreadsheetApp.newConditionalFormatRule()
+      .whenFormulaSatisfied('=$A2="処理中"').setBackground('#fff7e0').setRanges([visibleRange]).build(),
+    SpreadsheetApp.newConditionalFormatRule()
+      .whenFormulaSatisfied('=$A2="投稿済"').setBackground('#e6f4ea').setRanges([visibleRange]).build(),
+    SpreadsheetApp.newConditionalFormatRule()
+      .whenFormulaSatisfied('=$A2="エラー"').setBackground('#fce4e4').setRanges([visibleRange]).build(),
+    SpreadsheetApp.newConditionalFormatRule()
+      .whenFormulaSatisfied('=$A2="スキップ"').setBackground('#eeeeee').setRanges([visibleRange]).build(),
+  ];
+  sheet.setConditionalFormatRules(rules);
 }
 
 /**
