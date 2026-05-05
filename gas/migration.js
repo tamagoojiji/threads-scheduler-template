@@ -1,12 +1,12 @@
 // ==========
 // シートを新レイアウト（ツリー対応）に変換するマイグレーション
 // 旧レイアウト: A日付 B時刻 C投稿本文 D画像URL E ステータス F op_id ... M投稿日時
-// 新レイアウト: A ステータス B日付 C時刻 D画像URL E投稿本文 F〜I返信1〜4 J投稿日時 K〜Q システム列(非表示)
+// 新レイアウト: A ステータス B日付 C時刻 D画像URL E投稿本文 F〜I ツリー1〜4 J投稿日時 K〜Q システム列(非表示)
 // ==========
 
 const NEW_LAYOUT_HEADERS = [
   'ステータス', '日付', '時刻', '画像URL', '投稿本文',
-  '返信1', '返信2', '返信3', '返信4', '投稿日時',
+  'ツリー1', 'ツリー2', 'ツリー3', 'ツリー4', '投稿日時',
   'operation_id', 'attempt_count', 'state_updated_at', 'creation_id',
   'posted_at', 'threads_post_id', 'error_message',
 ];
@@ -17,7 +17,7 @@ const NEW_LAYOUT_HIDDEN_COUNT = 7;     // K〜Q（7列）
 /**
  * 旧レイアウトのシートを新レイアウト（ツリー対応）に変換する
  * - バックアップシートを自動作成
- * - 既存データは保持して列順を並び替え + 返信1〜4列追加
+ * - 既存データは保持して列順を並び替え + ツリー1〜4列追加
  * - K以降を非表示
  */
 function migrateSheetToTreeLayout() {
@@ -40,8 +40,14 @@ function migrateSheetToTreeLayout() {
   const existingHeaders = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(function (h) {
     return String(h).trim();
   });
-  if (existingHeaders[0] === 'ステータス' && existingHeaders.indexOf('返信1') >= 0) {
-    ui.alert('このシートは既に新レイアウト（ツリー対応）に変換済みです');
+  if (existingHeaders[0] === 'ステータス' && (existingHeaders.indexOf('ツリー1') >= 0 || existingHeaders.indexOf('返信1') >= 0)) {
+    // 旧名称「返信1〜4」だったら現名称「ツリー1〜4」にリネームのみ実施
+    const renamed = renameLegacyReplyHeaders(sheet, existingHeaders);
+    if (renamed > 0) {
+      ui.alert('既存の新レイアウトを検知しました。\n旧ヘッダー名「返信1〜4」を最新の「ツリー1〜4」にリネーム: ' + renamed + ' 列\n\n変換不要のため終了します。');
+    } else {
+      ui.alert('このシートは既に最新レイアウト（ツリー1〜4）に変換済みです');
+    }
     return;
   }
 
@@ -51,7 +57,7 @@ function migrateSheetToTreeLayout() {
     '1. 現在のシートを「' + SHEET_NAME + '_backup_(日時)」にバックアップ\n' +
     '2. 列を新レイアウトに並び替え\n' +
     '   A=ステータス / B=日付 / C=時刻 / D=画像URL / E=投稿本文\n' +
-    '   F〜I=返信1〜4（ツリー用） / J=投稿日時(数式)\n' +
+    '   F〜I=ツリー1〜4（連鎖用） / J=投稿日時(数式)\n' +
     '3. K列以降（operation_id等）を非表示\n\n' +
     'バックアップが残るのでデータ消失リスクなし。進めますか？',
     ui.ButtonSet.OK_CANCEL
@@ -110,7 +116,7 @@ function migrateSheetToTreeLayout() {
       r[oldCols.TIME - 1],       // C: 時刻
       r[oldCols.IMAGE - 1],      // D: 画像URL
       r[oldCols.BODY - 1],       // E: 投稿本文
-      '', '', '', '',            // F〜I: 返信1〜4（新規・空欄）
+      '', '', '', '',            // F〜I: ツリー1〜4（新規・空欄）
       '',                        // J: 投稿日時（数式は後で）
       r[oldCols.OP_ID - 1],      // K: operation_id
       r[oldCols.ATTEMPT - 1],    // L: attempt_count
@@ -185,10 +191,10 @@ function migrateSheetToTreeLayout() {
   sheet.setColumnWidth(3, 70);   // 時刻
   sheet.setColumnWidth(4, 140);  // 画像URL
   sheet.setColumnWidth(5, 280);  // 投稿本文
-  sheet.setColumnWidth(6, 220);  // 返信1
-  sheet.setColumnWidth(7, 220);  // 返信2
-  sheet.setColumnWidth(8, 220);  // 返信3
-  sheet.setColumnWidth(9, 220);  // 返信4
+  sheet.setColumnWidth(6, 220);  // ツリー1
+  sheet.setColumnWidth(7, 220);  // ツリー2
+  sheet.setColumnWidth(8, 220);  // ツリー3
+  sheet.setColumnWidth(9, 220);  // ツリー4
   sheet.setColumnWidth(10, 130); // 投稿日時
 
   // K以降のシステム列を非表示
@@ -198,10 +204,27 @@ function migrateSheetToTreeLayout() {
     '✅ 変換完了\n\n' +
     '新レイアウト:\n' +
     '・A=ステータス / B=日付 / C=時刻 / D=画像URL / E=投稿本文\n' +
-    '・F〜I=返信1〜4（ツリー用、空欄なら単発投稿）\n' +
+    '・F〜I=ツリー1〜4（ツリー連鎖用、空欄なら単発投稿）\n' +
     '・J=投稿日時（数式、自動計算）\n' +
     '・K以降=システム列（非表示）\n\n' +
     '📦 バックアップ: シート「' + backupName + '」\n' +
     '※ データを確認してから不要なら削除してOKです'
   );
+}
+
+/**
+ * 既存シートのヘッダー名「返信1〜4」を「ツリー1〜4」に書き換える
+ * @return リネームした列数
+ */
+function renameLegacyReplyHeaders(sheet, headers) {
+  const map = { '返信1': 'ツリー1', '返信2': 'ツリー2', '返信3': 'ツリー3', '返信4': 'ツリー4' };
+  let count = 0;
+  Object.keys(map).forEach(function (oldName) {
+    const idx = headers.indexOf(oldName);
+    if (idx >= 0) {
+      sheet.getRange(1, idx + 1).setValue(map[oldName]);
+      count++;
+    }
+  });
+  return count;
 }

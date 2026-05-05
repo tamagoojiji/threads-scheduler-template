@@ -12,11 +12,11 @@ const HEADERS = {
   TIME: '時刻',
   IMAGE: '画像URL',
   BODY: '投稿本文',
-  // ツリー機能: 1行内に返信1〜4を横並びで配置（任意ヘッダー・無くても単発投稿として動作）
-  REPLY_1: '返信1',
-  REPLY_2: '返信2',
-  REPLY_3: '返信3',
-  REPLY_4: '返信4',
+  // ツリー機能: 1行内に ツリー1〜4 を横並びで配置（任意ヘッダー・無くても単発投稿として動作）
+  TREE_1: 'ツリー1',
+  TREE_2: 'ツリー2',
+  TREE_3: 'ツリー3',
+  TREE_4: 'ツリー4',
   SCHEDULED: '投稿日時',
   OP_ID: 'operation_id',
   ATTEMPT: 'attempt_count',
@@ -27,7 +27,16 @@ const HEADERS = {
   ERROR_MSG: 'error_message',
 };
 
-const REPLY_KEYS = ['REPLY_1', 'REPLY_2', 'REPLY_3', 'REPLY_4'];
+const TREE_KEYS = ['TREE_1', 'TREE_2', 'TREE_3', 'TREE_4'];
+
+// 旧ヘッダー名の後方互換マップ。getColMap() でメインの HEADERS が見つからなかった時に試す
+// 既存シートが旧名（返信1〜4）のままでも次回トリガーで正しくツリー連鎖できるようにする
+const HEADER_ALIASES = {
+  TREE_1: ['返信1'],
+  TREE_2: ['返信2'],
+  TREE_3: ['返信3'],
+  TREE_4: ['返信4'],
+};
 
 const REQUIRED_HEADER_KEYS = [
   'DATE', 'TIME', 'BODY', 'IMAGE', 'STATUS', 'OP_ID', 'ATTEMPT',
@@ -57,7 +66,14 @@ function getColMap(sheet) {
   const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(h => String(h).trim());
   const map = {};
   Object.keys(HEADERS).forEach(key => {
-    const idx = headers.indexOf(HEADERS[key]);
+    let idx = headers.indexOf(HEADERS[key]);
+    if (idx < 0 && HEADER_ALIASES[key]) {
+      // 旧ヘッダー名でフォールバック検索（後方互換）
+      for (let a = 0; a < HEADER_ALIASES[key].length; a++) {
+        idx = headers.indexOf(HEADER_ALIASES[key][a]);
+        if (idx >= 0) break;
+      }
+    }
     if (idx >= 0) map[key] = idx + 1;
   });
   const missing = REQUIRED_HEADER_KEYS.filter(k => !map[k]);
@@ -118,9 +134,9 @@ function readPendingRows() {
       imageUrl = String(imgRaw || '').trim();
     }
 
-    // ツリー返信本文を配列化（空欄を除外）。返信列が無いシートでは [] になり単発投稿扱い
+    // ツリー本文を配列化（空欄を除外）。ツリー列が無いシートでは [] になり単発投稿扱い
     const replies = [];
-    REPLY_KEYS.forEach(function (key) {
+    TREE_KEYS.forEach(function (key) {
       if (!colMap[key]) return;
       const text = String(v[colMap[key] - 1] || '').trim();
       if (text) replies.push(text);

@@ -86,11 +86,11 @@ function processRow(row) {
     }
 
     // reconciliation: 過去に成功している同operationIdの履歴があれば、その結果を反映
-    // ツリー行はルート成功だけでは完了とみなさない（返信が未投稿の可能性）→ 中断検出としてエラー固定
+    // ツリー行はルート成功だけでは完了とみなさない（ツリー連鎖が未完了の可能性）→ 中断検出としてエラー固定
     const history = findHistorySuccess(row.operationId);
     if (history) {
       if (isTree) {
-        const detail = 'ルート投稿成功履歴ありだが返信完了が未確認（前回実行が中断された可能性）。Threadsで投稿状況を確認の上、必要なら手動でシートを修正してください。';
+        const detail = 'ルート投稿成功履歴ありだがツリー完了が未確認（前回実行が中断された可能性）。Threadsで投稿状況を確認の上、必要なら手動でシートを修正してください。';
         updateRow(row, {
           status: 'エラー',
           attemptCount: MAX_ATTEMPTS,
@@ -126,9 +126,9 @@ function processRow(row) {
       const status = getContainerStatus(row.creationId);
       if (status.status === 'PUBLISHED') {
         const postId = status.id;
-        // ツリー行はルートが publish 済みでも返信未完了の可能性 → 中断検出としてエラー固定
+        // ツリー行はルートが publish 済みでもツリー連鎖が未完了の可能性 → 中断検出としてエラー固定
         if (isTree) {
-          const detail = 'ルートは Threads に publish 済みだが返信が未投稿（前回実行が中断された可能性）。Threadsで投稿状況を確認の上、必要なら手動でシートを修正してください。';
+          const detail = 'ルートは Threads に publish 済みだがツリーが未投稿（前回実行が中断された可能性）。Threadsで投稿状況を確認の上、必要なら手動でシートを修正してください。';
           updateRow(row, {
             status: 'エラー',
             attemptCount: MAX_ATTEMPTS,
@@ -191,7 +191,7 @@ function processRow(row) {
       postedAt: new Date(),
     });
 
-    // ツリー返信が無ければ単発として完了
+    // ツリー連鎖が無ければ単発として完了
     const replies = row.replies || [];
     if (replies.length === 0) {
       updateRow(row, {
@@ -205,7 +205,7 @@ function processRow(row) {
       return;
     }
 
-    // ツリー連鎖publish: ルート成功後、返信1〜N を順次連鎖
+    // ツリー連鎖publish: ルート成功後、ツリー1〜N を順次連鎖
     let lastPostId = publishResult.id;
     for (let i = 0; i < replies.length; i++) {
       // Bot判定回避のため間隔を空ける
@@ -225,7 +225,7 @@ function processRow(row) {
       } catch (replyErr) {
         // 失敗 → その場で停止・再試行抑止（連続投稿によるBot判定回避）
         const replyMsg = (replyErr && replyErr.message) ? replyErr.message : String(replyErr);
-        const detail = '返信' + (i + 1) + 'で失敗: ' + replyMsg + ' / 投稿済: ルート + 返信1〜' + i;
+        const detail = 'ツリー' + (i + 1) + 'で失敗: ' + replyMsg + ' / 投稿済: ルート + ツリー1〜' + i;
         appendHistory({
           operationId: row.operationId + '-r' + (i + 1),
           creationId: '',
@@ -246,7 +246,7 @@ function processRow(row) {
       }
     }
 
-    // 全返信成功
+    // 全ツリー成功
     updateRow(row, {
       status: '投稿済',
       postedAt: new Date(),
@@ -254,7 +254,7 @@ function processRow(row) {
       errorMessage: '',
       stateUpdatedAt: new Date(),
     });
-    notifyDiscord('✅ ツリー投稿成功（ルート+' + replies.length + '返信）: ' + row.body.slice(0, 80), { kind: 'post_success' });
+    notifyDiscord('✅ ツリー投稿成功（ルート+ツリー' + replies.length + '段）: ' + row.body.slice(0, 80), { kind: 'post_success' });
   } catch (err) {
     const message = err.message || String(err);
     console.error('行' + row.rowIndex + 'でエラー:', message);

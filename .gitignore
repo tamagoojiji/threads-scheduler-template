@@ -3,3 +3,4 @@
 .idea/
 *.log
 gas/.clasp.json
+scripts/push-log.tsv
