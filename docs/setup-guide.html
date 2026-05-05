@@ -1729,16 +1729,16 @@
           <ol class="guided">
             <li>「投稿予約」シートに新規行を追加:
               <ul class="mt-2 ml-2 space-y-1 text-sm list-none p-0">
-                <li>📅 <strong>A列(日付):</strong> 今日の日付</li>
-                <li>🕒 <strong>B列(時刻):</strong> 1〜2分前の時刻(例: 14:30)</li>
-                <li>📝 <strong>C列(投稿本文):</strong> 「テスト投稿」など</li>
-                <li>🏷 <strong>E列(ステータス):</strong> 「未投稿」(プルダウンで選択)</li>
+                <li>🏷 <strong>A列(ステータス):</strong> 「未投稿」(プルダウンで選択)</li>
+                <li>📅 <strong>B列(日付):</strong> 今日の日付</li>
+                <li>🕒 <strong>C列(時刻):</strong> 1〜2分前の時刻(例: 14:30)</li>
+                <li>📝 <strong>E列(投稿本文):</strong> 「テスト投稿」など</li>
               </ul>
             </li>
-            <li><strong>M列に投稿日時が自動表示</strong>されることを確認</li>
+            <li><strong>J列に投稿日時が自動表示</strong>されることを確認</li>
             <li>メニュー「スレッズスケジューラー」の <code class="inline">▶️ 今すぐ投稿チェック</code> を実行</li>
             <li>数秒後に <strong>Threadsへ投稿が反映</strong> されることを確認</li>
-            <li><strong>E列が「投稿済」</strong> に変わることを確認</li>
+            <li><strong>A列が「投稿済」</strong> に変わることを確認</li>
             <li><strong>Discordに「✅ 投稿成功」通知</strong> が届くことを確認</li>
           </ol>
 
@@ -1779,8 +1779,8 @@
           <h2 class="section-title text-3xl md:text-4xl mb-6">セットアップ完了後の運用</h2>
 
           <ol class="guided mb-6">
-            <li><strong>新規予約投稿:</strong> 「投稿予約」シートに <code class="inline">A=日付</code> / <code class="inline">B=時刻</code> / <code class="inline">C=本文</code> / <code class="inline">E=未投稿</code> を入れるだけ</li>
-            <li><strong>状態確認:</strong> E列ステータス + Discord通知</li>
+            <li><strong>新規予約投稿:</strong> 「投稿予約」シートに <code class="inline">A=未投稿</code> / <code class="inline">B=日付</code> / <code class="inline">C=時刻</code> / <code class="inline">E=本文</code> を入れるだけ。<strong>F〜I列に文章を入れるとツリー連鎖投稿</strong>になります(返信1〜返信4まで)</li>
+            <li><strong>状態確認:</strong> A列ステータス + Discord通知</li>
             <li><strong>トークン更新:</strong> 毎週日曜9時に自動実行(<strong>手動操作不要</strong>)</li>
           </ol>
 
@@ -1822,7 +1822,7 @@ DISCORD_WEBHOOK_URL: ✅ http...zzzz</pre>
 ・postRunner (id=...)
 ・refreshTokenJob (id=...)</pre>
             <ul>
-              <li><strong>2件揃っている</strong> → 自動投稿は正常稼働中。投稿が飛ばない場合はスプシのE列ステータス(「投稿済」「失敗」「未投稿」)を確認</li>
+              <li><strong>2件揃っている</strong> → 自動投稿は正常稼働中。投稿が飛ばない場合はスプシのA列ステータス(「投稿済」「エラー」「未投稿」)を確認</li>
               <li><strong>0件 / 1件しかない</strong> → メニュー <code class="inline">⏰ トリガーをインストール</code> を再実行</li>
               <li><strong>同じ関数名が3件以上ある</strong> → メニュー <code class="inline">🗑 トリガーを削除</code> → <code class="inline">⏰ トリガーをインストール</code> でリセット</li>
             </ul>

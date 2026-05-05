@@ -7,11 +7,17 @@ const SHEET_NAME = '投稿予約';
 const HISTORY_SHEET = '投稿履歴';
 
 const HEADERS = {
+  STATUS: 'ステータス',
   DATE: '日付',
   TIME: '時刻',
-  BODY: '投稿本文',
   IMAGE: '画像URL',
-  STATUS: 'ステータス',
+  BODY: '投稿本文',
+  // ツリー機能: 1行内に返信1〜4を横並びで配置（任意ヘッダー・無くても単発投稿として動作）
+  REPLY_1: '返信1',
+  REPLY_2: '返信2',
+  REPLY_3: '返信3',
+  REPLY_4: '返信4',
+  SCHEDULED: '投稿日時',
   OP_ID: 'operation_id',
   ATTEMPT: 'attempt_count',
   STATE_AT: 'state_updated_at',
@@ -19,11 +25,9 @@ const HEADERS = {
   POSTED_AT: 'posted_at',
   POST_ID: 'threads_post_id',
   ERROR_MSG: 'error_message',
-  SCHEDULED: '投稿日時',
-  // ツリー機能用（将来）
-  TREE_ID: 'ツリーID',
-  TREE_ORDER: 'ツリー内順序',
 };
+
+const REPLY_KEYS = ['REPLY_1', 'REPLY_2', 'REPLY_3', 'REPLY_4'];
 
 const REQUIRED_HEADER_KEYS = [
   'DATE', 'TIME', 'BODY', 'IMAGE', 'STATUS', 'OP_ID', 'ATTEMPT',
@@ -114,12 +118,21 @@ function readPendingRows() {
       imageUrl = String(imgRaw || '').trim();
     }
 
+    // ツリー返信本文を配列化（空欄を除外）。返信列が無いシートでは [] になり単発投稿扱い
+    const replies = [];
+    REPLY_KEYS.forEach(function (key) {
+      if (!colMap[key]) return;
+      const text = String(v[colMap[key] - 1] || '').trim();
+      if (text) replies.push(text);
+    });
+
     rows.push({
       rowIndex: i + 2,
       scheduledAt: scheduledAt,
       body: String(body),
       imageUrl: imageUrl,
       imageError: imageError,
+      replies: replies,
       status: status || '未投稿',
       operationId: String(v[colMap.OP_ID - 1] || ''),
       attemptCount: attemptCount,
@@ -128,9 +141,6 @@ function readPendingRows() {
       postedAt: v[colMap.POSTED_AT - 1] ? new Date(v[colMap.POSTED_AT - 1]) : null,
       threadsPostId: String(v[colMap.POST_ID - 1] || ''),
       errorMessage: String(v[colMap.ERROR_MSG - 1] || ''),
-      // ツリー機能（将来。列が無ければ空文字/0）
-      treeId: colMap.TREE_ID ? String(v[colMap.TREE_ID - 1] || '') : '',
-      treeOrder: colMap.TREE_ORDER ? Number(v[colMap.TREE_ORDER - 1] || 0) : 0,
     });
   });
   return rows;

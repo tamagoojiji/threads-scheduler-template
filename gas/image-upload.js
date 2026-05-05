@@ -150,7 +150,7 @@ function openImageUploadDialog() {
   }
   const html = HtmlService.createHtmlOutputFromFile('image-upload-dialog')
     .setWidth(440)
-    .setHeight(340);
+    .setHeight(300);
   ui.showModalDialog(html, '📷 画像をアップロード');
 }
 

@@ -16,6 +16,8 @@ function onOpen() {
     .addItem('🔄 セル内画像をURL化', 'convertCellImagesToUrls')
     .addItem('🔍 画像設定を確認', 'checkImageUploadConfig')
     .addSeparator()
+    .addItem('🔧 シートをツリー対応レイアウトに変換', 'migrateSheetToTreeLayout')
+    .addSeparator()
     .addItem('▶️ 今すぐ投稿チェック', 'postRunner')
     .addItem('🔄 トークン手動更新', 'refreshTokenManual')
     .addSeparator()

@@ -57,6 +57,7 @@ function postRunner() {
 
 function processRow(row) {
   const prevStateUpdatedAt = row.stateUpdatedAt;
+  const isTree = row.replies && row.replies.length > 0;
   try {
     if (!row.operationId) {
       row.operationId = Utilities.getUuid();
@@ -85,8 +86,23 @@ function processRow(row) {
     }
 
     // reconciliation: 過去に成功している同operationIdの履歴があれば、その結果を反映
+    // ツリー行はルート成功だけでは完了とみなさない（返信が未投稿の可能性）→ 中断検出としてエラー固定
     const history = findHistorySuccess(row.operationId);
     if (history) {
+      if (isTree) {
+        const detail = 'ルート投稿成功履歴ありだが返信完了が未確認（前回実行が中断された可能性）。Threadsで投稿状況を確認の上、必要なら手動でシートを修正してください。';
+        updateRow(row, {
+          status: 'エラー',
+          attemptCount: MAX_ATTEMPTS,
+          errorMessage: detail,
+          threadsPostId: history.postId,
+          stateUpdatedAt: new Date(),
+        });
+        try {
+          notifyDiscord('⚠️ ツリー処理の中断検出（行' + row.rowIndex + '）: ' + detail + '\n本文: ' + row.body.slice(0, 80), { kind: 'tree_failure' });
+        } catch (_) {}
+        return;
+      }
       updateRow(row, {
         status: '投稿済',
         postedAt: history.postedAt,
@@ -110,6 +126,21 @@ function processRow(row) {
       const status = getContainerStatus(row.creationId);
       if (status.status === 'PUBLISHED') {
         const postId = status.id;
+        // ツリー行はルートが publish 済みでも返信未完了の可能性 → 中断検出としてエラー固定
+        if (isTree) {
+          const detail = 'ルートは Threads に publish 済みだが返信が未投稿（前回実行が中断された可能性）。Threadsで投稿状況を確認の上、必要なら手動でシートを修正してください。';
+          updateRow(row, {
+            status: 'エラー',
+            attemptCount: MAX_ATTEMPTS,
+            errorMessage: detail,
+            threadsPostId: postId,
+            stateUpdatedAt: new Date(),
+          });
+          try {
+            notifyDiscord('⚠️ ツリー処理の中断検出（行' + row.rowIndex + '）: ' + detail + '\n本文: ' + row.body.slice(0, 80), { kind: 'tree_failure' });
+          } catch (_) {}
+          return;
+        }
         appendHistory({
           operationId: row.operationId,
           creationId: row.creationId,
@@ -149,7 +180,7 @@ function processRow(row) {
       row.creationId = container.id;
     }
 
-    // 公開
+    // ルートを公開
     const publishResult = publishContainer(row.creationId);
     appendHistory({
       operationId: row.operationId,
@@ -159,14 +190,71 @@ function processRow(row) {
       postId: publishResult.id,
       postedAt: new Date(),
     });
+
+    // ツリー返信が無ければ単発として完了
+    const replies = row.replies || [];
+    if (replies.length === 0) {
+      updateRow(row, {
+        status: '投稿済',
+        postedAt: new Date(),
+        threadsPostId: publishResult.id,
+        errorMessage: '',
+        stateUpdatedAt: new Date(),
+      });
+      notifyDiscord('✅ 投稿成功: ' + row.body.slice(0, 80));
+      return;
+    }
+
+    // ツリー連鎖publish: ルート成功後、返信1〜N を順次連鎖
+    let lastPostId = publishResult.id;
+    for (let i = 0; i < replies.length; i++) {
+      // Bot判定回避のため間隔を空ける
+      Utilities.sleep(2000);
+      try {
+        const replyContainer = createContainer(replies[i], null, lastPostId);
+        const replyPublish = publishContainer(replyContainer.id);
+        lastPostId = replyPublish.id;
+        appendHistory({
+          operationId: row.operationId + '-r' + (i + 1),
+          creationId: replyContainer.id,
+          bodyExcerpt: replies[i].slice(0, 50),
+          result: '成功',
+          postId: lastPostId,
+          postedAt: new Date(),
+        });
+      } catch (replyErr) {
+        // 失敗 → その場で停止・再試行抑止（連続投稿によるBot判定回避）
+        const replyMsg = (replyErr && replyErr.message) ? replyErr.message : String(replyErr);
+        const detail = '返信' + (i + 1) + 'で失敗: ' + replyMsg + ' / 投稿済: ルート + 返信1〜' + i;
+        appendHistory({
+          operationId: row.operationId + '-r' + (i + 1),
+          creationId: '',
+          bodyExcerpt: replies[i].slice(0, 50),
+          result: 'エラー',
+          error: replyMsg,
+          postedAt: new Date(),
+        });
+        updateRow(row, {
+          status: 'エラー',
+          attemptCount: MAX_ATTEMPTS,
+          errorMessage: detail,
+          threadsPostId: lastPostId,
+          stateUpdatedAt: new Date(),
+        });
+        notifyDiscord('❌ ツリー投稿の途中で失敗\n' + detail + '\n本文: ' + row.body.slice(0, 80), { kind: 'tree_failure' });
+        return;
+      }
+    }
+
+    // 全返信成功
     updateRow(row, {
       status: '投稿済',
       postedAt: new Date(),
-      threadsPostId: publishResult.id,
+      threadsPostId: lastPostId,
       errorMessage: '',
       stateUpdatedAt: new Date(),
     });
-    notifyDiscord('✅ 投稿成功: ' + row.body.slice(0, 80));
+    notifyDiscord('✅ ツリー投稿成功（ルート+' + replies.length + '返信）: ' + row.body.slice(0, 80), { kind: 'post_success' });
   } catch (err) {
     const message = err.message || String(err);
     console.error('行' + row.rowIndex + 'でエラー:', message);

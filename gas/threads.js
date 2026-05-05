@@ -7,8 +7,11 @@ const THREADS_AUTH_BASE = 'https://graph.threads.net';
 
 /**
  * コンテナ作成（投稿の下書き）
+ * @param body {string} 本文
+ * @param imageUrl {string|null} 画像URL（任意）
+ * @param replyToId {string|null} 返信先のthreads_post_id（任意・ツリー連鎖時）
  */
-function createContainer(body, imageUrl) {
+function createContainer(body, imageUrl, replyToId) {
   const config = getConfig();
   const url = THREADS_BASE + '/' + config.threadsUserId + '/threads';
   const payload = {
@@ -17,6 +20,7 @@ function createContainer(body, imageUrl) {
     access_token: config.threadsAccessToken,
   };
   if (imageUrl) payload.image_url = imageUrl;
+  if (replyToId) payload.reply_to_id = replyToId;
   const res = UrlFetchApp.fetch(url, {
     method: 'post',
     payload: payload,
