@@ -6,48 +6,105 @@
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 20px; margin: 0; color: #222; }
     h2 { margin: 0 0 8px; font-size: 16px; }
     .desc { font-size: 13px; color: #555; margin: 0 0 14px; }
-    input[type=file] { display: block; margin: 12px 0; font-size: 13px; }
-    .preview { max-width: 100%; max-height: 120px; margin: 8px 0; border-radius: 6px; display: none; }
-    button { padding: 8px 18px; font-size: 14px; cursor: pointer; background: #6a11cb; color: #fff; border: none; border-radius: 4px; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-    #status { margin-top: 12px; font-size: 13px; min-height: 18px; }
+    .drop {
+      border: 2px dashed #c5b8e0;
+      border-radius: 8px;
+      padding: 18px 16px;
+      text-align: center;
+      background: #fafaff;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+    .drop:hover, .drop.dragover {
+      background: #f0eaff;
+      border-color: #6a11cb;
+    }
+    .drop.dragover { background: #e6dcff; }
+    .drop p { margin: 6px 0; font-size: 13px; color: #555; }
+    .drop .pick { color: #6a11cb; font-weight: 600; text-decoration: underline; }
+    input[type=file] { display: none; }
+    .preview { max-width: 100%; max-height: 120px; margin: 10px 0; border-radius: 6px; display: none; }
+    button {
+      padding: 9px 20px; font-size: 14px; cursor: pointer;
+      background: #6a11cb; color: #fff; border: none; border-radius: 4px;
+      margin-top: 8px;
+    }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    #status { margin-top: 10px; font-size: 13px; min-height: 18px; }
     #status.error { color: #d32f2f; }
     #status.success { color: #2e7d32; }
-    .hint { color: #888; font-size: 12px; margin-top: 12px; line-height: 1.5; }
+    .hint { color: #888; font-size: 12px; margin-top: 12px; line-height: 1.55; }
   </style>
 </head>
 <body>
   <h2>📷 画像をアップロード</h2>
-  <p class="desc">JPEG / PNG / WebP（8MBまで）</p>
-  <input type="file" id="file" accept="image/jpeg,image/png,image/webp">
+  <p class="desc">JPEG / PNG / WebP（8MBまで）／ 利用者自身のDriveに保存</p>
+
+  <label class="drop" id="drop">
+    <input type="file" id="file" accept="image/jpeg,image/png,image/webp">
+    <p>📁 ここに画像を <span class="pick">ドラッグ＆ドロップ</span></p>
+    <p>または <span class="pick">クリックして選択</span></p>
+  </label>
   <img id="preview" class="preview" alt="preview">
   <button id="upload" disabled>アップロード</button>
   <div id="status"></div>
-  <p class="hint">完了後、選択中のセルにGitHub PagesのURLが自動入力されます。<br>反映までGitHub側で1〜2分かかる場合があります。</p>
+  <p class="hint">完了後、選択中のセルに公開URLが自動入力されます。<br>画像は「スレッズ画像」フォルダ（あなたのDrive）に保存されます。</p>
 
   <script>
     var fileInput = document.getElementById('file');
+    var drop = document.getElementById('drop');
     var preview = document.getElementById('preview');
     var btn = document.getElementById('upload');
     var status = document.getElementById('status');
+    var currentFile = null;
 
-    fileInput.addEventListener('change', function () {
+    function setFile(file) {
+      currentFile = file;
       status.textContent = '';
       status.className = '';
-      var file = fileInput.files[0];
       if (!file) {
         btn.disabled = true;
         preview.style.display = 'none';
         return;
       }
+      if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
+        status.textContent = '⚠️ JPEG / PNG / WebP のみ対応';
+        status.className = 'error';
+        btn.disabled = true;
+        return;
+      }
       btn.disabled = false;
-      var url = URL.createObjectURL(file);
-      preview.src = url;
+      preview.src = URL.createObjectURL(file);
       preview.style.display = 'block';
+    }
+
+    fileInput.addEventListener('change', function () {
+      setFile(fileInput.files[0]);
+    });
+
+    ['dragenter', 'dragover'].forEach(function (ev) {
+      drop.addEventListener(ev, function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        drop.classList.add('dragover');
+      });
+    });
+    ['dragleave', 'drop'].forEach(function (ev) {
+      drop.addEventListener(ev, function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        drop.classList.remove('dragover');
+      });
+    });
+    drop.addEventListener('drop', function (e) {
+      var dt = e.dataTransfer;
+      if (dt && dt.files && dt.files[0]) {
+        setFile(dt.files[0]);
+      }
     });
 
     btn.addEventListener('click', function () {
-      var file = fileInput.files[0];
+      var file = currentFile;
       if (!file) return;
       if (file.size > 8 * 1024 * 1024) {
         status.textContent = '⚠️ 8MBを超えています';
@@ -63,11 +120,9 @@
         var base64 = e.target.result.split(',')[1];
         google.script.run
           .withSuccessHandler(function (res) {
-            status.textContent = '✅ 完了: ' + res.url;
+            status.textContent = '✅ 完了';
             status.className = 'success';
-            setTimeout(function () {
-              google.script.host.close();
-            }, 1800);
+            setTimeout(function () { google.script.host.close(); }, 1200);
           })
           .withFailureHandler(function (err) {
             status.textContent = '❌ ' + (err.message || err);

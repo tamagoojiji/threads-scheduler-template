@@ -62,6 +62,28 @@ function processRow(row) {
       row.operationId = Utilities.getUuid();
     }
 
+    // セル内画像が未変換 → リトライしても直らないので即エラー
+    if (row.imageError) {
+      updateRow(row, {
+        status: 'エラー',
+        errorMessage: row.imageError,
+        attemptCount: MAX_ATTEMPTS,
+        stateUpdatedAt: new Date(),
+      });
+      appendHistory({
+        operationId: row.operationId,
+        creationId: row.creationId,
+        bodyExcerpt: row.body.slice(0, 50),
+        result: 'エラー',
+        error: row.imageError,
+        postedAt: new Date(),
+      });
+      try {
+        notifyDiscord('⚠️ ' + row.imageError + '\n本文: ' + row.body.slice(0, 80), { kind: 'post_failure' });
+      } catch (_) {}
+      return;
+    }
+
     // reconciliation: 過去に成功している同operationIdの履歴があれば、その結果を反映
     const history = findHistorySuccess(row.operationId);
     if (history) {

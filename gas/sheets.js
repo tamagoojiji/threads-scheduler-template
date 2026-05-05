@@ -104,11 +104,22 @@ function readPendingRows() {
     }
     if (!isPending && !isStuckProcessing) return;
 
+    // 画像列がCellImage(セル内画像)の場合は投稿前にURL化が必要
+    const imgRaw = v[colMap.IMAGE - 1];
+    let imageUrl = '';
+    let imageError = null;
+    if (imgRaw && typeof imgRaw === 'object' && typeof imgRaw.getContentUrl === 'function') {
+      imageError = 'D列にセル内画像が配置されています。メニュー「🔄 セル内画像をURL化」を実行してから再度お試しください。';
+    } else {
+      imageUrl = String(imgRaw || '').trim();
+    }
+
     rows.push({
       rowIndex: i + 2,
       scheduledAt: scheduledAt,
       body: String(body),
-      imageUrl: String(v[colMap.IMAGE - 1] || ''),
+      imageUrl: imageUrl,
+      imageError: imageError,
       status: status || '未投稿',
       operationId: String(v[colMap.OP_ID - 1] || ''),
       attemptCount: attemptCount,

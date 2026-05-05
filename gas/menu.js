@@ -13,7 +13,7 @@ function onOpen() {
     .addItem('💾 設定シートからPropertiesに保存', 'saveSettingsFromSheet')
     .addSeparator()
     .addItem('📷 画像をアップロード', 'openImageUploadDialog')
-    .addItem('🖼️ 画像アップロード設定', 'setupImageUpload')
+    .addItem('🔄 セル内画像をURL化', 'convertCellImagesToUrls')
     .addItem('🔍 画像設定を確認', 'checkImageUploadConfig')
     .addSeparator()
     .addItem('▶️ 今すぐ投稿チェック', 'postRunner')
