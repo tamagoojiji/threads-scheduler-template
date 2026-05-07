@@ -1088,7 +1088,7 @@
                 <div class="w-10 h-10 rounded-lg grid place-items-center text-white font-extrabold" style="background:#5865F2">D</div>
                 <div class="flex-1">
                   <div class="font-bold">Discordアカウント</div>
-                  <div class="text-xs text-[color:var(--ink-3)]">投稿結果通知の受信用</div>
+                  <div class="text-xs text-[color:var(--ink-3)]">サポート部屋のログイン確認のみ（サーバー作成不要・こちらで用意）</div>
                 </div>
                 <span class="text-[color:var(--ink-3)]">↗</span>
               </div>
@@ -1632,65 +1632,35 @@
             <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">07</div></div></div>
             <div class="flex-1 min-w-0">
               <div class="flex flex-wrap items-center gap-2 mb-2">
-                <span class="meta-pill">⏱ 所要時間 5分</span>
+                <span class="meta-pill">⏱ 所要時間 30秒</span>
                 <span class="meta-pill">🔔 通知用</span>
               </div>
-              <h2 class="section-title text-3xl md:text-4xl">Discord Webhook作成 → WEBHOOK_URL</h2>
+              <h2 class="section-title text-3xl md:text-4xl">Discord WEBHOOK_URL を貼り付け</h2>
             </div>
           </div>
 
-          <h3 class="sub-head"><span class="sh-num">7-1</span>開発者モードを有効化</h3>
+          <p class="text-[color:var(--ink-2)] leading-relaxed mb-5">
+            <strong>サーバー作成・Webhook作成は不要です。</strong>
+            こちらで用意した <strong>Discordサーバー内のあなた専用サポートチャンネル</strong> に Webhook URL を発行済です。チャンネル内で URL をご確認ください（投稿結果通知・エラー検知が全部このチャンネルに届きます）。
+          </p>
+
+          <h3 class="sub-head"><span class="sh-num">①</span>サポートチャンネルでURLを受け取る</h3>
           <ol class="guided">
-            <li>Discordアプリもしくはブラウザ版を開く</li>
-            <li>左下の <strong>ユーザー設定(歯車アイコン)</strong></li>
-            <li>左メニュー一番下の <strong>&lt;&gt; 開発者</strong></li>
-            <li><strong>開発者モード</strong> を <strong>ON</strong></li>
+            <li>こちらが招待したDiscordサーバーを開く</li>
+            <li>あなた専用の <strong>サポートチャンネル</strong>（チャンネル名: <code class="inline">support-***</code>）を開く</li>
+            <li>ピン留めされたメッセージ or 投稿された <strong>WEBHOOK_URL</strong> をコピー
+              <div class="text-xs text-[color:var(--ink-3)] mt-1">※ <code class="inline">https://discord.com/api/webhooks/...</code> で始まる文字列</div>
+            </li>
           </ol>
-
-          <figure class="screenshot screenshot-img">
-            <img src="images/step7-developer-mode.png" alt="Discord ユーザー設定 — 開発者ページで開発者モードがONになった状態" />
-            <figcaption>左メニュー <strong>&lt;&gt; 開発者</strong> を開いて <strong>開発者モード</strong> をONにする</figcaption>
-          </figure>
-
-          <h3 class="sub-head"><span class="sh-num">7-2</span>通知用チャンネル作成</h3>
-          <ol class="guided">
-            <li>既存サーバー or 新規サーバーで <strong>「チャンネルを作成」</strong></li>
-            <li><strong>テキストチャンネル</strong> を選択 / 名前は <code class="inline">threads-scheduler</code> 等 <span class="text-xs text-[color:var(--ink-3)]">(名前をタップするとコピーできます)</span></li>
-          </ol>
-
-          <h3 class="sub-head"><span class="sh-num">7-3</span>Webhook URLを取得</h3>
-          <ol class="guided">
-            <li>チャンネル名右の <strong>歯車</strong> → <strong>連携サービス</strong> → <strong>ウェブフック</strong> → <strong>新しいウェブフック</strong></li>
-            <li>名前を設定(例: <code class="inline">Threads Scheduler</code>) <span class="text-xs text-[color:var(--ink-3)]">(名前をタップするとコピーできます)</span></li>
-            <li><strong>「ウェブフックURLをコピー」</strong> をクリック</li>
-          </ol>
-
-          <div class="grid sm:grid-cols-2 gap-4 my-3">
-            <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block;">
-              <img src="images/step7-webhook-1.png" alt="連携サービス画面 — ウェブフック1件" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 6px;" />
-              <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">① 連携サービス → ウェブフック</figcaption>
-            </figure>
-            <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block;">
-              <img src="images/step7-webhook-2.png" alt="新しいウェブフックを作成" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 6px;" />
-              <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">② 新しいウェブフックを作成</figcaption>
-            </figure>
-          </div>
-
-          <div class="callout callout-ok">
-            <div class="ic">✓</div>
-            <div>
-              <code class="inline">https://discord.com/api/webhooks/...</code> で始まっていればOK。
-            </div>
-          </div>
 
           <div class="save-card">
             <div class="save-head">
               <div class="pin">💾</div>
-              ここでスプレッドシートの「🔧 初回セットアップ」に入力
+              スプシで「🔧 初回セットアップ」に貼り付け
             </div>
             <ul>
-              <li>メニュー右端の <code class="inline">スレッズスケジューラー</code> ➡️ <code class="inline">🔧 初回セットアップ</code> を実行</li>
-              <li><span class="key">DISCORD_WEBHOOK_URL</span> URLを入力</li>
+              <li>メニュー <code class="inline">スレッズスケジューラー</code> → <code class="inline">🔧 初回セットアップ</code> を実行</li>
+              <li><span class="key">DISCORD_WEBHOOK_URL</span> にコピーしたURLを貼り付け</li>
               <li><strong>これで5項目すべて入力完了 →</strong> 完了画面で全項目「✅ 設定済」確認</li>
             </ul>
           </div>
@@ -1705,8 +1675,11 @@
             <span class="label">WEBHOOK_URL 入力 → 全5項目「✅ 設定済」 <span class="sub">いよいよテスト投稿へ</span></span>
           </label>
 
-          <div class="mt-6 p-4 rounded-xl bg-[color:var(--line-2)] text-sm text-[color:var(--ink-2)]">
-            💡 <strong>つまずきポイント:</strong> サーバーの管理権限がないとウェブフックが作成できません。<strong>自分が管理者のサーバー</strong>で作るのが確実です。
+          <div class="callout callout-info mt-5">
+            <div class="ic">📨</div>
+            <div>
+              <strong>このサポートチャンネルで何が届くか:</strong> 投稿成功 / 投稿失敗 / トリガーエラー / トークン更新通知などが自動でこのチャンネルに通知されます。トラブル時はそのスクショと一緒にチャンネルにメッセージしてください。
+            </div>
           </div>
         </div>
       </section>
