@@ -871,10 +871,10 @@
     <div class="nav-links hidden lg:flex items-center gap-1">
       <a class="nav-link" href="#step1">事前準備</a>
       <a class="nav-link" href="#step2">スプシコピー</a>
-      <a class="nav-link" href="#step3">セットアップ</a>
+      <a class="nav-link" href="#step3">Meta App</a>
       <a class="nav-link" href="#step4">トークン取得</a>
-      <a class="nav-link" href="#step7">Webhook</a>
-      <a class="nav-link" href="#step8">テスト</a>
+      <a class="nav-link" href="#step6">Webhook</a>
+      <a class="nav-link" href="#step7">テスト</a>
     </div>
 
     <div class="flex items-center gap-2">
@@ -928,14 +928,14 @@
           <div class="grid grid-cols-2 gap-2.5">
           <a href="#step1" class="toc-chip"><span class="num">01</span><span>事前準備</span></a>
           <a href="#step2" class="toc-chip"><span class="num">02</span><span>スプシコピー</span></a>
-          <a href="#step3" class="toc-chip"><span class="num">03</span><span>初回セットアップ</span></a>
-          <a href="#step4" class="toc-chip"><span class="num">04</span><span>Meta App作成</span></a>
-          <a href="#step5" class="toc-chip"><span class="num">05</span><span>トークン取得</span></a>
-          <a href="#step6" class="toc-chip"><span class="num">06</span><span>User ID取得</span></a>
-          <a href="#step7" class="toc-chip"><span class="num">07</span><span>Discord Webhook</span></a>
-          <a href="#step8" class="toc-chip"><span class="num">08</span><span>テスト・運用開始</span></a>
-          <a href="#operation" class="toc-chip"><span class="num">09</span><span>運用</span></a>
-          <a href="#faq"      class="toc-chip"><span class="num">10</span><span>よくある質問</span></a>
+          <a href="#step3" class="toc-chip"><span class="num">03</span><span>Meta App作成</span></a>
+          <a href="#step4" class="toc-chip"><span class="num">04</span><span>トークン取得</span></a>
+          <a href="#step5" class="toc-chip"><span class="num">05</span><span>User ID取得</span></a>
+          <a href="#step6" class="toc-chip"><span class="num">06</span><span>Discord Webhook</span></a>
+          <a href="#step7" class="toc-chip"><span class="num">07</span><span>テスト・運用開始</span></a>
+          <a href="#summary"  class="toc-chip"><span class="num">🎓</span><span>今回行ったこと</span></a>
+          <a href="#operation" class="toc-chip"><span class="num">📌</span><span>運用</span></a>
+          <a href="#faq"      class="toc-chip"><span class="num">?</span><span>よくある質問</span></a>
           </div>
         </div>
       </div>
@@ -975,12 +975,11 @@
         <a class="side-item" href="#step0"><span class="side-num"><span>00</span></span><span class="side-label">手順書の使い方</span></a>
         <a class="side-item" href="#step1" data-step="1"><span class="side-num"><span>01</span></span><span class="side-label">事前準備</span></a>
         <a class="side-item" href="#step2" data-step="2"><span class="side-num"><span>02</span></span><span class="side-label">スプシコピー</span></a>
-        <a class="side-item" href="#step3" data-step="3"><span class="side-num"><span>03</span></span><span class="side-label">初回セットアップ</span></a>
-        <a class="side-item" href="#step4" data-step="4"><span class="side-num"><span>04</span></span><span class="side-label">Meta App作成</span></a>
-        <a class="side-item" href="#step5" data-step="5"><span class="side-num"><span>05</span></span><span class="side-label">トークン取得</span></a>
-        <a class="side-item" href="#step6" data-step="6"><span class="side-num"><span>06</span></span><span class="side-label">User ID取得</span></a>
-        <a class="side-item" href="#step7" data-step="7"><span class="side-num"><span>07</span></span><span class="side-label">Discord Webhook</span></a>
-        <a class="side-item" href="#step8" data-step="8"><span class="side-num"><span>08</span></span><span class="side-label">テスト・運用開始</span></a>
+        <a class="side-item" href="#step3" data-step="3"><span class="side-num"><span>03</span></span><span class="side-label">Meta App作成</span></a>
+        <a class="side-item" href="#step4" data-step="4"><span class="side-num"><span>04</span></span><span class="side-label">トークン取得</span></a>
+        <a class="side-item" href="#step5" data-step="5"><span class="side-num"><span>05</span></span><span class="side-label">User ID取得</span></a>
+        <a class="side-item" href="#step6" data-step="6"><span class="side-num"><span>06</span></span><span class="side-label">Discord Webhook</span></a>
+        <a class="side-item" href="#step7" data-step="7"><span class="side-num"><span>07</span></span><span class="side-label">テスト・運用開始</span></a>
         <div class="border-t border-[color:var(--line)] my-2"></div>
         <a class="side-item" href="#summary"><span class="side-num"><span>🎓</span></span><span class="side-label">今回行ったこと</span></a>
         <a class="side-item" href="#operation"><span class="side-num"><span>📌</span></span><span class="side-label">完了後の運用</span></a>
@@ -1007,7 +1006,7 @@
           </div>
 
           <p class="text-[color:var(--ink-2)] leading-relaxed mb-4">
-            この手順書は、Threadsスケジューラーの初回セットアップを<strong>30分</strong>で終わらせるための案内です。<strong>上から順番に</strong>、Step 01 〜 08 を進めてください。
+            この手順書は、Threadsスケジューラーの初回セットアップを<strong>30分</strong>で終わらせるための案内です。<strong>上から順番に</strong>、Step 01 〜 07 を進めてください。
           </p>
 
           <h3 class="sub-head"><span class="sh-num">①</span>進め方</h3>
@@ -1115,7 +1114,7 @@
           <div class="callout callout-warn">
             <div class="ic">⚠</div>
             <div>
-              電話番号は <strong>Facebookアカウントと連携している番号</strong> をご準備ください。Step 4 の認証でこの番号宛にSMSが届きます。
+              電話番号は <strong>Facebookアカウントと連携している番号</strong> をご準備ください。Step 3 の認証でこの番号宛にSMSが届きます。
             </div>
           </div>
 
@@ -1188,44 +1187,11 @@
         </div>
       </section>
 
-      <!-- ===== STEP 3 ===== -->
+      <!-- ===== STEP 4 ===== -->
       <section id="step3" class="section reveal">
         <div class="section-card">
           <div class="flex items-start gap-5 mb-6">
             <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">03</div></div></div>
-            <div class="flex-1 min-w-0">
-              <div class="flex flex-wrap items-center gap-2 mb-2">
-                <span class="meta-pill">🚀 ここから始めます</span>
-              </div>
-              <h2 class="section-title text-3xl md:text-4xl">セットアップ開始</h2>
-            </div>
-          </div>
-
-          <p class="text-[color:var(--ink-2)] leading-relaxed mb-5">
-            ここから <strong>Step 04 〜 07</strong> で必要な値を <strong>1項目ずつ取得 → その場で入力</strong> していきます。
-            <strong>覚える必要はありません</strong>。書いてあるとおりに進めれば自動で完了します。
-          </p>
-
-          <div class="callout callout-ok">
-            <div class="ic">✓</div>
-            <div>
-              <strong>分からなくても大丈夫</strong>。Step 04 から順番に進めていきましょう。
-              <br/>セットアップが終わった後に、Step 08 後の「<a href="#summary">今回行ったこと</a>」で全体像が分かります。
-            </div>
-          </div>
-
-          <label class="step-check" data-progress-key="step3">
-            <input type="checkbox" />
-            <span class="label">Step 04 へ進む準備ができた <span class="sub">あとは順番に1つずつやるだけ</span></span>
-          </label>
-        </div>
-      </section>
-
-      <!-- ===== STEP 4 ===== -->
-      <section id="step4" class="section reveal">
-        <div class="section-card">
-          <div class="flex items-start gap-5 mb-6">
-            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">04</div></div></div>
             <div class="flex-1 min-w-0">
               <div class="flex flex-wrap items-center gap-2 mb-2">
                 <span class="meta-pill">⏱ 所要時間 15分</span>
@@ -1414,9 +1380,9 @@
             </figure>
           </div>
 
-          <label class="step-check" data-progress-key="step4">
+          <label class="step-check" data-progress-key="step3">
             <input type="checkbox" />
-            <span class="label">APP_ID / APP_SECRET を入力し「✅ 設定済」を確認 <span class="sub">残り3項目は次の Step 5・6・7 で取得</span></span>
+            <span class="label">APP_ID / APP_SECRET を入力し「✅ 設定済」を確認 <span class="sub">残り3項目は次の Step 4・5・6 で取得</span></span>
           </label>
 
           <div class="mt-6 p-4 rounded-xl bg-[color:var(--line-2)] text-sm text-[color:var(--ink-2)]">
@@ -1426,10 +1392,10 @@
       </section>
 
       <!-- ===== STEP 5 ===== -->
-      <section id="step5" class="section reveal">
+      <section id="step4" class="section reveal">
         <div class="section-card">
           <div class="flex items-start gap-5 mb-6">
-            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">05</div></div></div>
+            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">04</div></div></div>
             <div class="flex-1 min-w-0">
               <div class="flex flex-wrap items-center gap-2 mb-2">
                 <span class="meta-pill">⏱ 所要時間 10分</span>
@@ -1540,10 +1506,10 @@
 
           <figure class="screenshot screenshot-img" style="max-width: 360px; margin-left:auto; margin-right:auto;">
             <img src="images/step5-setup-complete.png" alt="セットアップ完了ダイアログ — THREADS_APP_ID / APP_SECRET / ACCESS_TOKEN が設定済、USER_ID と DISCORD_WEBHOOK_URL は未設定の状態" />
-            <figcaption>セットアップ完了ダイアログ<br>この時点では <code class="inline">THREADS_USER_ID</code> と <code class="inline">DISCORD_WEBHOOK_URL</code> は<br>未設定でOK(Step 6・7で取得)</figcaption>
+            <figcaption>セットアップ完了ダイアログ<br>この時点では <code class="inline">THREADS_USER_ID</code> と <code class="inline">DISCORD_WEBHOOK_URL</code> は<br>未設定でOK(Step 5・6で取得)</figcaption>
           </figure>
 
-          <label class="step-check" data-progress-key="step5">
+          <label class="step-check" data-progress-key="step4">
             <input type="checkbox" />
             <span class="label">ACCESS_TOKEN を入力した <span class="sub">THAAから始まる文字列をペースト</span></span>
           </label>
@@ -1555,10 +1521,10 @@
       </section>
 
       <!-- ===== STEP 6 ===== -->
-      <section id="step6" class="section reveal">
+      <section id="step5" class="section reveal">
         <div class="section-card">
           <div class="flex items-start gap-5 mb-6">
-            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">06</div></div></div>
+            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">05</div></div></div>
             <div class="flex-1 min-w-0">
               <div class="flex flex-wrap items-center gap-2 mb-2">
                 <span class="meta-pill">⏱ 所要時間 2分</span>
@@ -1611,10 +1577,10 @@
 
           <figure class="screenshot screenshot-img" style="max-width: 360px; margin-left:auto; margin-right:auto;">
             <img src="images/step6-setup-complete.png" alt="セットアップ完了ダイアログ — APP_ID / APP_SECRET / ACCESS_TOKEN / USER_ID が設定済、DISCORD_WEBHOOK_URL のみ未設定の状態" />
-            <figcaption>セットアップ完了ダイアログ:USER_ID も設定済になり、残るは <code class="inline">DISCORD_WEBHOOK_URL</code>(Step 7 で取得)</figcaption>
+            <figcaption>セットアップ完了ダイアログ:USER_ID も設定済になり、残るは <code class="inline">DISCORD_WEBHOOK_URL</code>(Step 6 で取得)</figcaption>
           </figure>
 
-          <label class="step-check" data-progress-key="step6">
+          <label class="step-check" data-progress-key="step5">
             <input type="checkbox" />
             <span class="label">USER_ID を入力した <span class="sub">17桁前後の数字</span></span>
           </label>
@@ -1626,10 +1592,10 @@
       </section>
 
       <!-- ===== STEP 7 ===== -->
-      <section id="step7" class="section reveal">
+      <section id="step6" class="section reveal">
         <div class="section-card">
           <div class="flex items-start gap-5 mb-6">
-            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">07</div></div></div>
+            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">06</div></div></div>
             <div class="flex-1 min-w-0">
               <div class="flex flex-wrap items-center gap-2 mb-2">
                 <span class="meta-pill">⏱ 所要時間 30秒</span>
@@ -1670,7 +1636,7 @@
             <figcaption>🎉 セットアップ完了:5項目すべて <strong>「✅ 設定済」</strong> になればOK</figcaption>
           </figure>
 
-          <label class="step-check" data-progress-key="step7">
+          <label class="step-check" data-progress-key="step6">
             <input type="checkbox" />
             <span class="label">WEBHOOK_URL 入力 → 全5項目「✅ 設定済」 <span class="sub">いよいよテスト投稿へ</span></span>
           </label>
@@ -1685,10 +1651,10 @@
       </section>
 
       <!-- ===== STEP 8 ===== -->
-      <section id="step8" class="section reveal">
+      <section id="step7" class="section reveal">
         <div class="section-card">
           <div class="flex items-start gap-5 mb-6">
-            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">08</div></div></div>
+            <div class="step-badge"><div class="text-center"><div class="lbl">STEP</div><div class="num">07</div></div></div>
             <div class="flex-1 min-w-0">
               <div class="flex flex-wrap items-center gap-2 mb-2">
                 <span class="meta-pill">⏱ 所要時間 5分</span>
@@ -1741,7 +1707,7 @@
             <figcaption>トリガーインストール完了ダイアログ<br/>・<strong>10分ごとの投稿チェック</strong><br/>・<strong>週1回のトークン更新</strong> が登録されます</figcaption>
           </figure>
 
-          <label class="step-check" data-progress-key="step8">
+          <label class="step-check" data-progress-key="step7">
             <input type="checkbox" />
             <span class="label">テスト投稿成功 + トリガーインストール完了 <span class="sub">🎉 これで自動運用が始まりました</span></span>
           </label>
@@ -1775,28 +1741,28 @@
               </thead>
               <tbody>
                 <tr>
-                  <td class="keyname"><a href="#step4">THREADS_APP_ID</a></td>
-                  <td class="where"><a href="#step4">Step 4 — Meta Developer アプリ作成</a></td>
+                  <td class="keyname"><a href="#step3">THREADS_APP_ID</a></td>
+                  <td class="where"><a href="#step3">Step 3 — Meta Developer アプリ作成</a></td>
                   <td class="fmt">数字(例: 1644…)</td>
                 </tr>
                 <tr>
-                  <td class="keyname"><a href="#step4">THREADS_APP_SECRET</a></td>
-                  <td class="where"><a href="#step4">Step 4 — 「表示」で取得</a></td>
+                  <td class="keyname"><a href="#step3">THREADS_APP_SECRET</a></td>
+                  <td class="where"><a href="#step3">Step 3 — 「表示」で取得</a></td>
                   <td class="fmt">英数字</td>
                 </tr>
                 <tr>
-                  <td class="keyname"><a href="#step5">THREADS_ACCESS_TOKEN</a></td>
-                  <td class="where"><a href="#step5">Step 5 — 長期トークン</a></td>
+                  <td class="keyname"><a href="#step4">THREADS_ACCESS_TOKEN</a></td>
+                  <td class="where"><a href="#step4">Step 4 — 長期トークン</a></td>
                   <td class="fmt">THAA…(150〜200文字)</td>
                 </tr>
                 <tr>
-                  <td class="keyname"><a href="#step6">THREADS_USER_ID</a></td>
-                  <td class="where"><a href="#step6">Step 6 — User ID取得</a></td>
+                  <td class="keyname"><a href="#step5">THREADS_USER_ID</a></td>
+                  <td class="where"><a href="#step5">Step 5 — User ID取得</a></td>
                   <td class="fmt">17桁前後の数字</td>
                 </tr>
                 <tr>
-                  <td class="keyname"><a href="#step7">DISCORD_WEBHOOK_URL</a></td>
-                  <td class="where"><a href="#step7">Step 7 — サポートチャンネルから受け取り</a></td>
+                  <td class="keyname"><a href="#step6">DISCORD_WEBHOOK_URL</a></td>
+                  <td class="where"><a href="#step6">Step 6 — サポートチャンネルから受け取り</a></td>
                   <td class="fmt">https://discord.com/api/webhooks/…</td>
                 </tr>
               </tbody>
@@ -1805,7 +1771,7 @@
 
           <h3 class="sub-head"><span class="sh-num">②</span>動いている自動処理</h3>
           <ul class="guided">
-            <li><strong>10分ごとの投稿チェック</strong>: 投稿予約シートを見て、時刻が来た行を自動投稿（Step 8 でインストール）</li>
+            <li><strong>10分ごとの投稿チェック</strong>: 投稿予約シートを見て、時刻が来た行を自動投稿（Step 7 でインストール）</li>
             <li><strong>毎週日曜9時のトークン更新</strong>: アクセストークンを自動延長（手動更新不要）</li>
             <li><strong>Discord通知</strong>: 投稿成功・失敗・エラー時にWebhook経由で通知</li>
           </ul>
@@ -1966,7 +1932,7 @@ DISCORD_WEBHOOK_URL: ✅ http...zzzz</pre>
                 <span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></span>
               </button>
               <div class="faq-a"><div class="faq-a-inner">
-                Step 4-3 の<strong>URL3箇所</strong>(コールバック・アンインストール・削除)のうち1つでも空欄だと保存に失敗します。すべて <code class="inline">https://www.google.com/</code> を入れて保存してください。
+                Step 3-3 の<strong>URL3箇所</strong>(コールバック・アンインストール・削除)のうち1つでも空欄だと保存に失敗します。すべて <code class="inline">https://www.google.com/</code> を入れて保存してください。
               </div></div>
             </div>
 
@@ -1987,7 +1953,7 @@ DISCORD_WEBHOOK_URL: ✅ http...zzzz</pre>
                 <span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg></span>
               </button>
               <div class="faq-a"><div class="faq-a-inner">
-                長期トークンは<strong>60日有効</strong>ですが、Step 8 でトリガーをインストールすると<strong>毎週日曜9時に自動で更新</strong>されます。基本的に手動操作は不要です。
+                長期トークンは<strong>60日有効</strong>ですが、Step 7 でトリガーをインストールすると<strong>毎週日曜9時に自動で更新</strong>されます。基本的に手動操作は不要です。
               </div></div>
             </div>
 
@@ -2281,7 +2247,7 @@ DISCORD_WEBHOOK_URL: ✅ http...zzzz</pre>
   });
 
   /* ============ Progress (checkboxes + sidebar sync) ============ */
-  const STEP_KEYS = ['step1','step2','step3','step4','step5','step6','step7','step8'];
+  const STEP_KEYS = ['step1','step2','step3','step4','step5','step6','step7'];
   const stored = (() => {
     try { return JSON.parse(localStorage.getItem('tssg_progress') || '{}'); } catch(e){ return {}; }
   })();
@@ -2323,7 +2289,7 @@ DISCORD_WEBHOOK_URL: ✅ http...zzzz</pre>
   refreshProgressUI();
 
   /* ============ Active section in sidebar + top nav ============ */
-  const allSections = ['step1','step2','step3','step4','step5','step6','step7','step8','operation','faq'];
+  const allSections = ['step1','step2','step3','step4','step5','step6','step7','summary','operation','image-upload','faq'];
   const sideItems   = document.querySelectorAll('#sideNav .side-item');
   const navLinks    = document.querySelectorAll('.nav-link');
   function setActive(id){
