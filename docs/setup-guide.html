@@ -1210,7 +1210,18 @@
             </div>
           </div>
 
-          <h3 class="sub-head"><span class="sh-num">4-1</span>Meta Developer登録</h3>
+          <div class="mt-5 mb-2 p-4 rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)]">
+            <div class="text-sm font-bold mb-2 text-[color:var(--ink)]">📋 このステップの流れ</div>
+            <ol class="text-sm text-[color:var(--ink-2)] space-y-1 ml-1 list-none p-0">
+              <li><a href="#step3-1" class="underline"><strong>3-1</strong> Meta Developer登録</a></li>
+              <li><a href="#step3-2" class="underline"><strong>3-2</strong> アプリ作成</a></li>
+              <li><a href="#step3-3" class="underline"><strong>3-3</strong> ユースケースのカスタマイズ・権限追加</a></li>
+              <li><a href="#step3-4" class="underline"><strong>3-4</strong> アプリの基本設定</a></li>
+              <li><a href="#step3-5" class="underline"><strong>3-5</strong> APP_ID と APP_SECRET を取得 → スプシに登録</a></li>
+            </ol>
+          </div>
+
+          <h3 id="step3-1" class="sub-head"><span class="sh-num">3-1</span>Meta Developer登録</h3>
           <ol class="guided">
             <li><a href="https://developers.facebook.com" rel="noopener noreferrer" class="font-bold underline">developers.facebook.com</a> にFacebookアカウントでログイン</li>
             <li>電話番号認証(SMS) + 開発者規約に同意</li>
@@ -1229,7 +1240,7 @@
             </div>
           </div>
 
-          <h3 class="sub-head"><span class="sh-num">4-2</span>アプリ作成</h3>
+          <h3 id="step3-2" class="sub-head"><span class="sh-num">3-2</span>アプリ作成</h3>
           <div class="grid sm:grid-cols-2 gap-4 my-3">
             <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block;">
               <img src="images/step4-create-app-1.png" alt="マイアプリ → アプリを作成" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 6px;" />
@@ -1259,7 +1270,7 @@
             <figcaption style="padding: .75rem 1rem; font-weight: 600; color: var(--ink-2); font-size: .9rem; border-top: 1px solid var(--line); text-align: left;">最終確認画面 — アプリ名 / ユースケース「Threads APIにアクセス」 / ビジネス / 必要条件 が揃っていれば「アプリを作成」へ</figcaption>
           </figure>
 
-          <h3 class="sub-head"><span class="sh-num">4-3</span>ユースケースのカスタマイズ・権限追加</h3>
+          <h3 id="step3-3" class="sub-head"><span class="sh-num">3-3</span>ユースケースのカスタマイズ・権限追加</h3>
           <p class="text-[color:var(--ink-2)] leading-relaxed">
             アプリ作成直後は権限が空です。<strong>threads_basic</strong> と <strong>threads_content_publish</strong> を追加し、それぞれ <strong>「テスト準備完了」</strong> ステータスに切り替えます。
           </p>
@@ -1274,7 +1285,7 @@
             <figcaption style="padding: .75rem 1rem; font-weight: 600; color: var(--ink-2); font-size: .9rem; border-top: 1px solid var(--line); text-align: left;">2つの権限が <strong style="color: var(--grad-start);">「テスト準備完了」</strong> になっていればOK(threads_delete は不要)</figcaption>
           </figure>
 
-          <h3 class="sub-head"><span class="sh-num">4-4</span>アプリの基本設定</h3>
+          <h3 id="step3-4" class="sub-head"><span class="sh-num">3-4</span>アプリの基本設定</h3>
 
           <div class="rounded-xl border border-[color:var(--line)] p-4 my-3 bg-[color:var(--line-2)]">
             <div class="font-bold text-sm mb-2 flex items-center gap-2">
@@ -1330,7 +1341,7 @@
             </figure>
           </div>
 
-          <h3 class="sub-head"><span class="sh-num">4-5</span>APP_ID と APP_SECRET を取得 ➡️ スプシに登録 <span style="font-size: .75em; font-weight: 500; color: var(--ink-3); margin-left: .4rem;">(1個ずつ実施)</span></h3>
+          <h3 id="step3-5" class="sub-head"><span class="sh-num">3-5</span>APP_ID と APP_SECRET を取得 ➡️ スプシに登録 <span style="font-size: .75em; font-weight: 500; color: var(--ink-3); margin-left: .4rem;">(1個ずつ実施)</span></h3>
           <ol class="guided">
             <li><strong>(左側の)ユースケース ➡️ カスタマイズ ➡️ 設定</strong> を開く</li>
             <li><strong>ThreadsアプリID</strong> をコピー</li>
