@@ -325,6 +325,20 @@
     padding: clamp(1.5rem, 3vw, 2.5rem);
     box-shadow: var(--shadow-md);
   }
+  .substep-card{
+    background: color-mix(in oklab, var(--line-2) 35%, var(--surface));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .substep-card > .sub-head:first-child{
+    margin-top: 0;
+    border-bottom-color: color-mix(in oklab, var(--grad-start) 25%, var(--line));
+  }
+  @media (max-width: 768px){
+    .substep-card{ padding: 1rem 1.1rem; }
+  }
   .step-badge{
     width: 72px; height: 72px;
     border-radius: 50%;
@@ -841,7 +855,17 @@
   @media (max-width: 1024px){
     .layout-grid{ grid-template-columns: 1fr !important; }
     .sidebar{ display: none; }
-    .mobile-progress{ display: block !important; }
+    .mobile-progress{
+      display: block !important;
+      position: sticky;
+      top: 64px;
+      z-index: 40;
+    }
+    .mobile-progress > div{
+      backdrop-filter: saturate(140%) blur(12px);
+      -webkit-backdrop-filter: saturate(140%) blur(12px);
+      background: color-mix(in oklab, var(--surface) 92%, transparent);
+    }
   }
   @media (max-width: 768px){
     .nav-links{ display: none !important; }
@@ -911,7 +935,7 @@
             <div class="text-xs text-white mt-0.5">所要時間目安</div>
           </div>
           <div class="stat-card">
-            <div class="font-en font-extrabold text-3xl text-white">8<span class="text-base text-white">step</span></div>
+            <div class="font-en font-extrabold text-3xl text-white">7<span class="text-base text-white">step</span></div>
             <div class="text-xs text-white mt-0.5">実作業ステップ</div>
           </div>
           <div class="stat-card">
@@ -948,10 +972,14 @@
   <div class="rounded-2xl bg-[color:var(--surface)] border border-[color:var(--line)] shadow-lg p-4">
     <div class="flex items-center justify-between mb-2">
       <div class="font-bold text-sm">セットアップ進捗</div>
-      <div class="font-en text-xs text-[color:var(--ink-3)]"><span id="mProgressText">0/8</span></div>
+      <div class="font-en text-xs text-[color:var(--ink-3)]"><span id="mProgressText">0/7</span></div>
     </div>
     <div class="h-2 rounded-full bg-[color:var(--line-2)] overflow-hidden">
       <div id="mProgressBar" style="width:0%; height:100%; background: var(--grad); border-radius:999px; transition:width .4s;"></div>
+    </div>
+    <div class="flex items-center justify-between mt-3 pt-3 border-t border-[color:var(--line)]">
+      <div class="text-xs text-[color:var(--ink-3)]">現在: <span id="mCurrentStep" class="font-bold text-[color:var(--ink-2)]">Step 00</span></div>
+      <a id="mNextStepLink" href="#step1" class="text-xs font-bold text-white px-3 py-1.5 rounded-lg" style="background: var(--grad);">次へ: Step 01 →</a>
     </div>
   </div>
 </div>
@@ -965,7 +993,7 @@
       <div class="side-progress">
         <div class="flex items-center justify-between text-sm">
           <div class="font-bold">進捗</div>
-          <div class="font-en text-[color:var(--ink-3)] text-xs"><span id="progressText">0/8</span></div>
+          <div class="font-en text-[color:var(--ink-3)] text-xs"><span id="progressText">0/7</span></div>
         </div>
         <div class="bar"><span id="progressBar"></span></div>
         <button id="resetProgress" class="text-xs text-[color:var(--ink-3)] hover:text-[color:var(--ink)] mt-2 font-medium">↻ リセット</button>
@@ -1013,7 +1041,7 @@
           <h3 class="sub-head"><span class="sh-num">①</span>進め方</h3>
           <ol class="guided">
             <li>各Stepを<strong>上から順に</strong>実施する（飛ばさない）</li>
-            <li>Step末尾の<strong>チェックボックスをタップ</strong>して進捗を記録（左サイドバーのバーで進捗が見えます）</li>
+            <li>Step末尾の<strong>チェックボックスをタップ</strong>して進捗を記録（PCは左サイドバー、スマホは上部の進捗バーで確認できます）</li>
             <li>分からない箇所は<strong>Discordの個別サポート部屋で質問</strong>OK</li>
           </ol>
 
@@ -1223,6 +1251,7 @@
             </ol>
           </div>
 
+          <div class="substep-card">
           <h3 id="step3-1" class="sub-head"><span class="sh-num">3-1</span>Meta Developer登録</h3>
           <ol class="guided">
             <li><a href="https://developers.facebook.com" target="_blank" rel="noopener noreferrer" class="font-bold underline">developers.facebook.com</a> にFacebookアカウントでログイン</li>
@@ -1250,6 +1279,9 @@
             </div>
           </div>
 
+          </div>
+
+          <div class="substep-card">
           <h3 id="step3-2" class="sub-head"><span class="sh-num">3-2</span>アプリ作成</h3>
           <div class="grid sm:grid-cols-2 gap-4 my-3">
             <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block;">
@@ -1280,6 +1312,9 @@
             <figcaption style="padding: .75rem 1rem; font-weight: 600; color: var(--ink-2); font-size: .9rem; border-top: 1px solid var(--line); text-align: left;">最終確認画面 — アプリ名 / ユースケース「Threads APIにアクセス」 / ビジネス / 必要条件 が揃っていれば「アプリを作成」へ</figcaption>
           </figure>
 
+          </div>
+
+          <div class="substep-card">
           <h3 id="step3-3" class="sub-head"><span class="sh-num">3-3</span>ユースケースのカスタマイズ・権限追加</h3>
           <p class="text-[color:var(--ink-2)] leading-relaxed">
             アプリ作成直後は権限が空です。<br>
@@ -1297,21 +1332,26 @@
             <figcaption style="padding: .75rem 1rem; font-weight: 600; color: var(--ink-2); font-size: .9rem; border-top: 1px solid var(--line); text-align: left;">2つの権限が <strong style="color: var(--grad-start);">「テスト準備完了」</strong> になっていればOK(threads_delete は不要)</figcaption>
           </figure>
 
+          </div>
+
           <h3 id="step3-4" class="sub-head"><span class="sh-num">3-4</span>アプリの基本設定</h3>
 
           <div class="rounded-xl border border-[color:var(--line)] p-4 my-3 bg-[color:var(--line-2)]">
-            <div class="font-bold text-sm mb-2 flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full" style="background:var(--grad-start)"></span>
-              基本設定 <span class="text-xs font-medium text-[color:var(--ink-3)]">(⚙️ 左側のアプリの設定 ➡️ ベーシック)</span>
-              <span class="text-[11px] font-bold ml-auto" style="color: var(--danger);">📋 各URLはタップでコピー</span>
+            <div class="mb-3 pb-3 border-b border-[color:var(--line)]">
+              <div class="flex items-center gap-2 font-bold text-base mb-1">
+                <span class="w-2 h-2 rounded-full" style="background:var(--grad-start)"></span>
+                ① 基本設定
+              </div>
+              <div class="text-xs font-semibold text-[color:var(--ink-2)] ml-4">⚙️ 左側のアプリの設定 ➡️ ベーシック</div>
+              <div class="text-[11px] font-bold mt-1 ml-4" style="color: var(--danger);">📋 各URLはタップでコピーできます</div>
             </div>
-            <ul class="space-y-1.5 text-sm text-[color:var(--ink-2)] list-none p-0">
-              <li>• <strong>表示名:</strong> なんでもOK</li>
-              <li>• <strong>プライバシーポリシーURL:</strong> <code class="inline">https://www.facebook.com/privacy/policy/</code></li>
-              <li>• <strong>利用規約URL:</strong> <code class="inline">https://www.google.com/</code></li>
-              <li>• <strong>ユーザーデータの削除 — データの削除手順URL:</strong> <code class="inline">https://www.google.com/</code></li>
-              <li>• <strong>カテゴリ:</strong> ビジネス・ページ</li>
-              <li class="pt-1">• <strong>「変更を保存」</strong> で保存する</li>
+            <ul class="space-y-2 text-sm text-[color:var(--ink-2)] list-none p-0">
+              <li><strong>表示名:</strong> なんでもOK</li>
+              <li><strong>プライバシーポリシーURL:</strong><br><code class="inline">https://www.facebook.com/privacy/policy/</code></li>
+              <li><strong>利用規約URL:</strong><br><code class="inline">https://www.google.com/</code></li>
+              <li><strong>ユーザーデータの削除 — データの削除手順URL:</strong><br><code class="inline">https://www.google.com/</code></li>
+              <li><strong>カテゴリ:</strong> ビジネス・ページ</li>
+              <li class="pt-2 border-t border-[color:var(--line)] mt-2"><strong>「変更を保存」</strong> で保存する</li>
             </ul>
           </div>
 
@@ -1321,25 +1361,28 @@
           </figure>
 
           <div class="rounded-xl border border-[color:var(--line)] p-4 my-3 bg-[color:var(--line-2)]">
-            <div class="font-bold text-sm mb-2 flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full" style="background:var(--grad-end)"></span>
-              ユースケースをカスタマイズ <span class="text-xs font-medium text-[color:var(--ink-3)]">(左側のユースケース ➡️ カスタマイズ ➡️ 設定)</span>
-              <span class="text-[11px] font-bold ml-auto" style="color: var(--danger);">📋 各URLはタップでコピー</span>
+            <div class="mb-3 pb-3 border-b border-[color:var(--line)]">
+              <div class="flex items-center gap-2 font-bold text-base mb-1">
+                <span class="w-2 h-2 rounded-full" style="background:var(--grad-end)"></span>
+                ② ユースケースをカスタマイズ
+              </div>
+              <div class="text-xs font-semibold text-[color:var(--ink-2)] ml-4">📂 左側のユースケース ➡️ カスタマイズ ➡️ 設定</div>
+              <div class="text-[11px] font-bold mt-1 ml-4" style="color: var(--danger);">📋 各URLはタップでコピーできます</div>
             </div>
-            <ul class="space-y-1.5 text-sm text-[color:var(--ink-2)] list-none p-0">
+            <div class="p-3 rounded-lg mb-3" style="background:color-mix(in oklab, var(--danger) 10%, var(--surface)); border:1px solid color-mix(in oklab, var(--danger) 35%, var(--line));">
+              <strong style="color:var(--danger)">⚠ 3箇所すべてに入力</strong> <span class="text-xs text-[color:var(--ink-2)]">(1つでも空欄だと保存エラーになります)</span>
+            </div>
+            <ul class="space-y-2 text-sm text-[color:var(--ink-2)] list-none p-0">
               <li>
-                • <strong>コールバックURLをリダイレクト:</strong> <code class="inline">https://www.google.com/</code>
-                <div class="text-xs text-[color:var(--ink-3)] mt-1 leading-relaxed pl-3">
+                <strong>コールバックURLをリダイレクト:</strong><br><code class="inline">https://www.google.com/</code>
+                <div class="text-xs text-[color:var(--ink-3)] mt-1.5 leading-relaxed pl-3">
                   ※ URLをコピペ後に <span style="display:inline-block; padding: 1px 6px; border-radius:4px; background: color-mix(in oklab, var(--grad-start) 18%, var(--surface)); color: var(--grad-start); font-weight:600;">青背景のURL</span> が出てくるのでそれをクリック ➡️ <span style="display:inline-block; padding: 1px 6px; border-radius:4px; background: var(--line-2); border: 1px solid var(--line); color: var(--ink-2); font-family: ui-monospace, monospace; font-size: .9em;">グレーで囲われたURL</span> になる
                 </div>
               </li>
-              <li>• <strong>アンインストールコールバックURL:</strong> <code class="inline">https://www.google.com/</code></li>
-              <li>• <strong>削除コールバックURL:</strong> <code class="inline">https://www.google.com/</code></li>
-              <li class="pt-1">• <strong>「保存する」をクリック</strong></li>
+              <li><strong>アンインストールコールバックURL:</strong><br><code class="inline">https://www.google.com/</code></li>
+              <li><strong>削除コールバックURL:</strong><br><code class="inline">https://www.google.com/</code></li>
+              <li class="pt-2 border-t border-[color:var(--line)] mt-2"><strong>「保存する」</strong>をクリック</li>
             </ul>
-            <div class="mt-3 p-3 rounded-lg" style="background:color-mix(in oklab, var(--danger) 10%, var(--surface)); border:1px solid color-mix(in oklab, var(--danger) 35%, var(--line));">
-              <strong style="color:var(--danger)">⚠ 3箇所すべてに入力</strong> <span class="text-xs text-[color:var(--ink-2)]">(1つでも空欄だと保存エラー)</span>
-            </div>
           </div>
 
           <div class="grid sm:grid-cols-2 gap-4 my-3">
@@ -1353,6 +1396,7 @@
             </figure>
           </div>
 
+          <div class="substep-card">
           <h3 id="step3-5" class="sub-head"><span class="sh-num">3-5</span>APP_ID と APP_SECRET を取得 ➡️ スプシに登録 <span style="font-size: .75em; font-weight: 500; color: var(--ink-3); margin-left: .4rem;">(1個ずつ実施)</span></h3>
           <ol class="guided">
             <li><strong>(左側の)ユースケース ➡️ カスタマイズ ➡️ 設定</strong> を開く</li>
@@ -1404,6 +1448,8 @@
             </figure>
           </div>
 
+          </div>
+
           <label class="step-check" data-progress-key="step3">
             <input type="checkbox" />
             <span class="label">APP_ID / APP_SECRET を入力し「✅ 設定済」を確認 <span class="sub">残り3項目は次の Step 4・5・6 で取得</span></span>
@@ -1429,7 +1475,7 @@
             </div>
           </div>
 
-          <h3 class="sub-head"><span class="sh-num">5-1</span>ユーザートークン生成ツールを開く</h3>
+          <h3 class="sub-head"><span class="sh-num">4-1</span>ユーザートークン生成ツールを開く</h3>
           <p class="text-[color:var(--ink-2)] leading-relaxed">
             <strong>ユースケース → Threads APIにアクセス → カスタマイズ → 設定</strong> と進み、
             ページ下部にスクロールすると <strong>「ユーザートークン生成ツール」</strong> があります。
@@ -1440,53 +1486,75 @@
             <figcaption style="padding-top: .85rem; font-weight: 600; color: var(--ink-2); font-size: .9rem; text-align: center;">ユースケースをカスタマイズ画面 ➡️ 設定タブ ➡️ 下部のユーザートークン生成ツール</figcaption>
           </figure>
 
-          <h3 class="sub-head"><span class="sh-num">5-2</span>Threadsテスター追加または削除 + 承認</h3>
-          <ol class="guided">
-            <li>
-              <strong>「Threadsテスターを追加または削除」</strong> から自分のThreadsアカウントを追加
-              <div class="text-xs text-[color:var(--ink-3)] mt-2 leading-relaxed pl-3" style="border-left: 3px solid color-mix(in oklab, var(--grad-start) 35%, var(--line)); padding-left: .65rem;">
-                <ol class="list-decimal pl-4 space-y-0.5">
-                  <li><strong>「メンバーを追加」</strong> を選択</li>
-                  <li>➡️ <strong>「Threadsテスター」</strong> を選択</li>
-                  <li>➡️ 一番下にアカウント名を入れて選択する</li>
-                  <li>➡️ <strong>「追加」</strong> をクリック</li>
-                </ol>
-                <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block; margin-top: .85rem;">
-                  <img src="images/s5-img2.png" alt="アプリに人を追加 - Threadsテスター選択" style="display:block; max-width:420px; width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--line);" />
-                  <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">「アプリに人を追加」ダイアログ ➡️ Threadsテスター選択</figcaption>
-                </figure>
-              </div>
-            </li>
-            <li>
-              Threadsアプリを開いて、招待を承認する
-              <div class="text-xs text-[color:var(--ink-3)] mt-2 leading-relaxed pl-3" style="border-left: 3px solid color-mix(in oklab, var(--grad-end) 35%, var(--line)); padding-left: .65rem;">
-                <div class="font-semibold text-[color:var(--ink-2)] mb-1">「Threadsユーザーは、プロフィールのウェブサイトのアクセス許可セクションから招待を管理できます」の <strong>ウェブサイトのアクセス許可</strong> をタップし、Threadsへ移動</div>
-                <ol class="list-decimal pl-4 space-y-0.5">
-                  <li>➡️ <strong>ウェブサイトのアクセス許可</strong></li>
-                  <li>➡️ <strong>「招待」</strong></li>
-                  <li>➡️ <strong>同意する</strong></li>
-                  <li>➡️ MetaのDeveloperのサイトに戻ってリロード</li>
-                  <li>➡️ ステータスの <strong>「承認待ち」が消えている</strong> ことを確認する</li>
-                </ol>
-                <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block; margin-top: .85rem;">
-                  <img src="images/s5-img6.png?v=2" alt="Threadsテスター行 - ウェブサイトのアクセス許可リンク" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--line);" />
-                  <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">Threadsテスター行に表示される「ウェブサイトのアクセス許可」リンク</figcaption>
-                </figure>
-                <figure class="screenshot" style="padding: 1rem; background: #0e1116; border-style: solid; border-color: var(--line); display: block; margin-top: .85rem;">
-                  <img src="images/s5-img4.png?v=2" alt="Threadsアプリ - アカウント設定" style="display:block; max-width:520px; width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm);" />
-                  <figcaption style="padding-top: .65rem; font-weight: 600; color: rgba(255,255,255,.85); font-size: .85rem; text-align: center;">Threadsアプリ ➡️ アカウント ➡️ ウェブサイトのアクセス許可</figcaption>
-                </figure>
-                <figure class="screenshot" style="padding: 1rem; background: #0e1116; border-style: solid; border-color: var(--line); display: block; margin-top: .85rem;">
-                  <img src="images/s5-img5.png" alt="招待タブ - 同意する" style="display:block; max-width:420px; width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm);" />
-                  <figcaption style="padding-top: .65rem; font-weight: 600; color: rgba(255,255,255,.85); font-size: .85rem; text-align: center;">招待タブ ➡️ 「同意する」をタップ</figcaption>
-                </figure>
-                <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block; margin-top: .85rem;">
-                  <img src="images/s5-img3.png?v=2" alt="アプリの役割 - 承認待ちが消えた状態" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--line);" />
-                  <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">Metaに戻ってリロード ➡️ ステータスの「承認待ち」が消えていればOK</figcaption>
-                </figure>
-              </div>
-            </li>
-          </ol>
+          <h3 class="sub-head"><span class="sh-num">4-2</span>Threadsテスター追加 + 承認</h3>
+          <p class="text-[color:var(--ink-2)] leading-relaxed text-sm mb-3">
+            この工程は <strong>3つの操作</strong> に分かれています。順番に実施してください。
+          </p>
+
+          <!-- A: Metaでメンバー追加 -->
+          <div class="rounded-xl border border-[color:var(--line)] p-4 my-3 bg-[color:var(--line-2)]">
+            <div class="flex items-center gap-2 font-bold text-base mb-1">
+              <span class="w-2 h-2 rounded-full" style="background:var(--grad-start)"></span>
+              ① Meta側でメンバー追加
+            </div>
+            <div class="text-xs font-semibold text-[color:var(--ink-2)] ml-4 mb-3">📍 Metaの「アプリに人を追加」ダイアログ</div>
+            <ol class="list-decimal pl-5 space-y-1 text-sm text-[color:var(--ink-2)]">
+              <li><strong>「Threadsテスターを追加または削除」</strong> → <strong>「メンバーを追加」</strong> を選択</li>
+              <li><strong>「Threadsテスター」</strong> を選択</li>
+              <li>一番下にアカウント名を入れて選択</li>
+              <li><strong>「追加」</strong> をクリック</li>
+            </ol>
+            <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block; margin-top: .85rem;">
+              <img src="images/s5-img2.png" alt="アプリに人を追加 - Threadsテスター選択" style="display:block; max-width:420px; width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--line);" />
+              <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">「アプリに人を追加」ダイアログ ➡️ Threadsテスター選択</figcaption>
+            </figure>
+          </div>
+
+          <!-- B: Threadsアプリで承認 -->
+          <div class="rounded-xl border border-[color:var(--line)] p-4 my-3 bg-[color:var(--line-2)]">
+            <div class="flex items-center gap-2 font-bold text-base mb-1">
+              <span class="w-2 h-2 rounded-full" style="background:var(--grad-end)"></span>
+              ② Threadsアプリで招待を承認
+            </div>
+            <div class="text-xs font-semibold text-[color:var(--ink-2)] ml-4 mb-3">📱 スマホのThreadsアプリで操作</div>
+            <ol class="list-decimal pl-5 space-y-1 text-sm text-[color:var(--ink-2)]">
+              <li>Metaの「Threadsテスター」行にある <strong>「ウェブサイトのアクセス許可」</strong> リンクをタップ</li>
+              <li>Threadsアプリが開く → アカウント → <strong>ウェブサイトのアクセス許可</strong></li>
+              <li><strong>「招待」</strong> タブ</li>
+              <li><strong>「同意する」</strong> をタップ</li>
+            </ol>
+            <div class="grid sm:grid-cols-2 gap-3 mt-3">
+              <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block;">
+                <img src="images/s5-img6.png?v=2" alt="Threadsテスター行 - ウェブサイトのアクセス許可リンク" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--line);" />
+                <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">① Meta側「ウェブサイトのアクセス許可」リンク</figcaption>
+              </figure>
+              <figure class="screenshot" style="padding: 1rem; background: #0e1116; border-style: solid; border-color: var(--line); display: block;">
+                <img src="images/s5-img4.png?v=2" alt="Threadsアプリ - アカウント設定" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm);" />
+                <figcaption style="padding-top: .65rem; font-weight: 600; color: rgba(255,255,255,.85); font-size: .85rem; text-align: center;">② Threadsアプリ ➡️ ウェブサイトのアクセス許可</figcaption>
+              </figure>
+              <figure class="screenshot sm:col-span-2" style="padding: 1rem; background: #0e1116; border-style: solid; border-color: var(--line); display: block;">
+                <img src="images/s5-img5.png" alt="招待タブ - 同意する" style="display:block; max-width:420px; width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm);" />
+                <figcaption style="padding-top: .65rem; font-weight: 600; color: rgba(255,255,255,.85); font-size: .85rem; text-align: center;">③④ 招待タブ ➡️ 「同意する」をタップ</figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <!-- C: Metaに戻って確認 -->
+          <div class="rounded-xl border border-[color:var(--line)] p-4 my-3 bg-[color:var(--line-2)]">
+            <div class="flex items-center gap-2 font-bold text-base mb-1">
+              <span class="w-2 h-2 rounded-full" style="background:var(--ok)"></span>
+              ③ Meta側に戻って承認完了を確認
+            </div>
+            <div class="text-xs font-semibold text-[color:var(--ink-2)] ml-4 mb-3">🖥 PCのMeta Developer画面に戻る</div>
+            <ol class="list-decimal pl-5 space-y-1 text-sm text-[color:var(--ink-2)]">
+              <li>MetaのDeveloperサイトに戻ってリロード</li>
+              <li>ステータスの <strong>「承認待ち」が消えている</strong> ことを確認</li>
+            </ol>
+            <figure class="screenshot" style="padding: 1rem; background: var(--surface); border-style: solid; border-color: var(--line); display: block; margin-top: .85rem;">
+              <img src="images/s5-img3.png?v=2" alt="アプリの役割 - 承認待ちが消えた状態" style="display:block; max-width:100%; height:auto; margin: 0 auto; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--line);" />
+              <figcaption style="padding-top: .65rem; font-weight: 600; color: var(--ink-2); font-size: .85rem; text-align: center;">「承認待ち」が消えていればOK</figcaption>
+            </figure>
+          </div>
 
           <div class="callout callout-warn">
             <div class="ic">⚠</div>
@@ -1496,7 +1564,7 @@
             </div>
           </div>
 
-          <h3 class="sub-head"><span class="sh-num">5-3</span>長期アクセストークンを生成</h3>
+          <h3 class="sub-head"><span class="sh-num">4-3</span>長期アクセストークンを生成</h3>
           <ol class="guided">
             <li>ユーザートークン生成ツールに戻る → <strong>ページ再読み込み</strong>
               <div class="text-xs text-[color:var(--ink-3)] mt-1">(ユースケース ➡️ カスタマイズ ➡️ 設定 ➡️ 一番下)</div>
@@ -1691,13 +1759,13 @@
             </div>
           </div>
 
-          <h3 class="sub-head"><span class="sh-num">8-1</span>設定状況の最終確認</h3>
+          <h3 class="sub-head"><span class="sh-num">7-1</span>設定状況の最終確認</h3>
           <p class="text-[color:var(--ink-2)] leading-relaxed">
             メニュー「スレッズスケジューラー」の <code class="inline">🔍 設定状況を確認</code> を実行<br>
             → <strong>5項目すべてが「✅ 設定済」</strong> になっていることを確認。
           </p>
 
-          <h3 class="sub-head"><span class="sh-num">8-2</span>テスト投稿</h3>
+          <h3 class="sub-head"><span class="sh-num">7-2</span>テスト投稿</h3>
           <ol class="guided">
             <li>「投稿予約」シートに新規行を追加:
               <ul class="mt-2 ml-2 space-y-1 text-sm list-none p-0">
@@ -1716,7 +1784,7 @@
             <li><strong>Discordに「✅ 投稿成功」通知</strong> が届くことを確認</li>
           </ol>
 
-          <h3 class="sub-head"><span class="sh-num">8-3</span>トリガーをインストール(自動運用開始)</h3>
+          <h3 class="sub-head"><span class="sh-num">7-3</span>トリガーをインストール(自動運用開始)</h3>
           <p class="text-[color:var(--ink-2)] leading-relaxed">
             メニュー <code class="inline">⏰ トリガーをインストール</code> → 完了ダイアログ
           </p>
@@ -2299,7 +2367,10 @@ DISCORD_WEBHOOK_URL: ✅ http...zzzz</pre>
       const key = STEP_KEYS[idx-1];
       item.classList.toggle('complete', !!stored[key]);
     });
+
+    if (lastActiveId) setActive(lastActiveId);
   }
+  let lastActiveId = null;
   document.querySelectorAll('.step-check').forEach(lab => {
     const key = lab.dataset.progressKey;
     const cb  = lab.querySelector('input');
@@ -2319,12 +2390,49 @@ DISCORD_WEBHOOK_URL: ✅ http...zzzz</pre>
   refreshProgressUI();
 
   /* ============ Active section in sidebar + top nav ============ */
-  const allSections = ['step1','step2','step3','step4','step5','step6','step7','summary','operation','image-upload','faq'];
+  const allSections = ['step0','step1','step2','step3','step4','step5','step6','step7','summary','operation','image-upload','faq'];
   const sideItems   = document.querySelectorAll('#sideNav .side-item');
   const navLinks    = document.querySelectorAll('.nav-link');
+  const STEP_LABELS = {
+    step0: 'Step 00', step1: 'Step 01', step2: 'Step 02', step3: 'Step 03',
+    step4: 'Step 04', step5: 'Step 05', step6: 'Step 06', step7: 'Step 07',
+    summary: 'まとめ', operation: '運用', 'image-upload': '画像投稿', faq: 'FAQ'
+  };
   function setActive(id){
+    lastActiveId = id;
     sideItems.forEach(i => i.classList.toggle('active', i.getAttribute('href') === '#' + id));
     navLinks.forEach(n => n.classList.toggle('active', n.getAttribute('href') === '#' + id));
+
+    const mCur = document.getElementById('mCurrentStep');
+    const mNext = document.getElementById('mNextStepLink');
+    const isStep = id && /^step[0-7]$/.test(id);
+    const allDone = STEP_KEYS.every(k => stored[k]);
+    if (mCur) {
+      if (isStep && STEP_LABELS[id]) {
+        mCur.textContent = STEP_LABELS[id];
+      } else if (allDone) {
+        mCur.textContent = '🎉 全Step完了';
+      } else {
+        mCur.textContent = '補足セクション';
+      }
+    }
+    if (mNext) {
+      const stepOrder = ['step0','step1','step2','step3','step4','step5','step6','step7'];
+      const idx = stepOrder.indexOf(id);
+      let nextId = null;
+      if (isStep && idx >= 0 && idx < stepOrder.length - 1) {
+        nextId = stepOrder[idx + 1];
+      } else if (!isStep && !allDone) {
+        nextId = STEP_KEYS.find(k => !stored[k]) || null;
+      }
+      if (nextId && STEP_LABELS[nextId]) {
+        mNext.href = '#' + nextId;
+        mNext.textContent = (isStep ? '次へ: ' : '未完了に戻る: ') + STEP_LABELS[nextId] + ' →';
+        mNext.style.display = '';
+      } else {
+        mNext.style.display = 'none';
+      }
+    }
   }
   const ioActive = new IntersectionObserver((entries) => {
     // pick the one closest to top in viewport
