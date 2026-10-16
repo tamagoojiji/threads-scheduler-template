@@ -4,7 +4,7 @@
  * - 有効ならbodyを表示
  */
 (function () {
-  const BACKEND = "https://threadsschedule.tamago-ai-world.com";
+  const BACKEND = "https://sched.tamago-ai-world.com";
   const STORAGE_KEY = "tss_auth_token";
   const VERIFY_PATH = "/auth/verify";
   const LOGIN_PATH = "/auth/discord";
